@@ -1,0 +1,23 @@
+# DAFTAR DESA/KELURAHAN KORAMIL 1609-05/SUKASADA
+# File ini digunakan untuk mengatur daftar desa yang muncul di dropdown
+# Format: satu desa per baris, tanpa prefix Desa/Kelurahan
+# Komentar diawali dengan #
+
+Gitgit
+Panji
+Sukasada
+Pancasari
+Kayuputih
+Banyuatis
+Banyuseri
+Wanagiri
+Tamblang
+
+# Untuk menambah desa baru:
+# 1. Tambah nama desa di bawah ini
+# 2. Upload file CO_[nama_desa].txt ke GitHub
+# 3. Upload file bnr_[nama_desa].png (opsional)
+
+# Contoh:
+# Nama_Desa_Baru
+# Desa_Lainnya
