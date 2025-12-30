@@ -532,118 +532,128 @@
     </div>
 
     <script>
-        // ================= SPLASH SCREEN FUNCTIONS =================
-        function startSplashLoading() {
-            const progressBar = document.getElementById('splashProgressBar');
-            const progressText = document.getElementById('progressPercentage');
-            const statusText = document.getElementById('loadingStatusText');
-            const splashScreen = document.getElementById('splashScreen');
-            const appContainer = document.getElementById('appContainer');
-            
-            let progress = 0;
-            let isComplete = false;
-            
-            // Staging untuk simulasi loading
-            const loadingStages = [
-                { min: 0, max: 25, message: "Memuat sistem..." },
-                { min: 25, max: 50, message: "Menginisialisasi modul..." },
-                { min: 50, max: 75, message: "Menyiapkan antarmuka..." },
-                { min: 75, max: 90, message: "Memuat data..." },
-                { min: 90, max: 100, message: "Hampir selesai..." }
-            ];
-            
-            const loadingInterval = setInterval(() => {
-                // Increment progress dengan variasi acak
-                let increment = Math.random() * 3 + 1; // 1-4%
-                
-                // Untuk stage akhir, kurangi kecepatan
-                if (progress > 90) {
-                    increment = Math.random() * 1 + 0.5; // 0.5-1.5%
-                }
-                
-                progress += increment;
-                
-                // Cap di 100%
-                if (progress > 100) progress = 100;
-                
-                // Update progress bar
-                progressBar.style.width = progress + '%';
-                progressText.textContent = Math.round(progress) + '%';
-                
-                // Update status text berdasarkan stage
-                const currentStage = loadingStages.find(stage => 
-                    progress >= stage.min && progress <= stage.max
-                );
-                
-                if (currentStage && statusText.textContent !== currentStage.message) {
-                    statusText.textContent = currentStage.message;
-                }
-                
-                // Ketika mencapai 100%
-                if (progress >= 100 && !isComplete) {
-                    isComplete = true;
-                    clearInterval(loadingInterval);
-                    
-                    // Update teks final
-                    statusText.textContent = "✅ Sistem siap!";
-                    progressText.textContent = "100%";
-                    
-                    // Tunggu 500ms untuk efek, lalu fade out
-                    setTimeout(() => {
-                        splashScreen.classList.add('fade-out');
-                        
-                        // Setelah fade out selesai, tampilkan aplikasi
-                        setTimeout(() => {
-                            splashScreen.style.display = 'none';
-                            appContainer.style.display = 'block';
-                            
-                            // Initialize aplikasi
-                            initializeApp();
-                        }, 800); // Match dengan durasi fade-out
-                    }, 500);
-                }
-            }, 80); // Update setiap 80ms (lebih smooth)
+// ================= SPLASH SCREEN - SIMPLE & RELIABLE =================
+document.addEventListener('DOMContentLoaded', function() {
+    const splashScreen = document.getElementById('splashScreen');
+    const progressBar = document.getElementById('splashProgressBar');
+    const progressText = document.getElementById('progressPercentage');
+    const statusText = document.getElementById('loadingStatusText');
+    const appContainer = document.getElementById('appContainer');
+    
+    // Pastikan elemen ada
+    if (!splashScreen || !progressBar || !appContainer) {
+        console.error("❌ Splash elements missing!");
+        if (appContainer) appContainer.style.display = 'block';
+        if (typeof initializeApp === 'function') initializeApp();
+        return;
+    }
+    
+    console.log("🚀 Starting reliable splash screen...");
+    
+    let progress = 0;
+    const targetProgress = 100;
+    const duration = 4000; // 4 detik total
+    const intervalTime = 50; // Update setiap 50ms
+    const steps = duration / intervalTime;
+    const increment = targetProgress / steps;
+    
+    const loadingInterval = setInterval(() => {
+        progress += increment;
+        
+        // Update UI
+        if (progressBar) progressBar.style.width = progress + '%';
+        if (progressText) progressText.textContent = Math.min(Math.round(progress), 100) + '%';
+        
+        // Update status text
+        if (statusText) {
+            if (progress < 25) statusText.textContent = "Memuat sistem...";
+            else if (progress < 50) statusText.textContent = "Menginisialisasi...";
+            else if (progress < 75) statusText.textContent = "Menyiapkan data...";
+            else if (progress < 95) statusText.textContent = "Hampir selesai...";
+            else statusText.textContent = "✅ Siap!";
         }
         
+        // Ketika selesai
+        if (progress >= 100) {
+            clearInterval(loadingInterval);
+            
+            // Final update
+            if (progressBar) progressBar.style.width = '100%';
+            if (progressText) progressText.textContent = '100%';
+            if (statusText) statusText.textContent = '✅ Sistem siap!';
+            
+            console.log("✅ Splash screen reached 100%");
+            
+            // Fade out effect
+            setTimeout(() => {
+                splashScreen.style.transition = 'opacity 0.8s ease';
+                splashScreen.style.opacity = '0';
+                
+                // Hide dan show app
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    appContainer.style.display = 'block';
+                    appContainer.style.opacity = '1';
+                    
+                    // Start app
+                    if (typeof initializeApp === 'function') {
+                        initializeApp();
+                        console.log("🎉 App started successfully!");
+                    }
+                }, 800);
+            }, 500);
+        }
+    }, intervalTime);
+    
+     // Fallback timeout (6 detik)
+    setTimeout(() => {
+        clearInterval(loadingInterval);
+        splashScreen.style.display = 'none';
+        appContainer.style.display = 'block';
+        if (typeof initializeApp === 'function') initializeApp();
+        console.warn("⚠️ Splash timeout - using fallback");
+    }, 6000);
+});
+
         // Start splash screen segera setelah page load
         window.addEventListener('load', startSplashLoading);
         
-        // ================= KONFIGURASI AMAN =================
-        const GITHUB_API_URL = "https://api.github.com/repos/Koramil05/DUKOPS/contents/";
-        const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
-        const TARGET_LAPORAN = 9;
+       // ================= KONFIGURASI AMAN =================
+const GITHUB_API_URL = "https://api.github.com/repos/Koramil05/DUKOPS/contents/";
+const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
+const TARGET_LAPORAN = 9;
 
-        // ================= VARIABEL GLOBAL =================
-        let img = new Image();
-        let selectedDesa = "";
-        let kordinatList = [];
-        let currentKoordinat = "";
-        let tanggalWaktu = "";
-        let submissionCount = 0;
-        let submittedDates = [];
-        let desaCounter = {};
-        let attendanceData = [];
-        let deferredPrompt = null;
+ // ================= VARIABEL GLOBAL =================
+let img = new Image();
+let selectedDesa = "";
+let kordinatList = [];
+let currentKoordinat = "";
+let tanggalWaktu = "";
+let submissionCount = 0;
+let submittedDates = [];
+let desaCounter = {};
+let attendanceData = [];
+let deferredPrompt = null;
 
-        // ================= FUNGSI UTAMA =================
-        function normalizeDesaName(desaName) {
-            if (!desaName) return "";
-            
-            let normalized = desaName;
-            normalized = normalized.replace(/^Desa\s+/i, '');
-            normalized = normalized.replace(/^Kelurahan\s+/i, '');
-            normalized = normalized.replace(/Kel\.\s*/gi, '');
-            normalized = normalized.replace(/Kel\s/gi, '');
-            normalized = normalized.trim();
-            const forTelegram = normalized.replace(/_/g, ' ');
-            
-            return {
-                original: desaName,
-                normalized: normalized,
-                forTelegram: forTelegram,
-                cleanName: forTelegram.trim()
-            };
-        }
+// ================= FUNGSI UTAMA =================
+function normalizeDesaName(desaName) {
+    if (!desaName) return "";
+    
+    let normalized = desaName;
+    normalized = normalized.replace(/^Desa\s+/i, '');
+    normalized = normalized.replace(/^Kelurahan\s+/i, '');
+    normalized = normalized.replace(/Kel\.\s*/gi, '');
+    normalized = normalized.replace(/Kel\s/gi, '');
+    normalized = normalized.trim();
+    const forTelegram = normalized.replace(/_/g, ' ');
+    
+    return {
+        original: desaName,
+        normalized: normalized,
+        forTelegram: forTelegram,
+        cleanName: forTelegram.trim()
+    };
+}
 
         // ================= FUNGSI BACKEND AMAN =================
         async function sendToBackend(action, data = {}) {
@@ -1860,6 +1870,20 @@
             const imageName = desaInfo.normalized.toLowerCase().replace(/\s+/g, '_');
             headerImage.src = `https://github.com/Koramil05/DUKOPS/blob/main/bnr_${imageName}.png?raw=true`;
         }
-    </script>
+// ================= EMERGENCY FIX =================
+// Taruh di SINI - PALING AKHIR sebelum </script>
+setTimeout(function() {
+    const splash = document.getElementById('splashScreen');
+    const app = document.getElementById('appContainer');
+    
+    if (splash && splash.style.display !== 'none') {
+        console.log("🆘 Emergency: Force closing splash screen");
+        splash.style.display = 'none';
+        if (app) app.style.display = 'block';
+        if (typeof initializeApp === 'function') initializeApp();
+    }
+}, 7000);
+
+</script>
 </body>
 </html>
