@@ -1,0 +1,10 @@
+Website Anda/
+├── index.html              (file utama di atas)
+├── site.webmanifest        (file manifest di atas)
+├── favicon.svg            (download dari RealFaviconGenerator)
+├── favicon-96x96.png      (download dari RealFaviconGenerator)
+├── favicon.ico            (download dari RealFaviconGenerator)
+├── apple-touch-icon.png   (download dari RealFaviconGenerator)
+├── web-app-manifest-192x192.png  (download dari RealFaviconGenerator)
+├── web-app-manifest-512x512.png  (download dari RealFaviconGenerator)
+└── (optional) splash.png  (buat gambar splash screen 1242x2436)
