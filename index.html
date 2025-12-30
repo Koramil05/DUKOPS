@@ -297,7 +297,7 @@
     <script>
         // ================= KONFIGURASI AMAN =================
         const GITHUB_API_URL = "https://api.github.com/repos/Koramil05/DUKOPS/contents/";
-        const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
+        const GOOGLE_APPS_SCRIPT_WEBHOOK = const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
         const TARGET_LAPORAN = 9;
 
         // ================= VARIABEL GLOBAL =================
@@ -334,68 +334,89 @@
 
         // ================= FUNGSI BACKEND AMAN =================
         async function sendToBackend(action, data = {}) {
-            try {
-                const formData = new FormData();
-                formData.append('action', action);
-                
-                // Tambahkan data ke formData
-                Object.keys(data).forEach(key => {
-                    if (data[key] !== undefined && data[key] !== null) {
-                        formData.append(key, data[key]);
-                    }
-                });
-                
-                const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                return await response.json();
-            } catch (error) {
-                console.error(`Error in ${action}:`, error);
-                return { success: false, error: error.message };
-            }
+  try {
+    // Untuk GET requests
+    if (action === 'listFiles' || action === 'getConfig' || action === 'test' || action === 'telegramTest') {
+      let url = `${GOOGLE_APPS_SCRIPT_WEBHOOK}?action=${action}`;
+      
+      // Tambahkan parameter untuk listFiles
+      if (action === 'listFiles') {
+        if (data.desaFilter) url += `&desaFilter=${encodeURIComponent(data.desaFilter)}`;
+        if (data.monthFilter) url += `&monthFilter=${encodeURIComponent(data.monthFilter)}`;
+      }
+      
+      const response = await fetch(url);
+      return await response.json();
+    }
+    // Untuk POST requests
+    else {
+      const formData = new FormData();
+      formData.append('action', action);
+      
+      // Tambahkan semua data ke formData
+      Object.keys(data).forEach(key => {
+        if (data[key] !== undefined && data[key] !== null) {
+          if (key === 'fileData' && typeof data[key] === 'string') {
+            formData.append(key, data[key]);
+          } else {
+            formData.append(key, String(data[key]));
+          }
         }
+      });
+      
+      const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
+        method: 'POST',
+        body: formData
+      });
+      
+      return await response.json();
+    }
+  } catch (error) {
+    console.error(`Error in ${action}:`, error);
+    return { success: false, error: error.message };
+  }
+}
 
-        async function uploadToGoogleDrive(zipBlob, zipFileName, desaName, date) {
-            try {
-                const base64Data = await blobToBase64(zipBlob);
-                const desaInfo = normalizeDesaName(desaName);
-                
-                const result = await sendToBackend('uploadDrive', {
-                    fileName: zipFileName,
-                    desaName: desaInfo.cleanName,
-                    fileData: base64Data,
-                    year: date.getFullYear(),
-                    month: date.toLocaleDateString('id-ID', { month: 'long' }),
-                    mimeType: 'application/zip'
-                });
-                
-                return result.success === true;
-            } catch (error) {
-                console.error('Error upload ke Drive:', error);
-                return false;
-            }
-        }
+async function uploadToGoogleDrive(zipBlob, zipFileName, desaName, date) {
+  try {
+    const base64Data = await blobToBase64(zipBlob);
+    const desaInfo = normalizeDesaName(desaName);
+    
+    const result = await sendToBackend('uploadDrive', {
+      fileName: zipFileName,
+      desaName: desaInfo.cleanName,
+      fileData: base64Data,
+      year: date.getFullYear().toString(),
+      month: date.toLocaleDateString('id-ID', { month: 'long' }),
+      desa: desaInfo.cleanName,
+      mimeType: 'application/zip'
+    });
+    
+    return result.success === true;
+  } catch (error) {
+    console.error('Error upload ke Drive:', error);
+    return false;
+  }
+}
 
-        async function sendZipToTelegram(zipBlob, filename, desaName) {
-            try {
-                const base64Data = await blobToBase64(zipBlob);
-                const desaInfo = normalizeDesaName(desaName);
-                
-                const result = await sendToBackend('sendTelegram', {
-                    fileName: filename,
-                    desaName: desaInfo.cleanName,
-                    fileData: base64Data,
-                    mimeType: 'application/zip'
-                });
-                
-                return result.success === true;
-            } catch (error) {
-                console.error('Error send to Telegram:', error);
-                return false;
-            }
-        }
+async function sendZipToTelegram(zipBlob, filename, desaName) {
+  try {
+    const base64Data = await blobToBase64(zipBlob);
+    const desaInfo = normalizeDesaName(desaName);
+    
+    const result = await sendToBackend('sendTelegram', {
+      fileName: filename,
+      desaName: desaInfo.cleanName,
+      fileData: base64Data,
+      mimeType: 'application/zip'
+    });
+    
+    return result.success === true;
+  } catch (error) {
+    console.error('Error send to Telegram:', error);
+    return false;
+  }
+}
 
         // Helper function
         async function blobToBase64(blob) {
@@ -1159,37 +1180,37 @@
             }
         }
 
-        async function loadAttendanceData() {
-            const loading = document.getElementById('attendanceLoading');
-            const list = document.getElementById('attendanceList');
-            const summary = document.getElementById('attendanceSummary');
-            
-            loading.style.display = 'block';
-            list.innerHTML = '';
-            summary.style.display = 'none';
-            
-            try {
-                const result = await sendToBackend('listFiles', {
-                    desaFilter: document.getElementById('attendanceDesaFilter').value,
-                    monthFilter: document.getElementById('attendanceMonthFilter').value
-                });
-                
-                if (result.success) {
-                    attendanceData = result.files || [];
-                    displayAttendanceList(attendanceData);
-                    displayAttendanceSummary(attendanceData);
-                    showNotification(`Data absensi dimuat (${attendanceData.length} file)`, "success");
-                } else {
-                    showNotification("Gagal memuat data absensi", "error");
-                }
-                
-            } catch (error) {
-                console.error('Error loading attendance:', error);
-                loadAttendanceFromFallback();
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
+async function loadAttendanceData() {
+  const loading = document.getElementById('attendanceLoading');
+  const list = document.getElementById('attendanceList');
+  const summary = document.getElementById('attendanceSummary');
+  
+  loading.style.display = 'block';
+  list.innerHTML = '';
+  summary.style.display = 'none';
+  
+  try {
+    const result = await sendToBackend('listFiles', {
+      desaFilter: document.getElementById('attendanceDesaFilter').value,
+      monthFilter: document.getElementById('attendanceMonthFilter').value
+    });
+    
+    if (result.success) {
+      attendanceData = result.files || [];
+      displayAttendanceList(attendanceData);
+      displayAttendanceSummary(attendanceData);
+      showNotification(`✅ Data absensi dimuat (${attendanceData.length} file)`, "success");
+    } else {
+      showNotification("❌ Gagal memuat data absensi", "error");
+    }
+    
+  } catch (error) {
+    console.error('Error loading attendance:', error);
+    loadAttendanceFromFallback();
+  } finally {
+    loading.style.display = 'none';
+  }
+}
 
         function loadAttendanceFromFallback() {
             const list = document.getElementById('attendanceList');
