@@ -24,12 +24,277 @@
     <!-- External Libraries -->
     <script src="https://cdn.polyfill.io/v3/polyfill.min.js?features=default,es6,Promise,fetch,Array.prototype.includes"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* ================= SPLASH SCREEN STYLE ================= */
+        .splash-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000428, #004e92);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .splash-circle {
+            width: 180px;
+            height: 180px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto 25px;
+            animation: circlePulse 3s infinite alternate;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .logo-container {
+            width: 75%;
+            height: 75%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .svg-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(0, 168, 255, 0.6));
+            animation: logoFloat 4s infinite ease-in-out;
+        }
+        
+        .splash-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            text-shadow: 
+                0 0 10px #00a8ff,
+                0 0 20px #00a8ff,
+                0 0 30px #00a8ff;
+            animation: textGlow 2s infinite alternate;
+            line-height: 1.3;
+        }
+        
+        .splash-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+        
+        .splash-unit {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .audio-wave {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 45px;
+            margin: 25px 0;
+        }
+        
+        .wave-bar {
+            width: 6px;
+            height: 18px;
+            background: linear-gradient(to top, #00a8ff, #9c88ff, #ff6b9d);
+            margin: 0 2px;
+            border-radius: 3px;
+            animation: wave 1.2s infinite ease-in-out;
+            box-shadow: 0 0 5px rgba(0, 168, 255, 0.5);
+        }
+        
+        .loading-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-top: 20px;
+            position: relative;
+            letter-spacing: 1px;
+        }
+        
+        .loading-text::after {
+            content: '';
+            animation: loadingDots 1.5s infinite;
+        }
+        
+        /* Progress Container */
+        .splash-progress-container {
+            width: 300px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 15px auto;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .splash-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00a8ff, #9c88ff, #ff6b9d);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.7);
+            position: relative;
+        }
+        
+        /* Percentage Text */
+        .progress-percentage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            z-index: 2;
+        }
+        
+        /* Progress Glow Effect */
+        .splash-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
+            animation: progressGlow 2s infinite;
+        }
+        
+        /* Animations */
+        @keyframes circlePulse {
+            0% {
+                box-shadow: 
+                    0 0 20px rgba(0, 168, 255, 0.5),
+                    0 0 40px rgba(0, 168, 255, 0.3),
+                    inset 0 0 20px rgba(0, 168, 255, 0.1);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 
+                    0 0 30px rgba(156, 136, 255, 0.6),
+                    0 0 50px rgba(156, 136, 255, 0.4),
+                    inset 0 0 20px rgba(156, 136, 255, 0.2);
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes textGlow {
+            0% { 
+                text-shadow: 
+                    0 0 10px #00a8ff,
+                    0 0 20px #00a8ff,
+                    0 0 30px #00a8ff;
+            }
+            100% { 
+                text-shadow: 
+                    0 0 15px #9c88ff,
+                    0 0 30px #9c88ff,
+                    0 0 45px #9c88ff;
+                transform: translateY(-1px);
+            }
+        }
+        
+        @keyframes wave {
+            0%, 40%, 100% { 
+                transform: scaleY(0.4); 
+                opacity: 0.7;
+            }
+            20% { 
+                transform: scaleY(1.2); 
+                opacity: 1;
+            }
+        }
+        
+        @keyframes loadingDots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { 
+                transform: translateY(0) scale(1); 
+                filter: drop-shadow(0 0 8px rgba(0, 168, 255, 0.6));
+            }
+            50% { 
+                transform: translateY(-5px) scale(1.02); 
+                filter: drop-shadow(0 0 12px rgba(156, 136, 255, 0.8));
+            }
+        }
+        
+        @keyframes progressGlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        /* Staggered wave animation delays */
+        .wave-bar:nth-child(1) { animation-delay: -0.0s; }
+        .wave-bar:nth-child(2) { animation-delay: -0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: -0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: -0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: -0.4s; }
+        .wave-bar:nth-child(6) { animation-delay: -0.5s; }
+        .wave-bar:nth-child(7) { animation-delay: -0.6s; }
+        
+        /* ================= APP STYLE ================= */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #101415; color: #f5f5f5; padding: 20px; line-height: 1.5; }
-        .container { max-width: 600px; margin: auto; background: #202624; padding: 20px; border-radius: 10px; border: 2px solid #3a4f41; }
+        body { font-family: Arial, sans-serif; background: #101415; color: #f5f5f5; line-height: 1.5; overflow-x: hidden; }
+        
+        .container { 
+            display: none; /* Hidden by default, shown after splash */
+            max-width: 600px; 
+            margin: auto; 
+            background: #202624; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border: 2px solid #3a4f41;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         .header-container { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #3a4f41; }
         .header-image { height: 150px; width: 150px; border: 1px solid #3a4f41; border-radius: 5px; object-fit: contain; }
         .header-text { flex: 1; min-width: 0; }
@@ -82,65 +347,6 @@
         .attendance-actions { display: flex; gap: 10px; margin-top: 15px; }
         .attendance-actions button { flex: 1; margin-top: 0; padding: 10px; }
         
-        /* App-like Fullscreen Mode */
-        @media (display-mode: standalone) {
-            body {
-                padding: 0;
-                height: 100vh;
-                overflow: hidden;
-            }
-            .container {
-                border-radius: 0;
-                max-width: 100%;
-                min-height: 100vh;
-                margin: 0;
-                padding: 20px 15px;
-            }
-            /* Safe area for notches */
-            .container {
-                padding-top: env(safe-area-inset-top, 20px);
-                padding-bottom: env(safe-area-inset-bottom, 20px);
-                padding-left: env(safe-area-inset-left, 15px);
-                padding-right: env(safe-area-inset-right, 15px);
-            }
-        }
-        
-        /* Splash Screen */
-        .splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #2b4d2b 0%, #1d1f1d 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
-        }
-        
-        .splash-logo {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 20px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 50px;
-            color: #b2d8b2;
-        }
-        
-        .splash-text {
-            color: #9fd49f;
-            font-size: 18px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        
         /* Install Button */
         #installButton {
             position: fixed;
@@ -174,6 +380,9 @@
             button { padding: 10px; }
             .attendance-filters { flex-direction: column; }
             .attendance-actions { flex-direction: column; }
+            .splash-circle { width: 150px; height: 150px; }
+            .splash-title { font-size: 28px; }
+            .splash-progress-container { width: 250px; }
         }
         
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -181,23 +390,51 @@
     </style>
 </head>
 <body>
-    <!-- Splash Screen -->
-    <div id="splashScreen" class="splash-screen">
-        <div class="splash-logo">
-            <i class="fas fa-shield-alt"></i>
+    <!-- ================= SPLASH SCREEN ================= -->
+    <div id="splashScreen" class="splash-container">
+        <!-- PS2 Logo Circle dengan Logo Kodam Udayana -->
+        <div class="splash-circle">
+            <div class="logo-container">
+                <!-- LOGO KODAM UDAYANA dari link SVG -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Lambang_Kodam_Udayana.svg" 
+                     alt="Lambang Kodam Udayana" 
+                     class="svg-logo">
+            </div>
         </div>
-        <div class="splash-text">
-            DUKOPS BABINSA<br>
-            <small>Memuat aplikasi...</small>
+        
+        <!-- Teks Aplikasi -->
+        <div class="splash-title">DUKOPSBABINSA</div>
+        <div class="splash-unit">KORAMIL 1609-05/SUKASADA</div>
+        <div class="splash-subtitle">KODIM 1609/BULELENG</div>
+        
+        <!-- Progress Bar dengan Persentase -->
+        <div class="splash-progress-container">
+            <div class="splash-progress-bar" id="splashProgressBar"></div>
+            <div class="progress-percentage" id="progressPercentage">0%</div>
         </div>
+        
+        <!-- Audio Wave Animation -->
+        <div class="audio-wave">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+        </div>
+        
+        <!-- Loading Text -->
+        <div class="loading-text" id="loadingStatusText">Memuat Sistem</div>
     </div>
     
-    <!-- Install Button -->
-    <button id="installButton">
-        <i class="fas fa-download"></i> Install App
-    </button>
-    
-    <div class="container">
+    <!-- ================= APLIKASI UTAMA ================= -->
+    <div id="appContainer" class="container" style="display: none;">
+        <!-- Install Button -->
+        <button id="installButton">
+            <i class="fas fa-download"></i> Install App
+        </button>
+        
         <div style="width: 90%; margin: 0 auto; font-size: 12px;">
             <div class="header-container">
                 <img id="desaHeaderImage" src="https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true" alt="Header Desa" class="header-image" onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true'">
@@ -295,6 +532,82 @@
     </div>
 
     <script>
+        // ================= SPLASH SCREEN FUNCTIONS =================
+        function startSplashLoading() {
+            const progressBar = document.getElementById('splashProgressBar');
+            const progressText = document.getElementById('progressPercentage');
+            const statusText = document.getElementById('loadingStatusText');
+            const splashScreen = document.getElementById('splashScreen');
+            const appContainer = document.getElementById('appContainer');
+            
+            let progress = 0;
+            let isComplete = false;
+            
+            // Staging untuk simulasi loading
+            const loadingStages = [
+                { min: 0, max: 25, message: "Memuat sistem..." },
+                { min: 25, max: 50, message: "Menginisialisasi modul..." },
+                { min: 50, max: 75, message: "Menyiapkan antarmuka..." },
+                { min: 75, max: 90, message: "Memuat data..." },
+                { min: 90, max: 100, message: "Hampir selesai..." }
+            ];
+            
+            const loadingInterval = setInterval(() => {
+                // Increment progress dengan variasi acak
+                let increment = Math.random() * 3 + 1; // 1-4%
+                
+                // Untuk stage akhir, kurangi kecepatan
+                if (progress > 90) {
+                    increment = Math.random() * 1 + 0.5; // 0.5-1.5%
+                }
+                
+                progress += increment;
+                
+                // Cap di 100%
+                if (progress > 100) progress = 100;
+                
+                // Update progress bar
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+                
+                // Update status text berdasarkan stage
+                const currentStage = loadingStages.find(stage => 
+                    progress >= stage.min && progress <= stage.max
+                );
+                
+                if (currentStage && statusText.textContent !== currentStage.message) {
+                    statusText.textContent = currentStage.message;
+                }
+                
+                // Ketika mencapai 100%
+                if (progress >= 100 && !isComplete) {
+                    isComplete = true;
+                    clearInterval(loadingInterval);
+                    
+                    // Update teks final
+                    statusText.textContent = "✅ Sistem siap!";
+                    progressText.textContent = "100%";
+                    
+                    // Tunggu 500ms untuk efek, lalu fade out
+                    setTimeout(() => {
+                        splashScreen.classList.add('fade-out');
+                        
+                        // Setelah fade out selesai, tampilkan aplikasi
+                        setTimeout(() => {
+                            splashScreen.style.display = 'none';
+                            appContainer.style.display = 'block';
+                            
+                            // Initialize aplikasi
+                            initializeApp();
+                        }, 800); // Match dengan durasi fade-out
+                    }, 500);
+                }
+            }, 80); // Update setiap 80ms (lebih smooth)
+        }
+        
+        // Start splash screen segera setelah page load
+        window.addEventListener('load', startSplashLoading);
+        
         // ================= KONFIGURASI AMAN =================
         const GITHUB_API_URL = "https://api.github.com/repos/Koramil05/DUKOPS/contents/";
         const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
@@ -334,89 +647,89 @@
 
         // ================= FUNGSI BACKEND AMAN =================
         async function sendToBackend(action, data = {}) {
-  try {
-    // Untuk GET requests
-    if (action === 'listFiles' || action === 'getConfig' || action === 'test' || action === 'telegramTest') {
-      let url = `${GOOGLE_APPS_SCRIPT_WEBHOOK}?action=${action}`;
-      
-      // Tambahkan parameter untuk listFiles
-      if (action === 'listFiles') {
-        if (data.desaFilter) url += `&desaFilter=${encodeURIComponent(data.desaFilter)}`;
-        if (data.monthFilter) url += `&monthFilter=${encodeURIComponent(data.monthFilter)}`;
-      }
-      
-      const response = await fetch(url);
-      return await response.json();
-    }
-    // Untuk POST requests
-    else {
-      const formData = new FormData();
-      formData.append('action', action);
-      
-      // Tambahkan semua data ke formData
-      Object.keys(data).forEach(key => {
-        if (data[key] !== undefined && data[key] !== null) {
-          if (key === 'fileData' && typeof data[key] === 'string') {
-            formData.append(key, data[key]);
-          } else {
-            formData.append(key, String(data[key]));
-          }
+            try {
+                // Untuk GET requests
+                if (action === 'listFiles' || action === 'getConfig' || action === 'test' || action === 'telegramTest') {
+                    let url = `${GOOGLE_APPS_SCRIPT_WEBHOOK}?action=${action}`;
+                    
+                    // Tambahkan parameter untuk listFiles
+                    if (action === 'listFiles') {
+                        if (data.desaFilter) url += `&desaFilter=${encodeURIComponent(data.desaFilter)}`;
+                        if (data.monthFilter) url += `&monthFilter=${encodeURIComponent(data.monthFilter)}`;
+                    }
+                    
+                    const response = await fetch(url);
+                    return await response.json();
+                }
+                // Untuk POST requests
+                else {
+                    const formData = new FormData();
+                    formData.append('action', action);
+                    
+                    // Tambahkan semua data ke formData
+                    Object.keys(data).forEach(key => {
+                        if (data[key] !== undefined && data[key] !== null) {
+                            if (key === 'fileData' && typeof data[key] === 'string') {
+                                formData.append(key, data[key]);
+                            } else {
+                                formData.append(key, String(data[key]));
+                            }
+                        }
+                    });
+                    
+                    const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    return await response.json();
+                }
+            } catch (error) {
+                console.error(`Error in ${action}:`, error);
+                return { success: false, error: error.message };
+            }
         }
-      });
-      
-      const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
-        method: 'POST',
-        body: formData
-      });
-      
-      return await response.json();
-    }
-  } catch (error) {
-    console.error(`Error in ${action}:`, error);
-    return { success: false, error: error.message };
-  }
-}
 
-async function uploadToGoogleDrive(zipBlob, zipFileName, desaName, date) {
-  try {
-    const base64Data = await blobToBase64(zipBlob);
-    const desaInfo = normalizeDesaName(desaName);
-    
-    const result = await sendToBackend('uploadDrive', {
-      fileName: zipFileName,
-      desaName: desaInfo.cleanName,
-      fileData: base64Data,
-      year: date.getFullYear().toString(),
-      month: date.toLocaleDateString('id-ID', { month: 'long' }),
-      desa: desaInfo.cleanName,
-      mimeType: 'application/zip'
-    });
-    
-    return result.success === true;
-  } catch (error) {
-    console.error('Error upload ke Drive:', error);
-    return false;
-  }
-}
+        async function uploadToGoogleDrive(zipBlob, zipFileName, desaName, date) {
+            try {
+                const base64Data = await blobToBase64(zipBlob);
+                const desaInfo = normalizeDesaName(desaName);
+                
+                const result = await sendToBackend('uploadDrive', {
+                    fileName: zipFileName,
+                    desaName: desaInfo.cleanName,
+                    fileData: base64Data,
+                    year: date.getFullYear().toString(),
+                    month: date.toLocaleDateString('id-ID', { month: 'long' }),
+                    desa: desaInfo.cleanName,
+                    mimeType: 'application/zip'
+                });
+                
+                return result.success === true;
+            } catch (error) {
+                console.error('Error upload ke Drive:', error);
+                return false;
+            }
+        }
 
-async function sendZipToTelegram(zipBlob, filename, desaName) {
-  try {
-    const base64Data = await blobToBase64(zipBlob);
-    const desaInfo = normalizeDesaName(desaName);
-    
-    const result = await sendToBackend('sendTelegram', {
-      fileName: filename,
-      desaName: desaInfo.cleanName,
-      fileData: base64Data,
-      mimeType: 'application/zip'
-    });
-    
-    return result.success === true;
-  } catch (error) {
-    console.error('Error send to Telegram:', error);
-    return false;
-  }
-}
+        async function sendZipToTelegram(zipBlob, filename, desaName) {
+            try {
+                const base64Data = await blobToBase64(zipBlob);
+                const desaInfo = normalizeDesaName(desaName);
+                
+                const result = await sendToBackend('sendTelegram', {
+                    fileName: filename,
+                    desaName: desaInfo.cleanName,
+                    fileData: base64Data,
+                    mimeType: 'application/zip'
+                });
+                
+                return result.success === true;
+            } catch (error) {
+                console.error('Error send to Telegram:', error);
+                return false;
+            }
+        }
 
         // Helper function
         async function blobToBase64(blob) {
@@ -427,15 +740,8 @@ async function sendZipToTelegram(zipBlob, filename, desaName) {
             });
         }
 
-        // ================= INISIALISASI =================
-        function initialize() {
-            setTimeout(() => {
-                document.getElementById('splashScreen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('splashScreen').style.display = 'none';
-                }, 500);
-            }, 1500);
-            
+        // ================= INISIALISASI APLIKASI =================
+        function initializeApp() {
             initializeCounter();
             loadDesaList();
             loadLastSubmittedDates();
@@ -454,6 +760,11 @@ async function sendZipToTelegram(zipBlob, filename, desaName) {
             
             setupInstallPrompt();
             setupHapticFeedback();
+            
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('✅ Sistem DUKOPS BABINSA siap digunakan!', 'success');
+            }, 1000);
         }
 
         // ================= PWA INSTALL =================
@@ -1180,37 +1491,37 @@ async function sendZipToTelegram(zipBlob, filename, desaName) {
             }
         }
 
-async function loadAttendanceData() {
-  const loading = document.getElementById('attendanceLoading');
-  const list = document.getElementById('attendanceList');
-  const summary = document.getElementById('attendanceSummary');
-  
-  loading.style.display = 'block';
-  list.innerHTML = '';
-  summary.style.display = 'none';
-  
-  try {
-    const result = await sendToBackend('listFiles', {
-      desaFilter: document.getElementById('attendanceDesaFilter').value,
-      monthFilter: document.getElementById('attendanceMonthFilter').value
-    });
-    
-    if (result.success) {
-      attendanceData = result.files || [];
-      displayAttendanceList(attendanceData);
-      displayAttendanceSummary(attendanceData);
-      showNotification(`✅ Data absensi dimuat (${attendanceData.length} file)`, "success");
-    } else {
-      showNotification("❌ Gagal memuat data absensi", "error");
-    }
-    
-  } catch (error) {
-    console.error('Error loading attendance:', error);
-    loadAttendanceFromFallback();
-  } finally {
-    loading.style.display = 'none';
-  }
-}
+        async function loadAttendanceData() {
+            const loading = document.getElementById('attendanceLoading');
+            const list = document.getElementById('attendanceList');
+            const summary = document.getElementById('attendanceSummary');
+            
+            loading.style.display = 'block';
+            list.innerHTML = '';
+            summary.style.display = 'none';
+            
+            try {
+                const result = await sendToBackend('listFiles', {
+                    desaFilter: document.getElementById('attendanceDesaFilter').value,
+                    monthFilter: document.getElementById('attendanceMonthFilter').value
+                });
+                
+                if (result.success) {
+                    attendanceData = result.files || [];
+                    displayAttendanceList(attendanceData);
+                    displayAttendanceSummary(attendanceData);
+                    showNotification(`✅ Data absensi dimuat (${attendanceData.length} file)`, "success");
+                } else {
+                    showNotification("❌ Gagal memuat data absensi", "error");
+                }
+                
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                loadAttendanceFromFallback();
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
 
         function loadAttendanceFromFallback() {
             const list = document.getElementById('attendanceList');
@@ -1464,7 +1775,7 @@ async function loadAttendanceData() {
                 
                 sortedDesas.forEach((desaName, index) => {
                     const group = desaGroups[desaName];
-                    const status = group.count >= TARGET_LAPORAN ? "✅ COMPLETE" : "⏳ BELUM";
+                    const status = group.count >= TARGET_LAPORAN ? "✅ TUNTAS" : "⏳ BELUM";
                     const lastDate = group.latestDate.toLocaleDateString('id-ID');
                     
                     txtContent += `\n${index + 1}. ${desaName}\n`;
@@ -1483,9 +1794,9 @@ async function loadAttendanceData() {
                 txtContent += "=".repeat(50) + "\n";
                 txtContent += `Total Desa        : ${uniqueDesas}\n`;
                 txtContent += `Total Laporan     : ${totalReports}\n`;
-                txtContent += `Desa Complete       : ${completedDesas}\n`;
-                txtContent += `Desa Belum Complete : ${uniqueDesas - completedDesas}\n`;
-                txtContent += `Persentase Complete : ${completionRate}%\n\n`;
+                txtContent += `Desa Tuntas       : ${completedDesas}\n`;
+                txtContent += `Desa Belum Tuntas : ${uniqueDesas - completedDesas}\n`;
+                txtContent += `Persentase Tuntas : ${completionRate}%\n\n`;
                 
                 txtContent += "-".repeat(50) + "\n";
                 txtContent += "DETAIL LAPORAN:\n";
@@ -1512,7 +1823,7 @@ async function loadAttendanceData() {
                 txtContent += "\n" + "=".repeat(50) + "\n";
                 txtContent += "CATATAN:\n";
                 txtContent += "- Target per desa: 9 laporan per bulan\n";
-                txtContent += "- Deevloper: Serka I Nyoman Arta\n";
+                txtContent += "- Sistem by: Serka I Nyoman Arta\n";
                 txtContent += "=".repeat(50);
                 
                 const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
@@ -1548,13 +1859,6 @@ async function loadAttendanceData() {
             const desaInfo = normalizeDesaName(desaName);
             const imageName = desaInfo.normalized.toLowerCase().replace(/\s+/g, '_');
             headerImage.src = `https://github.com/Koramil05/DUKOPS/blob/main/bnr_${imageName}.png?raw=true`;
-        }
-
-        // ================= START =================
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initialize);
-        } else {
-            initialize();
         }
     </script>
 </body>
