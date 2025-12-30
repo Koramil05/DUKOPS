@@ -1464,7 +1464,7 @@ async function loadAttendanceData() {
                 
                 sortedDesas.forEach((desaName, index) => {
                     const group = desaGroups[desaName];
-                    const status = group.count >= TARGET_LAPORAN ? "✅ TUNTAS" : "⏳ BELUM";
+                    const status = group.count >= TARGET_LAPORAN ? "✅ COMPLETE" : "⏳ BELUM";
                     const lastDate = group.latestDate.toLocaleDateString('id-ID');
                     
                     txtContent += `\n${index + 1}. ${desaName}\n`;
@@ -1483,9 +1483,9 @@ async function loadAttendanceData() {
                 txtContent += "=".repeat(50) + "\n";
                 txtContent += `Total Desa        : ${uniqueDesas}\n`;
                 txtContent += `Total Laporan     : ${totalReports}\n`;
-                txtContent += `Desa Tuntas       : ${completedDesas}\n`;
-                txtContent += `Desa Belum Tuntas : ${uniqueDesas - completedDesas}\n`;
-                txtContent += `Persentase Tuntas : ${completionRate}%\n\n`;
+                txtContent += `Desa Complete       : ${completedDesas}\n`;
+                txtContent += `Desa Belum Complete : ${uniqueDesas - completedDesas}\n`;
+                txtContent += `Persentase Complete : ${completionRate}%\n\n`;
                 
                 txtContent += "-".repeat(50) + "\n";
                 txtContent += "DETAIL LAPORAN:\n";
@@ -1512,7 +1512,7 @@ async function loadAttendanceData() {
                 txtContent += "\n" + "=".repeat(50) + "\n";
                 txtContent += "CATATAN:\n";
                 txtContent += "- Target per desa: 9 laporan per bulan\n";
-                txtContent += "- Sistem by: Serka I Nyoman Arta\n";
+                txtContent += "- Deevloper: Serka I Nyoman Arta\n";
                 txtContent += "=".repeat(50);
                 
                 const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
