@@ -7,11 +7,8 @@ Gitgit
 Panji
 Sukasada
 Pancasari
-Kayuputih
-Banyuatis
-Banyuseri
 Wanagiri
-Tamblang
+
 
 # Untuk menambah desa baru:
 # 1. Tambah nama desa di bawah ini
