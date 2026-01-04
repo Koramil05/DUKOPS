@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DUKOPS">
-    <title>Sistem Pelaporan DUKOPS BABINSA</title>
+    <title>SISTEM PELAPORAN DUKOPS BABINSA dan JADWAL PIKET KORAMIL SUKASADA</title>
     <meta name="theme-color" content="#202624">
     
     <!-- ========== FAVICON ========== -->
@@ -108,38 +108,62 @@
             text-transform: uppercase;
         }
         
-        .audio-wave {
+        /* Tombol Pilihan di Splash Screen */
+        .splash-buttons {
             display: flex;
-            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 500px;
+            padding: 0 20px;
+        }
+        
+        .splash-btn {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
             align-items: center;
-            height: 45px;
-            margin: 25px 0;
-        }
-        
-        .wave-bar {
-            width: 6px;
-            height: 18px;
-            background: linear-gradient(to top, #00a8ff, #9c88ff, #ff6b9d);
-            margin: 0 2px;
-            border-radius: 3px;
-            animation: wave 1.2s infinite ease-in-out;
-            box-shadow: 0 0 5px rgba(0, 168, 255, 0.5);
-        }
-        
-        .loading-text {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            margin-top: 20px;
-            position: relative;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
         
-        .loading-text::after {
-            content: '';
-            animation: loadingDots 1.5s infinite;
+        .splash-btn i {
+            font-size: 20px;
         }
         
-        /* Progress Container */
+        .splash-btn-dukops {
+            background: linear-gradient(135deg, #2b4d2b, #3e704a);
+            color: white;
+            border: 2px solid #4CAF50;
+        }
+        
+        .splash-btn-jadwal {
+            background: linear-gradient(135deg, #006600, #008800);
+            color: white;
+            border: 2px solid #4dff4d;
+        }
+        
+        .splash-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .splash-btn-dukops:hover {
+            background: linear-gradient(135deg, #3e704a, #4CAF50);
+        }
+        
+        .splash-btn-jadwal:hover {
+            background: linear-gradient(135deg, #008800, #00aa00);
+        }
+        
         .splash-progress-container {
             width: 300px;
             height: 20px;
@@ -178,21 +202,6 @@
             z-index: 2;
         }
         
-        /* Progress Glow Effect */
-        .splash-progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.4), 
-                transparent);
-            animation: progressGlow 2s infinite;
-        }
-        
         /* Animations */
         @keyframes circlePulse {
             0% {
@@ -227,24 +236,6 @@
             }
         }
         
-        @keyframes wave {
-            0%, 40%, 100% { 
-                transform: scaleY(0.4); 
-                opacity: 0.7;
-            }
-            20% { 
-                transform: scaleY(1.2); 
-                opacity: 1;
-            }
-        }
-        
-        @keyframes loadingDots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
-        }
-        
         @keyframes logoFloat {
             0%, 100% { 
                 transform: translateY(0) scale(1); 
@@ -256,29 +247,55 @@
             }
         }
         
-        @keyframes progressGlow {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
         .fade-out {
             opacity: 0;
             transform: scale(0.95);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
         
-        /* Staggered wave animation delays */
-        .wave-bar:nth-child(1) { animation-delay: -0.0s; }
-        .wave-bar:nth-child(2) { animation-delay: -0.1s; }
-        .wave-bar:nth-child(3) { animation-delay: -0.2s; }
-        .wave-bar:nth-child(4) { animation-delay: -0.3s; }
-        .wave-bar:nth-child(5) { animation-delay: -0.4s; }
-        .wave-bar:nth-child(6) { animation-delay: -0.5s; }
-        .wave-bar:nth-child(7) { animation-delay: -0.6s; }
-        
         /* ================= APP STYLE ================= */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, sans-serif; background: #101415; color: #f5f5f5; line-height: 1.5; overflow-x: hidden; }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 0 5px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 12px 15px;
+            background: #2b4d2b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: #3e704a;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.active {
+            background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+        
+        .nav-btn i {
+            font-size: 16px;
+        }
         
         .container { 
             display: none; /* Hidden by default, shown after splash */
@@ -384,19 +401,172 @@
             .splash-circle { width: 150px; height: 150px; }
             .splash-title { font-size: 28px; }
             .splash-progress-container { width: 250px; }
+            .nav-buttons { flex-direction: column; }
+            .nav-btn { padding: 10px; }
+            .splash-buttons { flex-direction: column; }
+            .splash-btn { padding: 12px; }
         }
         
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .fa-spin { animation: spin 1s infinite linear; }
+        
+        /* Jadwal Piket Container */
+        #jadwalPiketContainer {
+            display: none;
+            background: #003300;
+            color: #e6ffe6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .jadwal-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4dff4d;
+        }
+        
+        .jadwal-title {
+            color: #4dff4d;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .jadwal-logo {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            border-radius: 8px;
+            border: 2px solid #4dff4d;
+            margin-bottom: 15px;
+        }
+        
+        .jadwal-section {
+            background: rgba(0, 60, 0, 0.7);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .jadwal-section h3 {
+            margin: 10px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .section-title-koramil { color: #4dff4d; }
+        .section-title-kediaman { color: #ffcc00; }
+        .section-title-makodim { color: #00ccff; }
+        
+        .jadwal-btn {
+            background: #006600;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            border: 1px solid #4dff4d;
+        }
+        
+        .jadwal-btn:hover {
+            background: #008800;
+        }
+        
+        .jadwal-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 80, 0, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 80%;
+            text-align: center;
+        }
+        
+        .jadwal-toast.show {
+            opacity: 1;
+        }
+        
+        /* Row untuk jadwal piket */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .col {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Telegram group selector */
+        .telegram-group-selector {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 80, 0, 0.5);
+            border-radius: 5px;
+            border-left: 3px solid #0088cc;
+        }
+        
+        .telegram-group-selector label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #00ccff;
+        }
+        
+        .telegram-group-selector select {
+            background-color: rgba(0, 40, 0, 0.8);
+            color: #e6ffe6;
+            border: 1px solid #0088cc;
+        }
+        
+        .share-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .share-icons i {
+            font-size: 24px;
+        }
+        
+        .section-content {
+            display: block;
+        }
+        
+        @media screen and (min-width: 601px) {
+            .section-content {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .section-content > div {
+                flex: 1;
+                min-width: 250px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- ================= SPLASH SCREEN ================= -->
     <div id="splashScreen" class="splash-container">
-        <!-- PS2 Logo Circle dengan Logo Kodam Udayana -->
+        <!-- Logo Kodam Udayana -->
         <div class="splash-circle">
             <div class="logo-container">
-                <!-- LOGO KODAM UDAYANA dari link SVG -->
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Lambang_Kodam_Udayana.svg" 
                      alt="Lambang Kodam Udayana" 
                      class="svg-logo">
@@ -404,29 +574,28 @@
         </div>
         
         <!-- Teks Aplikasi -->
-        <div class="splash-title">DUKOPSBABINSA</div>
+        <div class="splash-title">DUKOPS BABINSA dan JADWAL PIKET</div>
         <div class="splash-unit">KORAMIL 1609-05/SUKASADA</div>
         <div class="splash-subtitle">KODIM 1609/BULELENG</div>
         
-        <!-- Progress Bar dengan Persentase -->
+        <!-- Progress Bar -->
         <div class="splash-progress-container">
             <div class="splash-progress-bar" id="splashProgressBar"></div>
             <div class="progress-percentage" id="progressPercentage">0%</div>
         </div>
         
-        <!-- Audio Wave Animation -->
-        <div class="audio-wave">
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
+        <!-- Tombol Pilihan Aplikasi -->
+        <div class="splash-buttons">
+            <button class="splash-btn splash-btn-dukops" id="splashDukopsBtn" onclick="loadDukopsApp()">
+                <i class="fas fa-file-upload"></i> DUKOPS BABINSA
+            </button>
+            <button class="splash-btn splash-btn-jadwal" id="splashJadwalBtn" onclick="loadJadwalApp()">
+                <i class="fas fa-calendar-alt"></i> JADWAL PIKET KORAMIL
+            </button>
         </div>
         
         <!-- Loading Text -->
-        <div class="loading-text" id="loadingStatusText">Memuat Sistem</div>
+        <div class="loading-text" id="loadingStatusText">Pilih aplikasi yang akan digunakan</div>
     </div>
     
     <!-- ================= APLIKASI UTAMA ================= -->
@@ -436,100 +605,275 @@
             <i class="fas fa-download"></i> Install App
         </button>
         
-        <div style="width: 90%; margin: 0 auto; font-size: 12px;">
-            <div class="header-container">
-                <img id="desaHeaderImage" src="https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true" alt="Header Desa" class="header-image" onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true'">
-                <div class="header-text">
-                    <div class="header-title">DUKOPS BABINSA</div>
-                    <div class="header-title">KORAMIL 1609-05/SUKASADA</div>
-                    <div class="header-subtitle">Jl. Jelantik Gingsir No. 32 Sukasada Singaraja-Bali 81161</div>
-                    <div><div class="counter-value" id="submissionCounter">0</div></div>
-                </div>
-            </div>
-            
-            <label><i class="fas fa-village"></i> Pilih Desa:</label>
-            <select id="selectDesa" onchange="loadSelectedDesa()">
-                <option value="">-- Pilih Desa --</option>
-            </select>
-            <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...</div>
-            <div class="previewBox" id="previewDesa"></div>
-
-            <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
-            <div class="previewBox" id="previewKordinat"></div>
-
-            <label><i class="fas fa-camera"></i> Foto Kegiatan:</label>
-            <input type="file" id="gambar" accept="image/*" onchange="previewImage()">
-            <div class="previewBox" id="previewGambar"></div>
-
-            <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
-            <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
-            <div class="previewBox" id="previewTanggal"></div>
-
-            <label><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
-            <textarea id="narasi" rows="4" placeholder="Masukkan narasi kegiatan..." oninput="checkInputCompletion()"></textarea>
-
-            <canvas id="canvas"></canvas>
-
-            <button id="submitBtn" onclick="processSubmission()" disabled>
-                <i class="fas fa-download"></i> DOWNLOAD & <i class="fas fa-paper-plane"></i> KIRIM & <i class="fab fa-google-drive"></i> DRIVE
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button class="nav-btn active" id="btnDukops" onclick="showDukops()">
+                <i class="fas fa-file-upload"></i> DUKOPS
             </button>
-            <button id="resetBtn" onclick="resetAll()"><i class="fas fa-redo"></i> Reset Semua Data</button>
-            
-            <button id="showAttendanceBtn" onclick="showAttendance()">
-                <i class="fas fa-chart-bar"></i> TAMPILKAN LAPORAN
+            <button class="nav-btn" id="btnJadwal" onclick="showJadwalPiket()">
+                <i class="fas fa-calendar-alt"></i> JADWAL PIKET
             </button>
-
-            <div id="attendancePanel" style="display: none;">
-                <div class="attendance-header">
-                    <h3 style="color: #9fd49f; margin: 0;"><i class="fas fa-file-alt"></i> LAPORAN TERKIRIM</h3>
-                    <button onclick="hideAttendance()" style="background: transparent; border: none; color: #f5f5f5; cursor: pointer; font-size: 20px;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                    
-                <div class="attendance-filters">
-                    <select id="attendanceDesaFilter" onchange="loadAttendanceData()">
-                        <option value="">Semua Desa</option>
-                    </select>
-                    <input type="month" id="attendanceMonthFilter" onchange="loadAttendanceData()">
-                </div>                
-                
-                <div id="attendanceLoading" style="display: none; text-align: center; padding: 20px;">
-                    <i class="fas fa-spinner fa-spin"></i> 🪖 Sistem sedang menyiapkan laporan...
-                </div>
-                
-                <div id="attendanceSummary" class="attendance-summary" style="display: none;">
-                    <div class="summary-row">
-                        <span>Total Laporan:</span>
-                        <span id="totalReports" style="font-weight: bold; color: #9fd49f;">0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Total Desa:</span>
-                        <span id="totalDesa" style="font-weight: bold; color: #9fd49f;">0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Pencapaian Target:</span>
-                        <span id="targetStatus" style="font-weight: bold;">0%</span>
-                    </div>
-                    <div class="progress-container">
-                        <div id="progressBar" class="progress-bar"></div>
-                    </div>
-                </div>
-                
-                <div id="attendanceList" style="max-height: 400px; overflow-y: auto;"></div>
-                
-                <div class="attendance-actions">
-                    <button onclick="refreshAttendanceData()" style="background: #3a4f41;">
-                        <i class="fas fa-sync-alt"></i> Refresh Data
-                    </button>
-                    <button onclick="downloadAttendanceReport()" style="background: #2b4d2b;">
-                        <i class="fas fa-download"></i> Download Laporan
-                    </button>
-                </div>
-            </div>
-
-            <div id="logTerkirim"></div>
         </div>
+        
+        <!-- DUKOPS Content -->
+        <div id="dukopsContent">
+            <div style="width: 90%; margin: 0 auto; font-size: 12px;">
+                <div class="header-container">
+                    <img id="desaHeaderImage" src="https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true" alt="Header Desa" class="header-image" onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true'">
+                    <div class="header-text">
+                        <div class="header-title">DUKOPS BABINSA</div>
+                        <div class="header-title">KORAMIL 1609-05/SUKASADA</div>
+                        <div class="header-subtitle">Jl. Jelantik Gingsir No. 32 Sukasada Singaraja-Bali 81161</div>
+                        <div><div class="counter-value" id="submissionCounter">0</div></div>
+                    </div>
+                </div>
+                
+                <label><i class="fas fa-village"></i> Pilih Desa:</label>
+                <select id="selectDesa" onchange="loadSelectedDesa()">
+                    <option value="">-- Pilih Desa --</option>
+                </select>
+                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...</div>
+                <div class="previewBox" id="previewDesa"></div>
+
+                <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
+                <div class="previewBox" id="previewKordinat"></div>
+
+                <label><i class="fas fa-camera"></i> Foto Kegiatan:</label>
+                <input type="file" id="gambar" accept="image/*" onchange="previewImage()">
+                <div class="previewBox" id="previewGambar"></div>
+
+                <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
+                <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
+                <div class="previewBox" id="previewTanggal"></div>
+
+                <label><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
+                <textarea id="narasi" rows="4" placeholder="Masukkan narasi kegiatan..." oninput="checkInputCompletion()"></textarea>
+
+                <canvas id="canvas"></canvas>
+
+                <button id="submitBtn" onclick="processSubmission()" disabled>
+                    <i class="fas fa-download"></i> DOWNLOAD & <i class="fas fa-paper-plane"></i> KIRIM & <i class="fab fa-google-drive"></i> DRIVE
+                </button>
+                <button id="resetBtn" onclick="resetAll()"><i class="fas fa-redo"></i> Reset Semua Data</button>
+                
+                <button id="showAttendanceBtn" onclick="showAttendance()">
+                    <i class="fas fa-chart-bar"></i> TAMPILKAN LAPORAN
+                </button>
+
+                <div id="attendancePanel" style="display: none;">
+                    <div class="attendance-header">
+                        <h3 style="color: #9fd49f; margin: 0;"><i class="fas fa-file-alt"></i> LAPORAN TERKIRIM</h3>
+                        <button onclick="hideAttendance()" style="background: transparent; border: none; color: #f5f5f5; cursor: pointer; font-size: 20px;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                        
+                    <div class="attendance-filters">
+                        <select id="attendanceDesaFilter" onchange="loadAttendanceData()">
+                            <option value="">Semua Desa</option>
+                        </select>
+                        <input type="month" id="attendanceMonthFilter" onchange="loadAttendanceData()">
+                    </div>                
+                    
+                    <div id="attendanceLoading" style="display: none; text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin"></i> 🪖 Sistem sedang menyiapkan laporan...
+                    </div>
+                    
+                    <div id="attendanceSummary" class="attendance-summary" style="display: none;">
+                        <div class="summary-row">
+                            <span>Total Laporan:</span>
+                            <span id="totalReports" style="font-weight: bold; color: #9fd49f;">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Desa:</span>
+                            <span id="totalDesa" style="font-weight: bold; color: #9fd49f;">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Pencapaian Target:</span>
+                            <span id="targetStatus" style="font-weight: bold;">0%</span>
+                        </div>
+                        <div class="progress-container">
+                            <div id="progressBar" class="progress-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="attendanceList" style="max-height: 400px; overflow-y: auto;"></div>
+                    
+                    <div class="attendance-actions">
+                        <button onclick="refreshAttendanceData()" style="background: #3a4f41;">
+                            <i class="fas fa-sync-alt"></i> Refresh Data
+                        </button>
+                        <button onclick="downloadAttendanceReport()" style="background: #2b4d2b;">
+                            <i class="fas fa-download"></i> Download Laporan
+                        </button>
+                    </div>
+                </div>
+
+                <div id="logTerkirim"></div>
+            </div>
+        </div>
+        
+        <!-- Jadwal Piket Content -->
+        <div id="jadwalPiketContainer" style="display: none;">
+            <div class="jadwal-header">
+                <h1 class="jadwal-title">JADWAL PIKET</h1>
+                <div class="app-logo-container">
+                    <img src="https://github.com/Koramil05/JADWAL/raw/main/LOGO%20KOREM163%20Wirasatya.png"
+                         alt="Logo Korem 163 Wirasatya" class="jadwal-logo">
+                </div>
+                <p>KORAMIL 1609-05/SUKASADA<br>Kodim 1609/Buleleng</p>
+            </div>
+            
+            <button class="jadwal-btn" onclick="resetJadwalData()">
+                <i class="fas fa-sync-alt"></i> MUAT ULANG DATA
+            </button>
+            
+            <!-- KORAMIL -->
+            <div class="jadwal-section">
+                <div class="section-title">
+                    <h2 class="section-title-koramil"><i class="fas fa-users"></i> Piket Koramil</h2>
+                </div>
+                <div class="section-content">
+                    <div>
+                        <h3 class="section-title-koramil">PIKET KORAMIL HARI INI</h3>
+                        <div class="row">
+                            <div class="col">
+                                <select id="j_nama1a">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select id="j_nama1b">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="section-title-koramil">PIKET KORAMIL BESOK</h3>
+                        <div class="row">
+                            <div class="col">
+                                <select id="j_nama2a">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select id="j_nama2b">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KEDIAMAN -->
+            <div class="jadwal-section">
+                <div class="section-title">
+                    <h2 class="section-title-kediaman"><i class="fas fa-home"></i> Jaga Kediaman</h2>
+                </div>
+                <div class="section-content">
+                    <div>
+                        <h3 class="section-title-kediaman">JAGA KEDIAMAN HARI INI</h3>
+                        <div class="row">
+                            <div class="col">
+                                <select id="j_nama3a">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select id="j_nama3b">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="section-title-kediaman">JAGA KEDIAMAN BESOK</h3>
+                        <div class="row">
+                            <div class="col">
+                                <select id="j_nama3c">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select id="j_nama3d">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MAKODIM -->
+            <div class="jadwal-section">
+                <div class="section-title">
+                    <h2 class="section-title-makodim"><i class="fas fa-building"></i> Piket Makodim</h2>
+                </div>
+                <div class="section-content">
+                    <div>
+                        <h3 class="section-title-makodim">PIKET MAKODIM HARI INI</h3>
+                        <div class="row">
+                            <div class="col">
+                                <select id="j_nama4a">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select id="j_nama4b">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="section-title-makodim">PIKET MAKODIM BESOK</h3>
+                        <div class="row">
+                            <div class="col">
+                                <select id="j_nama4c">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select id="j_nama4d">
+                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Telegram Group Selector -->
+            <div class="telegram-group-selector">
+                <label for="j_telegramGroupSelect"><i class="fab fa-telegram"></i> Group Telegram Tujuan:</label>
+                <select id="j_telegramGroupSelect">
+                    <option value="-1003020813628" selected>Group koramil (ID: -1003020813628)</option>
+                </select>
+            </div>
+            
+            <!-- Tombol untuk mengirim pesan ke WhatsApp dan Telegram -->
+            <button class="jadwal-btn" style="background: linear-gradient(135deg, #25D366 50%, #0088cc 50%);" onclick="shareJadwalToBothPlatforms()">
+                <div class="share-icons">
+                    <i class="fab fa-whatsapp"></i>
+                    <i class="fab fa-telegram"></i>
+                </div>
+                KIRIM KE WHATSAPP & TELEGRAM GROUP
+            </button>
+
+            <!-- PREVIEW PESAN -->
+            <div class="jadwal-section">
+                <textarea id="j_hasilPesan" readonly placeholder="Preview pesan akan muncul di sini setelah memilih nama..."></textarea>
+            </div>
+            
+            <div class="app-loading" id="j_loadingIndicator">
+                <i class="fas fa-spinner fa-spin"></i> Memuat data...
+            </div>
+        </div>
+        
+        <!-- Toast Notification for Jadwal Piket -->
+        <div class="jadwal-toast" id="j_toastNotification"></div>
     </div>
 
     <script>
@@ -537,6 +881,12 @@
 const GITHUB_API_URL = "https://api.github.com/repos/Koramil05/DUKOPS/contents/";
 const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
 const TARGET_LAPORAN = 9;
+
+// KONFIGURASI JADWAL PIKET (pakai backend yang sama)
+const GITHUB_URLS = {
+    HANPANGAN: "https://raw.githubusercontent.com/Koramil05/JADWAL/main/hanpangan.txt",
+    PIKET: "https://raw.githubusercontent.com/Koramil05/JADWAL/main/piket.txt"
+};
 
 // ================= VARIABEL GLOBAL =================
 let img = new Image();
@@ -550,53 +900,32 @@ let desaCounter = {};
 let attendanceData = [];
 let deferredPrompt = null;
 
-// ================= FUNGSI UTAMA =================
-function normalizeDesaName(desaName) {
-    if (!desaName) return { original: "", normalized: "", forTelegram: "", cleanName: "" };
-    
-    let normalized = desaName;
-    normalized = normalized.replace(/^Desa\s+/i, '');
-    normalized = normalized.replace(/^Kelurahan\s+/i, '');
-    normalized = normalized.replace(/Kel\.\s*/gi, '');
-    normalized = normalized.replace(/Kel\s/gi, '');
-    normalized = normalized.trim();
-    const forTelegram = normalized.replace(/_/g, ' ');
-    
-    return {
-        original: desaName,
-        normalized: normalized,
-        forTelegram: forTelegram,
-        cleanName: forTelegram.trim()
-    };
-}
+// Variabel untuk Jadwal Piket
+let JadwalData = {
+    daftarNama: [],
+    daftarHanpangan: [],
+    currentHanpangan: ""
+};
 
-// ================= SPLASH SCREEN YANG DIPERBAIKI =================
+// Variabel status aplikasi
+let currentApp = null; // 'dukops' atau 'jadwal'
+
+// ================= SPLASH SCREEN FUNCTIONS =================
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🚀 DOM Content Loaded");
     
     const splashScreen = document.getElementById('splashScreen');
-    const appContainer = document.getElementById('appContainer');
+    const progressBar = document.getElementById('splashProgressBar');
+    const progressText = document.getElementById('progressPercentage');
+    const statusText = document.getElementById('loadingStatusText');
     
-    // Fallback jika elemen tidak ditemukan
     if (!splashScreen) {
         console.error("❌ Splash screen element not found!");
-        if (appContainer) {
-            appContainer.style.display = 'block';
-            initializeApp();
-        }
-        return;
-    }
-    
-    if (!appContainer) {
-        console.error("❌ App container not found!");
         return;
     }
     
     // Variabel progress
     let progress = 0;
-    const progressBar = document.getElementById('splashProgressBar');
-    const progressText = document.getElementById('progressPercentage');
-    const statusText = document.getElementById('loadingStatusText');
     
     // Fungsi untuk update progress
     function updateProgress(value, message) {
@@ -617,21 +946,20 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`Progress: ${progress}% - ${message}`);
     }
     
-    // Simulasi loading dengan 5 tahap
+    // Simulasi loading dengan 3 tahap
     const loadingStages = [
-        {percent: 20, message: "Memuat sistem..."},
-        {percent: 40, message: "Menginisialisasi..."},
-        {percent: 60, message: "Menyiapkan data..."},
-        {percent: 80, message: "Memuat konfigurasi..."},
-        {percent: 100, message: "✅ Siap!"}
+        {percent: 33, message: "Memuat sistem..."},
+        {percent: 66, message: "Menyiapkan aplikasi..."},
+        {percent: 100, message: "Pilih aplikasi yang akan digunakan"}
     ];
     
     let currentStage = 0;
     
     function loadNextStage() {
         if (currentStage >= loadingStages.length) {
-            // Selesai loading
-            completeLoading();
+            // Selesai loading, tampilkan tombol
+            document.getElementById('splashDukopsBtn').style.opacity = '1';
+            document.getElementById('splashJadwalBtn').style.opacity = '1';
             return;
         }
         
@@ -644,42 +972,140 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(loadNextStage, 800);
     }
     
-    function completeLoading() {
-        console.log("✅ Loading complete");
-        
-        // Fade out splash screen
-        splashScreen.style.opacity = '0';
-        splashScreen.style.transition = 'opacity 0.8s ease';
-        
-        setTimeout(() => {
-            splashScreen.style.display = 'none';
-            appContainer.style.display = 'block';
-            
-            // Beri sedikit delay untuk animasi
-            setTimeout(() => {
-                appContainer.style.opacity = '1';
-                initializeApp();
-                console.log("🎉 App initialized!");
-            }, 100);
-        }, 800);
-    }
-    
     // Mulai loading
     console.log("🔄 Starting splash screen...");
     loadNextStage();
     
-    // Emergency timeout (8 detik)
+    // Emergency timeout (6 detik)
     setTimeout(() => {
         console.warn("⚠️ Emergency timeout triggered");
+        updateProgress(100, "Pilih aplikasi yang akan digunakan");
+        document.getElementById('splashDukopsBtn').style.opacity = '1';
+        document.getElementById('splashJadwalBtn').style.opacity = '1';
+    }, 6000);
+});
+
+// ================= FUNGSI PILIH APLIKASI =================
+function loadDukopsApp() {
+    currentApp = 'dukops';
+    showApp();
+    initializeApp();
+}
+
+function loadJadwalApp() {
+    currentApp = 'jadwal';
+    showApp();
+    initJadwalPiket();
+}
+
+function showApp() {
+    const splashScreen = document.getElementById('splashScreen');
+    const appContainer = document.getElementById('appContainer');
+    
+    // Hide splash screen
+    splashScreen.style.opacity = '0';
+    splashScreen.style.transition = 'opacity 0.8s ease';
+    
+    setTimeout(() => {
         splashScreen.style.display = 'none';
         appContainer.style.display = 'block';
-        initializeApp();
-    }, 8000);
-});
+        
+        // Beri sedikit delay untuk animasi
+        setTimeout(() => {
+            appContainer.style.opacity = '1';
+            
+            // Set tombol aktif sesuai aplikasi
+            if (currentApp === 'dukops') {
+                document.getElementById('btnDukops').classList.add('active');
+                document.getElementById('btnJadwal').classList.remove('active');
+                document.getElementById('dukopsContent').style.display = 'block';
+                document.getElementById('jadwalPiketContainer').style.display = 'none';
+            } else {
+                document.getElementById('btnDukops').classList.remove('active');
+                document.getElementById('btnJadwal').classList.add('active');
+                document.getElementById('dukopsContent').style.display = 'none';
+                document.getElementById('jadwalPiketContainer').style.display = 'block';
+            }
+            
+            console.log(`🎉 ${currentApp.toUpperCase()} App initialized!`);
+        }, 100);
+    }, 800);
+}
+
+// ================= NAVIGASI ANTAR APLIKASI =================
+function showDukops() {
+    document.getElementById('dukopsContent').style.display = 'block';
+    document.getElementById('jadwalPiketContainer').style.display = 'none';
+    document.getElementById('btnDukops').classList.add('active');
+    document.getElementById('btnJadwal').classList.remove('active');
+    currentApp = 'dukops';
+}
+
+function showJadwalPiket() {
+    document.getElementById('dukopsContent').style.display = 'none';
+    document.getElementById('jadwalPiketContainer').style.display = 'block';
+    document.getElementById('btnDukops').classList.remove('active');
+    document.getElementById('btnJadwal').classList.add('active');
+    currentApp = 'jadwal';
+    
+    // Inisialisasi Jadwal Piket jika belum diinisialisasi
+    if (JadwalData.daftarNama.length === 0) {
+        initJadwalPiket();
+    }
+}
+
+// ================= FUNGSI BACKEND AMAN =================
+async function sendToBackend(action, data = {}) {
+    try {
+        // Untuk GET requests
+        if (action === 'listFiles' || action === 'getConfig' || action === 'test' || action === 'telegramTest' || action === 'getJadwalData') {
+            let url = `${GOOGLE_APPS_SCRIPT_WEBHOOK}?action=${action}`;
+            
+            // Tambahkan parameter untuk listFiles
+            if (action === 'listFiles') {
+                if (data.desaFilter) url += `&desaFilter=${encodeURIComponent(data.desaFilter)}`;
+                if (data.monthFilter) url += `&monthFilter=${encodeURIComponent(data.monthFilter)}`;
+            }
+            // Tambahkan parameter untuk getJadwalData
+            else if (action === 'getJadwalData') {
+                if (data.type) url += `&type=${encodeURIComponent(data.type)}`;
+            }
+            
+            const response = await fetch(url);
+            return await response.json();
+        }
+        // Untuk POST requests
+        else {
+            const formData = new FormData();
+            formData.append('action', action);
+            
+            // Tambahkan semua data ke formData
+            Object.keys(data).forEach(key => {
+                if (data[key] !== undefined && data[key] !== null) {
+                    if (key === 'fileData' && typeof data[key] === 'string') {
+                        formData.append(key, data[key]);
+                    } else {
+                        formData.append(key, String(data[key]));
+                    }
+                }
+            });
+            
+            const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
+                method: 'POST',
+                body: formData
+            });
+            
+            return await response.json();
+        }
+    } catch (error) {
+        console.error(`Error in ${action}:`, error);
+        return { success: false, error: error.message };
+    }
+}
 
 // ================= INISIALISASI APLIKASI =================
 function initializeApp() {
-    console.log("🔄 Initializing app...");
+    console.log("🔄 Initializing DUKOPS app...");
     
     try {
         // Inisialisasi counter
@@ -717,15 +1143,15 @@ function initializeApp() {
             showNotification('✅ Sistem DUKOPS BABINSA siap digunakan!', 'success');
         }, 500);
         
-        console.log("✅ App initialized successfully");
+        console.log("✅ DUKOPS App initialized successfully");
         
     } catch (error) {
-        console.error("❌ Error initializing app:", error);
-        showNotification('❌ Gagal memuat aplikasi', 'error');
+        console.error("❌ Error initializing DUKOPS app:", error);
+        showNotification('❌ Gagal memuat aplikasi DUKOPS', 'error');
     }
 }
 
-// ================= LOAD DATA DESA =================
+// ================= FUNGSI DUKOPS (tetap sama) =================
 async function loadDesaList() {
     console.log("🔄 Loading desa list...");
     
@@ -754,7 +1180,7 @@ async function loadDesaList() {
         // Tambahkan fallback data
         fallbackDesas.forEach(desaName => {
             const option = document.createElement('option');
-            option.value = desaName; // Gunakan nama sebagai value sementara
+            option.value = desaName;
             option.textContent = normalizeDesaName(desaName).cleanName;
             option.setAttribute('data-raw-name', desaName);
             select.appendChild(option);
@@ -808,49 +1234,23 @@ async function loadDesaList() {
     }
 }
 
-// ================= FUNGSI BACKEND AMAN =================
-async function sendToBackend(action, data = {}) {
-    try {
-        // Untuk GET requests
-        if (action === 'listFiles' || action === 'getConfig' || action === 'test' || action === 'telegramTest') {
-            let url = `${GOOGLE_APPS_SCRIPT_WEBHOOK}?action=${action}`;
-            
-            // Tambahkan parameter untuk listFiles
-            if (action === 'listFiles') {
-                if (data.desaFilter) url += `&desaFilter=${encodeURIComponent(data.desaFilter)}`;
-                if (data.monthFilter) url += `&monthFilter=${encodeURIComponent(data.monthFilter)}`;
-            }
-            
-            const response = await fetch(url);
-            return await response.json();
-        }
-        // Untuk POST requests
-        else {
-            const formData = new FormData();
-            formData.append('action', action);
-            
-            // Tambahkan semua data ke formData
-            Object.keys(data).forEach(key => {
-                if (data[key] !== undefined && data[key] !== null) {
-                    if (key === 'fileData' && typeof data[key] === 'string') {
-                        formData.append(key, data[key]);
-                    } else {
-                        formData.append(key, String(data[key]));
-                    }
-                }
-            });
-            
-            const response = await fetch(GOOGLE_APPS_SCRIPT_WEBHOOK, {
-                method: 'POST',
-                body: formData
-            });
-            
-            return await response.json();
-        }
-    } catch (error) {
-        console.error(`Error in ${action}:`, error);
-        return { success: false, error: error.message };
-    }
+function normalizeDesaName(desaName) {
+    if (!desaName) return { original: "", normalized: "", forTelegram: "", cleanName: "" };
+    
+    let normalized = desaName;
+    normalized = normalized.replace(/^Desa\s+/i, '');
+    normalized = normalized.replace(/^Kelurahan\s+/i, '');
+    normalized = normalized.replace(/Kel\.\s*/gi, '');
+    normalized = normalized.replace(/Kel\s/gi, '');
+    normalized = normalized.trim();
+    const forTelegram = normalized.replace(/_/g, ' ');
+    
+    return {
+        original: desaName,
+        normalized: normalized,
+        forTelegram: forTelegram,
+        cleanName: forTelegram.trim()
+    };
 }
 
 async function uploadToGoogleDrive(zipBlob, zipFileName, desaName, date) {
@@ -938,7 +1338,7 @@ function setupInstallPrompt() {
     });
 }
 
-// ================= LOAD DATA DESA TERPILIH =================
+// ================= FUNGSI DUKOPS =================
 async function loadSelectedDesa() {
     const select = document.getElementById('selectDesa');
     const coordUrl = select.value;
@@ -1016,7 +1416,6 @@ function pickRandomKoordinat() {
     }, 300);
 }
 
-// ================= FUNGSI GAMBAR =================
 function previewImage() {
     const file = document.getElementById("gambar").files[0];
     const preview = document.getElementById("previewGambar");
@@ -1105,7 +1504,6 @@ function formatDateForOldBrowsers(date) {
     ].join(':');
 }
 
-// ================= FUNGSI PREVIEW =================
 function updatePreview() {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -1201,7 +1599,6 @@ function updatePreview() {
     }
 }
 
-// ================= PROSES UTAMA =================
 async function processSubmission() {
     if (!validateSubmission()) return;
     
@@ -1358,7 +1755,6 @@ function isSameDateMonthSubmission() {
     });
 }
 
-// ================= FUNGSI BANTUAN =================
 function resetCanvas() {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -1965,6 +2361,350 @@ function updateDesaHeaderImage(desaName) {
     const desaInfo = normalizeDesaName(desaName);
     const imageName = desaInfo.normalized.toLowerCase().replace(/\s+/g, '_');
     headerImage.src = `https://github.com/Koramil05/DUKOPS/blob/main/bnr_${imageName}.png?raw=true`;
+}
+
+// ================= FUNGSI JADWAL PIKET =================
+async function initJadwalPiket() {
+    showJadwalToast("Memuat data jadwal piket...");
+    
+    try {
+        // Coba ambil data dari backend Google Apps Script dulu
+        const backendResult = await sendToBackend('getJadwalData', { type: 'piket' });
+        
+        if (backendResult.success && backendResult.data) {
+            // Gunakan data dari backend
+            JadwalData.daftarNama = backendResult.data.split('\n')
+                .filter(line => line.trim() !== "")
+                .map(nama => nama.trim());
+            
+            console.log("Data piket dimuat dari backend:", JadwalData.daftarNama.length, "nama");
+        } else {
+            // Fallback ke GitHub
+            await loadJadwalPiketFromGitHub();
+        }
+        
+        // Load hanpangan dari GitHub
+        await loadJadwalHanpanganFromGitHub();
+        
+        // Setup dropdown
+        setupJadwalDropdowns();
+        loadJadwalSelections();
+        
+        // Tambahkan event listener
+        const jadwalDropdownIds = [
+            'j_nama1a', 'j_nama1b', 'j_nama2a', 'j_nama2b', 
+            'j_nama3a', 'j_nama3b', 'j_nama3c', 'j_nama3d',
+            'j_nama4a', 'j_nama4b', 'j_nama4c', 'j_nama4d'
+        ];
+        
+        jadwalDropdownIds.forEach(id => {
+            const select = document.getElementById(id);
+            if (select) {
+                select.addEventListener('change', updateJadwalPreview);
+            }
+        });
+        
+        updateJadwalPreview();
+        showJadwalToast("Jadwal piket siap digunakan");
+        
+    } catch (error) {
+        console.error("Error in jadwal piket initialization:", error);
+        showJadwalToast("Gagal memuat data jadwal piket");
+    }
+}
+
+async function loadJadwalPiketFromGitHub() {
+    try {
+        const response = await fetch(GITHUB_URLS.PIKET + '?t=' + new Date().getTime());
+        if (!response.ok) throw new Error('Gagal mengambil data dari GitHub');
+        
+        const data = await response.text();
+        JadwalData.daftarNama = data.trim().split('\n')
+            .filter(line => line.trim() !== "")
+            .map(nama => nama.trim());
+        
+        console.log("Data piket dimuat dari GitHub:", JadwalData.daftarNama.length, "nama");
+        return true;
+    } catch (error) {
+        console.error("Error loading piket data from GitHub:", error);
+        return false;
+    }
+}
+
+async function loadJadwalHanpanganFromGitHub() {
+    try {
+        const response = await fetch(GITHUB_URLS.HANPANGAN + '?t=' + new Date().getTime());
+        if (!response.ok) throw new Error('Gagal mengambil data');
+        
+        const data = await response.text();
+        const lines = data.trim().split('\n').filter(line => line.trim() !== "");
+        
+        if (lines.length > 0) {
+            JadwalData.daftarHanpangan = lines;
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            JadwalData.currentHanpangan = lines[(dayOfMonth - 1) % lines.length];
+            console.log("Data hanpangan dimuat:", JadwalData.daftarHanpangan.length, "item");
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Error loading hanpangan data:", error);
+        return false;
+    }
+}
+
+function setupJadwalDropdowns() {
+    const jadwalDropdownIds = [
+        'j_nama1a', 'j_nama1b', 'j_nama2a', 'j_nama2b', 
+        'j_nama3a', 'j_nama3b', 'j_nama3c', 'j_nama3d',
+        'j_nama4a', 'j_nama4b', 'j_nama4c', 'j_nama4d'
+    ];
+    
+    jadwalDropdownIds.forEach(id => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        
+        // Hapus semua opsi kecuali placeholder
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        // Tambahkan semua nama
+        JadwalData.daftarNama.forEach(nama => {
+            const option = document.createElement('option');
+            option.value = nama;
+            option.textContent = nama;
+            select.appendChild(option);
+        });
+        
+        select.selectedIndex = 0;
+    });
+}
+
+function loadJadwalSelections() {
+    try {
+        const savedSelections = localStorage.getItem('jadwalSelections');
+        if (savedSelections) {
+            const selections = JSON.parse(savedSelections);
+            
+            const jadwalDropdownIds = [
+                'j_nama1a', 'j_nama1b', 'j_nama2a', 'j_nama2b', 
+                'j_nama3a', 'j_nama3b', 'j_nama3c', 'j_nama3d',
+                'j_nama4a', 'j_nama4b', 'j_nama4c', 'j_nama4d'
+            ];
+            
+            jadwalDropdownIds.forEach(id => {
+                const select = document.getElementById(id);
+                if (select && selections[id]) {
+                    select.value = selections[id];
+                }
+            });
+        }
+    } catch (e) {
+        console.warn("Tidak dapat memuat pilihan jadwal dari localStorage:", e);
+    }
+}
+
+function saveJadwalSelections() {
+    const selections = {};
+    
+    const jadwalDropdownIds = [
+        'j_nama1a', 'j_nama1b', 'j_nama2a', 'j_nama2b', 
+        'j_nama3a', 'j_nama3b', 'j_nama3c', 'j_nama3d',
+        'j_nama4a', 'j_nama4b', 'j_nama4c', 'j_nama4d'
+    ];
+    
+    jadwalDropdownIds.forEach(id => {
+        const select = document.getElementById(id);
+        if (select) {
+            selections[id] = select.value;
+        }
+    });
+    
+    try {
+        localStorage.setItem('jadwalSelections', JSON.stringify(selections));
+    } catch (e) {
+        console.warn("Tidak dapat menyimpan pilihan jadwal ke localStorage:", e);
+    }
+}
+
+function updateJadwalPreview() {
+    saveJadwalSelections();
+    
+    const now = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(now.getDate() + 1);
+    
+    const formatTanggal = function(date) {
+        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const months = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        
+        return days[date.getDay()] + ", " + date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear();
+    };
+    
+    let result = "=======================\n" +
+                 "KORAMIL 1609-05/SUKASADA\n" +
+                 "    JADWAL DINAS DALAM\n" +
+                 "=======================\n\n";
+    
+    const sections = [
+        {
+            title: formatTanggal(now) + "",
+            names: [
+                document.getElementById('j_nama1a').value,
+                document.getElementById('j_nama1b').value
+            ]
+        },
+        {
+            title: formatTanggal(tomorrow) + "",
+            names: [
+                document.getElementById('j_nama2a').value,
+                document.getElementById('j_nama2b').value
+            ]
+        },
+        {
+            title: formatTanggal(now) + " (Kediaman)",
+            names: [
+                document.getElementById('j_nama3a').value,
+                document.getElementById('j_nama3b').value
+            ]
+        },
+        {
+            title: formatTanggal(tomorrow) + " (Kediaman)",
+            names: [
+                document.getElementById('j_nama3c').value,
+                document.getElementById('j_nama3d').value
+            ]
+        },
+        {
+            title: formatTanggal(now) + " (Makodim)",
+            names: [
+                document.getElementById('j_nama4a').value,
+                document.getElementById('j_nama4b').value
+            ]
+        },
+        {
+            title: formatTanggal(tomorrow) + " (Makodim)",
+            names: [
+                document.getElementById('j_nama4c').value,
+                document.getElementById('j_nama4d').value
+            ]
+        }
+    ];
+    
+    let sectionCount = 0;
+    sections.forEach(function(section) {
+        const validNames = section.names.filter(function(name) {
+            return name && 
+                   name.trim() !== '' && 
+                   name !== '<Pilih Nama>' && 
+                   name.toLowerCase() !== 'nihil';
+        });
+        
+        if (validNames.length > 0) {
+            const sectionLetter = String.fromCharCode(65 + sectionCount);
+            result += sectionLetter + ". " + section.title + "\n";
+            
+            validNames.forEach(function(name, i) {
+                result += "   " + (i + 1) + ". " + name + "\n";
+            });
+            
+            result += "\n";
+            sectionCount++;
+        }
+    });
+    
+    if (JadwalData.currentHanpangan) {
+        result += "- Jadwal Hanpangan hari ini : " + JadwalData.currentHanpangan + "\n\n";
+    }
+    
+    result += "Demikian MMP.";
+    
+    document.getElementById('j_hasilPesan').value = result;
+}
+
+function resetJadwalData() {
+    showJadwalToast("Meriset data dan memuat ulang...");
+    
+    // Reset semua dropdown
+    const jadwalDropdownIds = [
+        'j_nama1a', 'j_nama1b', 'j_nama2a', 'j_nama2b', 
+        'j_nama3a', 'j_nama3b', 'j_nama3c', 'j_nama3d',
+        'j_nama4a', 'j_nama4b', 'j_nama4c', 'j_nama4d'
+    ];
+    
+    jadwalDropdownIds.forEach(id => {
+        const select = document.getElementById(id);
+        if (select) {
+            select.selectedIndex = 0;
+        }
+    });
+    
+    // Hapus localStorage
+    try {
+        localStorage.removeItem('jadwalSelections');
+    } catch (e) {
+        console.warn("Tidak dapat menghapus dari localStorage:", e);
+    }
+    
+    // Load ulang data
+    initJadwalPiket();
+}
+
+async function shareJadwalToBothPlatforms() {
+    const pesan = document.getElementById('j_hasilPesan').value.trim();
+    
+    if (!pesan) {
+        showJadwalToast("Tidak ada pesan untuk dikirim");
+        return;
+    }
+    
+    const selectedGroupId = document.getElementById('j_telegramGroupSelect').value;
+    
+    if (!selectedGroupId) {
+        showJadwalToast("Pilih group Telegram terlebih dahulu");
+        return;
+    }
+    
+    // Kirim ke Telegram via backend Google Apps Script
+    try {
+        const result = await sendToBackend('sendTelegramText', {
+            message: pesan,
+            chatId: selectedGroupId
+        });
+        
+        if (result.success) {
+            showJadwalToast("Pesan terkirim ke Telegram Group via Backend");
+        } else {
+            console.error("Error sending to Telegram via backend:", result);
+            showJadwalToast(`Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showJadwalToast("Gagal mengirim ke Telegram");
+    }
+    
+    // Kirim ke WhatsApp
+    setTimeout(() => {
+        const encodedPesan = encodeURIComponent(pesan);
+        const whatsappUrl = `https://wa.me/?text=${encodedPesan}`;
+        window.open(whatsappUrl, '_blank');
+        showJadwalToast("Membuka WhatsApp...");
+    }, 1000);
+}
+
+function showJadwalToast(message, duration = 3000) {
+    const toast = document.getElementById('j_toastNotification');
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(function() {
+        toast.classList.remove('show');
+    }, duration);
 }
     </script>
 </body>
