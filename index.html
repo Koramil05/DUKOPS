@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DUKOPS">
-    <title>SISTEM PELAPORAN DUKOPS BABINSA dan JADWAL PIKET KORAMIL SUKASADA</title>
+    <title>Sistem Pelaporan DUKOPS BABINSA</title>
     <meta name="theme-color" content="#202624">
     
     <!-- ========== FAVICON ========== -->
@@ -559,6 +559,14 @@
                 min-width: 250px;
             }
         }
+        
+        /* Loading indicator */
+        .app-loading {
+            text-align: center;
+            padding: 10px;
+            color: #4dff4d;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -574,7 +582,7 @@
         </div>
         
         <!-- Teks Aplikasi -->
-        <div class="splash-title">DUKOPS BABINSA dan JADWAL PIKET</div>
+        <div class="splash-title">DUKOPSBABINSA</div>
         <div class="splash-unit">KORAMIL 1609-05/SUKASADA</div>
         <div class="splash-subtitle">KODIM 1609/BULELENG</div>
         
@@ -587,10 +595,10 @@
         <!-- Tombol Pilihan Aplikasi -->
         <div class="splash-buttons">
             <button class="splash-btn splash-btn-dukops" id="splashDukopsBtn" onclick="loadDukopsApp()">
-                <i class="fas fa-file-upload"></i> DUKOPS BABINSA
+                <i class="fas fa-file-upload"></i> DUKOPS
             </button>
             <button class="splash-btn splash-btn-jadwal" id="splashJadwalBtn" onclick="loadJadwalApp()">
-                <i class="fas fa-calendar-alt"></i> JADWAL PIKET KORAMIL
+                <i class="fas fa-calendar-alt"></i> JADWAL PIKET
             </button>
         </div>
         
@@ -882,7 +890,7 @@ const GITHUB_API_URL = "https://api.github.com/repos/Koramil05/DUKOPS/contents/"
 const GOOGLE_APPS_SCRIPT_WEBHOOK = "https://script.google.com/macros/s/AKfycbweib5g7YBnC5XuguK2LTEOCPOXa3dttgATlegVtdeEU1LmcoWA1RGsxOWqeVTDoXjn/exec";
 const TARGET_LAPORAN = 9;
 
-// KONFIGURASI JADWAL PIKET (pakai backend yang sama)
+// KONFIGURASI JADWAL PIKET (TIDAK ADA TOKEN DI SINI - SEMUA PAKAI BACKEND)
 const GITHUB_URLS = {
     HANPANGAN: "https://raw.githubusercontent.com/Koramil05/JADWAL/main/hanpangan.txt",
     PIKET: "https://raw.githubusercontent.com/Koramil05/JADWAL/main/piket.txt"
@@ -1338,7 +1346,7 @@ function setupInstallPrompt() {
     });
 }
 
-// ================= FUNGSI DUKOPS =================
+// ================= FUNGSI DUKOPS LAINNYA (tetap sama) =================
 async function loadSelectedDesa() {
     const select = document.getElementById('selectDesa');
     const coordUrl = select.value;
@@ -2678,23 +2686,41 @@ async function shareJadwalToBothPlatforms() {
         });
         
         if (result.success) {
-            showJadwalToast("Pesan terkirim ke Telegram Group via Backend");
+            showJadwalToast("✅ Pesan terkirim ke Telegram Group via Backend");
         } else {
             console.error("Error sending to Telegram via backend:", result);
-            showJadwalToast(`Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
+            showJadwalToast(`❌ Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
+            
+            // Fallback: Kirim langsung ke WhatsApp saja
+            setTimeout(() => {
+                const encodedPesan = encodeURIComponent(pesan);
+                const whatsappUrl = `https://wa.me/?text=${encodedPesan}`;
+                window.open(whatsappUrl, '_blank');
+                showJadwalToast("📱 Membuka WhatsApp...");
+            }, 1000);
+            return;
         }
+        
+        // Kirim ke WhatsApp
+        setTimeout(() => {
+            const encodedPesan = encodeURIComponent(pesan);
+            const whatsappUrl = `https://wa.me/?text=${encodedPesan}`;
+            window.open(whatsappUrl, '_blank');
+            showJadwalToast("📱 Membuka WhatsApp...");
+        }, 1000);
+        
     } catch (error) {
         console.error("Error:", error);
-        showJadwalToast("Gagal mengirim ke Telegram");
+        showJadwalToast("❌ Gagal mengirim ke Telegram");
+        
+        // Fallback: Kirim ke WhatsApp saja
+        setTimeout(() => {
+            const encodedPesan = encodeURIComponent(pesan);
+            const whatsappUrl = `https://wa.me/?text=${encodedPesan}`;
+            window.open(whatsappUrl, '_blank');
+            showJadwalToast("📱 Membuka WhatsApp (fallback)...");
+        }, 1000);
     }
-    
-    // Kirim ke WhatsApp
-    setTimeout(() => {
-        const encodedPesan = encodeURIComponent(pesan);
-        const whatsappUrl = `https://wa.me/?text=${encodedPesan}`;
-        window.open(whatsappUrl, '_blank');
-        showJadwalToast("Membuka WhatsApp...");
-    }, 1000);
 }
 
 function showJadwalToast(message, duration = 3000) {
