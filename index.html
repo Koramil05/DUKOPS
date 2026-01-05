@@ -612,7 +612,7 @@
             #j_hasilPesan {
                 min-height: 600px;
                 max-height: 600px;
-                font-size: 22px;
+                font-size: 13px;
                 padding: 12px;
             }
         }
@@ -896,7 +896,14 @@
                     </div>
                 </div>
             </div>
-         </div>
+            
+            <!-- Telegram Group Selector -->
+            <div class="telegram-group-selector">
+                <label for="j_telegramGroupSelect"><i class="fab fa-telegram"></i> Group Telegram Tujuan:</label>
+                <select id="j_telegramGroupSelect">
+                    <option value="-1003020813628" selected>Group koramil (ID: -1003020813628)</option>
+                </select>
+            </div>
             
             <!-- Tombol untuk mengirim pesan ke WhatsApp dan Telegram -->
             <button class="jadwal-btn" style="background: linear-gradient(135deg, #25D366 50%, #0088cc 50%);" onclick="shareJadwalToBothPlatforms()">
