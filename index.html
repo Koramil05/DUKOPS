@@ -576,6 +576,47 @@
             color: #4dff4d;
             display: none;
         }
+        
+        /* ================= STYLING PREVIEW JADWAL PIKET ================= */
+        #j_hasilPesan {
+            width: 100%;
+            min-height: 250px;
+            max-height: 400px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #0088cc;
+            background-color: rgba(0, 40, 0, 0.9);
+            color: #e6ffe6;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        #j_hasilPesan::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+        
+        #j_hasilPesan:focus {
+            outline: none;
+            border-color: #4dff4d;
+            box-shadow: 0 0 10px rgba(77, 255, 77, 0.5);
+        }
+        
+        @media (max-width: 720px) {
+            #j_hasilPesan {
+                min-height: 600px;
+                max-height: 600px;
+                font-size: 13px;
+                padding: 12px;
+            }
+        }
+        
     </style>
 </head>
 <body>
