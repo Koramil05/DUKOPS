@@ -413,10 +413,10 @@
         /* Jadwal Piket Container */
         #jadwalPiketContainer {
             display: none;
-            background: #003300;
-            color: #e6ffe6;
-            padding: 15px;
-            border-radius: 10px;
+            background: black-translucent;
+            color: black-translucent;
+            padding: 10px;
+            border-radius: 0px;
             margin-top: 20px;
         }
         
@@ -424,13 +424,15 @@
             text-align: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #4dff4d;
+            border-bottom: 2px solid white;
         }
         
         .jadwal-title {
             color: gold;
             margin-bottom: 10px;
             font-size: 24px;
+            text-align: center;
+
         }
         
         .jadwal-logo {
@@ -442,22 +444,29 @@
             margin-bottom: 15px;
         }
         
-        .jadwal-section {
+         .jadwal-section {
             background: rgba(0, 60, 0, 0.7);
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
         }
         
-        .jadwal-section h3 {
-            margin: 10px 0;
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .section-title-koramil { color: #4dff4d; }
-        .section-title-kediaman { color: #ffcc00; }
-        .section-title-makodim { color: #00ccff; }
+         .jadwal-section h3 
+          {margin: 10px 0;
+          font-size: 16px;
+          text-align: left;}
+            
+         .section-title-koramil {
+          border: 1px solid #0088cc;
+          color: #4dff4d; }
+          .section-title-kediaman { 
+          border: 1px solid #0088cc;
+
+          color: #ffcc00; }
+          .section-title-makodim { 
+          border: 1px solid #0088cc;
+
+          color: #00ccff; }
         
         .jadwal-btn {
             background: red;
@@ -736,11 +745,10 @@
             <!-- KORAMIL -->
             <div class="jadwal-section">
                 <div class="section-title">
-                    <h2 class="section-title-koramil"><i class="fas fa-users"></i> Piket Koramil</h2>
                 </div>
                 <div class="section-content">
                     <div>
-                        <h3 class="section-title-koramil">PIKET KORAMIL HARI INI</h3>
+                        <h3 class="section-title-koramil">Piket Koramil Hari Ini : </h3>
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama1a">
@@ -755,7 +763,7 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="section-title-koramil">PIKET KORAMIL BESOK</h3>
+                        <h3 class="section-title-koramil">Piket Koramil Besok : </h3>
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama2a">
@@ -775,11 +783,10 @@
             <!-- KEDIAMAN -->
             <div class="jadwal-section">
                 <div class="section-title">
-                    <h2 class="section-title-kediaman"><i class="fas fa-home"></i> Jaga Kediaman</h2>
                 </div>
                 <div class="section-content">
                     <div>
-                        <h3 class="section-title-kediaman">JAGA KEDIAMAN HARI INI</h3>
+                        <h3 class="section-title-kediaman">Jaga Kediaman Hari Ini : </h3>
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama3a">
@@ -794,7 +801,7 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="section-title-kediaman">JAGA KEDIAMAN BESOK</h3>
+                        <h3 class="section-title-kediaman">Jaga Kediaman Besok : </h3>
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama3c">
@@ -814,11 +821,10 @@
             <!-- MAKODIM -->
             <div class="jadwal-section">
                 <div class="section-title">
-                    <h2 class="section-title-makodim"><i class="fas fa-building"></i> Piket Makodim</h2>
                 </div>
                 <div class="section-content">
                     <div>
-                        <h3 class="section-title-makodim">PIKET MAKODIM HARI INI</h3>
+                        <h3 class="section-title-makodim">Piket Makodim Hari ini : </h3>
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama4a">
@@ -833,7 +839,7 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="section-title-makodim">PIKET MAKODIM BESOK</h3>
+                        <h3 class="section-title-makodim">Piket Makodim Besok : </h3>
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama4c">
@@ -873,7 +879,7 @@
             </div>
             
             <div class="app-loading" id="j_loadingIndicator">
-                <i class="fas fa-spinner fa-spin"></i> Memuat data...
+                <i class="fas fa-spinner fa-spin"></i>
             </div>
         </div>
         
@@ -955,7 +961,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingStages = [
         {percent: 33, message: "Memuat sistem..."},
         {percent: 66, message: "Menyiapkan aplikasi..."},
-        {percent: 100, message: "Pilih aplikasi yang akan digunakan"}
+        {percent: 100, message: "Aplikasi Siap digunakan"}
     ];
     
     let currentStage = 0;
@@ -984,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Emergency timeout (6 detik)
     setTimeout(() => {
         console.warn("⚠️ Emergency timeout triggered");
-        updateProgress(100, "Pilih aplikasi yang akan digunakan");
+        updateProgress(100, "Aplikasi Siap digunakan");
         document.getElementById('splashDukopsBtn').style.opacity = '1';
         document.getElementById('splashJadwalBtn').style.opacity = '1';
     }, 6000);
@@ -2370,7 +2376,7 @@ function updateDesaHeaderImage(desaName) {
 
 // ================= FUNGSI JADWAL PIKET =================
 async function initJadwalPiket() {
-    showJadwalToast("Memuat data jadwal piket...");
+    noneshowJadwalToast("Memuat data jadwal piket...");
     
     try {
         // Coba ambil data dari backend Google Apps Script dulu
@@ -2633,7 +2639,7 @@ function updateJadwalPreview() {
 }
 
 function resetJadwalData() {
-    showJadwalToast("Meriset data dan memuat ulang...");
+    noneshowJadwalToast("Meriset data dan memuat ulang...");
     
     // Reset semua dropdown
     const jadwalDropdownIds = [
@@ -2664,7 +2670,7 @@ async function shareJadwalToBothPlatforms() {
     const pesan = document.getElementById('j_hasilPesan').value.trim();
     
     if (!pesan) {
-        showJadwalToast("Tidak ada pesan untuk dikirim");
+        noneshowJadwalToast("Tidak ada pesan untuk dikirim");
         return;
     }
     
@@ -2686,7 +2692,7 @@ async function shareJadwalToBothPlatforms() {
             showJadwalToast("✅ Pesan terkirim ke Telegram Group via Backend");
         } else {
             console.error("Error sending to Telegram via backend:", result);
-            showJadwalToast(`❌ Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
+            noneshowJadwalToast(`❌ Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
             
             // Fallback: Kirim langsung ke WhatsApp saja
             setTimeout(() => {
