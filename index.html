@@ -2376,7 +2376,7 @@ function updateDesaHeaderImage(desaName) {
 
 // ================= FUNGSI JADWAL PIKET =================
 async function initJadwalPiket() {
-    noneshowJadwalToast("Memuat data jadwal piket...");
+    showJadwalToast("Memuat data jadwal piket...");
     
     try {
         // Coba ambil data dari backend Google Apps Script dulu
@@ -2639,7 +2639,7 @@ function updateJadwalPreview() {
 }
 
 function resetJadwalData() {
-    noneshowJadwalToast("Meriset data dan memuat ulang...");
+    showJadwalToast("Meriset data dan memuat ulang...");
     
     // Reset semua dropdown
     const jadwalDropdownIds = [
@@ -2670,7 +2670,7 @@ async function shareJadwalToBothPlatforms() {
     const pesan = document.getElementById('j_hasilPesan').value.trim();
     
     if (!pesan) {
-        noneshowJadwalToast("Tidak ada pesan untuk dikirim");
+        showJadwalToast("Tidak ada pesan untuk dikirim");
         return;
     }
     
@@ -2692,7 +2692,7 @@ async function shareJadwalToBothPlatforms() {
             showJadwalToast("✅ Pesan terkirim ke Telegram Group via Backend");
         } else {
             console.error("Error sending to Telegram via backend:", result);
-            noneshowJadwalToast(`❌ Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
+            showJadwalToast(`❌ Gagal mengirim ke Telegram: ${result.error || 'Unknown error'}`);
             
             // Fallback: Kirim langsung ke WhatsApp saja
             setTimeout(() => {
