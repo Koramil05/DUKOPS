@@ -751,8 +751,8 @@
                 <div id="attendancePanel" style="display: none;">
                     <div class="attendance-header">
                         <h3 style="color: #9fd49f; margin: 0;"><i class="fas fa-file-alt"></i> LAPORAN TERKIRIM</h3>
-                        <button onclick="hideAttendance()" style="background: transparent; border: none; color: #f5f5f5; cursor: pointer; font-size: 20px;">
-                            <i class="fas fa-times"></i>
+                        <button onclick="hideAttendance()" style="background: #9fd49f; border: none; color: #f5f5f5; cursor: pointer; font-size: 20px;">
+                            <i class="">EXIT LAPORAN TERKIRIM</i>
                         </button>
                     </div>
                         
@@ -813,7 +813,7 @@
             </div>
             
             <button class="jadwal-btn" onclick="resetJadwalData()">
-                <i class="fas fa-sync-alt"></i> MUAT ULANG DATA
+                <i class="fas fa-sync-alt"></i> RESSET ULANG JADWAL PIKET
             </button>
             
             <!-- KORAMIL -->
@@ -826,12 +826,12 @@
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama1a">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <select id="j_nama1b">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                         </div>
@@ -841,12 +841,12 @@
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama2a">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <select id="j_nama2b">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                         </div>
@@ -864,12 +864,12 @@
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama3a">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <select id="j_nama3b">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                         </div>
@@ -879,12 +879,12 @@
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama3c">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <select id="j_nama3d">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                         </div>
@@ -902,12 +902,12 @@
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama4a">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <select id="j_nama4b">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                         </div>
@@ -917,12 +917,12 @@
                         <div class="row">
                             <div class="col">
                                 <select id="j_nama4c">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <select id="j_nama4d">
-                                    <option value="" disabled selected>&lt;Pilih Nama&gt;</option>
+                                    <option value="" enabled selected>&lt;Pilih Nama&gt;</option>
                                 </select>
                             </div>
                         </div>
@@ -934,19 +934,193 @@
             <div class="telegram-group-selector">
                 <label for="j_telegramGroupSelect"><i class="fab fa-telegram"></i> Group Telegram Tujuan:</label>
                 <select id="j_telegramGroupSelect">
-                    <option value="-1003020813628" selected>Group koramil (ID: -1003020813628)</option>
+                    <option value="-1003020813628" selected>Auto terkirim ke-Group Telegram ( KORAMIL 05)</option>
                 </select>
             </div>
-            
-            <!-- Tombol untuk mengirim pesan ke WhatsApp dan Telegram -->
-            <button class="jadwal-btn" style="background: linear-gradient(135deg, #25D366 50%, #0088cc 50%);" onclick="shareJadwalToBothPlatforms()">
-                <div class="share-icons">
-                    <i class="fab fa-whatsapp"></i>
-                    <i class="fab fa-telegram"></i>
-                </div>
-                KIRIM KE WHATSAPP & TELEGRAM GROUP
-            </button>
+<!-- Tombol untuk mengirim pesan ke WhatsApp dan Telegram -->
+<button class="jadwal-btn" onclick="shareJadwalToBothPlatforms()">
+    <div class="icon-container">
+        <div class="whatsapp-icon">
+            <i class="fab fa-whatsapp"></i>
+        </div>
+        <div class="telegram-icon">
+            <i class="fab fa-telegram"></i>
+        </div>
+    </div>
+    <span class="platform-name">WHATSAPP & TELEGRAM</span>
+    <span class="platform-desc">Klik untuk kirim pesan</span>
+</button>
 
+<style>
+    /* Include FontAwesome */
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+    
+    .jadwal-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 30px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        min-width: 300px;
+        max-width: 350px;
+        margin: 20px auto;
+        background: linear-gradient(135deg, #8B0000 0%, #8B0000 50%, #E8E8E8 50%, #E8E8E8 100%);
+        border: 2px solid #660000;
+        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
+    }
+    
+    /* Container untuk ikon */
+    .icon-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
+    /* WhatsApp Icon */
+    .whatsapp-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #25D366, #128C7E);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .whatsapp-icon i {
+        font-size: 28px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Telegram Icon */
+    .telegram-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #0088cc, #006699);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 10px rgba(0, 136, 204, 0.3);
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .telegram-icon i {
+        font-size: 28px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Text styling */
+    .platform-name {
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        letter-spacing: 1px;
+        background: linear-gradient(45deg, #B8860B, #DAA520);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 2px 4px rgba(184, 134, 11, 0.2);
+    }
+    
+    .platform-desc {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        opacity: 0.9;
+    }
+    
+    /* Hover effects */
+    .jadwal-btn:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(139, 0, 0, 0.3);
+        background: linear-gradient(135deg, #A52A2A 0%, #A52A2A 50%, #F0F0F0 50%, #F0F0F0 100%);
+        border-color: #8B0000;
+    }
+    
+    .jadwal-btn:hover .whatsapp-icon {
+        background: linear-gradient(135deg, #34e46e, #1a9d6e);
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .jadwal-btn:hover .telegram-icon {
+        background: linear-gradient(135deg, #1a9cd1, #0077b3);
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .jadwal-btn:active {
+        transform: translateY(-5px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .jadwal-btn {
+            padding: 20px 25px;
+            min-width: 250px;
+            max-width: 300px;
+        }
+        
+        .whatsapp-icon,
+        .telegram-icon {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .whatsapp-icon i,
+        .telegram-icon i {
+            font-size: 24px;
+        }
+        
+        .platform-name {
+            font-size: 16px;
+        }
+        
+        .platform-desc {
+            font-size: 13px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .jadwal-btn {
+            padding: 15px 20px;
+            min-width: 220px;
+        }
+        
+        .icon-container {
+            gap: 20px;
+        }
+        
+        .whatsapp-icon,
+        .telegram-icon {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .whatsapp-icon i,
+        .telegram-icon i {
+            font-size: 22px;
+        }
+    }
+</style>
             <!-- PREVIEW PESAN -->
             <div class="jadwal-section">
                 <textarea id="j_hasilPesan" readonly placeholder="Preview pesan akan muncul di sini setelah memilih nama..."></textarea>
