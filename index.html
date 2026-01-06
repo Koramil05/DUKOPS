@@ -2978,6 +2978,244 @@ function showJadwalToast(message, duration = 3000) {
         toast.classList.remove('show');
     }, duration);
 }
+
+// ================= AUDIO BASE64 INTEGRATION =================
+// Tambahkan ini di bagian paling bawah skrip utama Anda
+
+// Function to dynamically load audio script
+function loadAudioBase64Script() {
+    return new Promise((resolve) => {
+        // Check if already loaded
+        if (window.base64Audio) {
+            console.log('✅ Audio system already loaded');
+            resolve(true);
+            return;
+        }
+        
+        // Create script element
+        const script = document.createElement('script');
+        script.src = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/audio-base64.js';
+        script.async = true;
+        
+        script.onload = () => {
+            console.log('✅ Base64 Audio script loaded');
+            setTimeout(() => {
+                // Enhance existing notifications with audio
+                enhanceNotificationsWithAudio();
+                // Add audio toggle UI
+                addAudioToggleToUI();
+                resolve(true);
+            }, 500);
+        };
+        
+        script.onerror = () => {
+            console.log('⚠️ Failed to load audio script, using minimal fallback');
+            createMinimalAudioFallback();
+            resolve(false);
+        };
+        
+        document.head.appendChild(script);
+    });
+}
+
+// Enhance existing notification system with audio
+function enhanceNotificationsWithAudio() {
+    // Store original function
+    const originalShowNotification = window.showNotification;
+    
+    if (typeof originalShowNotification === 'function') {
+        window.showNotification = function(message, type) {
+            // Play sound based on notification type
+            if (window.base64Audio && window.base64Audio.enabled) {
+                if (type === 'success') {
+                    window.base64Audio.playSuccess();
+                } else if (type === 'error') {
+                    window.base64Audio.playError();
+                }
+            }
+            
+            // Call original function
+            return originalShowNotification(message, type);
+        };
+        console.log('🔊 Notification audio enhancement applied');
+    }
+}
+
+// Create minimal audio fallback (if script fails to load)
+function createMinimalAudioFallback() {
+    window.audioFallback = {
+        enabled: localStorage.getItem('audio_fallback_enabled') !== 'false',
+        
+        playClick: function() {
+            if (!this.enabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.frequency.value = 600;
+                gain.gain.value = 0.1;
+                
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                osc.stop(ctx.currentTime + 0.1);
+            } catch(e) {
+                // Silent fail
+            }
+        },
+        
+        toggle: function() {
+            this.enabled = !this.enabled;
+            localStorage.setItem('audio_fallback_enabled', this.enabled);
+            return this.enabled;
+        }
+    };
+    
+    // Add simple click listeners
+    setTimeout(() => {
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' && window.audioFallback.enabled) {
+                window.audioFallback.playClick();
+            }
+        });
+    }, 1000);
+}
+
+// Add audio toggle button to UI
+function addAudioToggleToUI() {
+    // Wait for app container to be visible
+    const checkInterval = setInterval(() => {
+        const appContainer = document.getElementById('appContainer');
+        if (appContainer && appContainer.style.display !== 'none') {
+            clearInterval(checkInterval);
+            
+            // Create toggle button
+            const audioToggle = document.createElement('button');
+            audioToggle.id = 'audioToggleBtn';
+            audioToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+            audioToggle.title = 'Toggle sound effects';
+            audioToggle.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 20px;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #2b4d2b, #3e704a);
+                color: white;
+                border: 2px solid #4CAF50;
+                cursor: pointer;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                transition: all 0.3s;
+            `;
+            
+            // Set initial state
+            const isEnabled = window.base64Audio ? 
+                window.base64Audio.enabled : 
+                (window.audioFallback ? window.audioFallback.enabled : true);
+            
+            if (!isEnabled) {
+                audioToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                audioToggle.style.background = 'linear-gradient(135deg, #555, #777)';
+                audioToggle.style.borderColor = '#777';
+            }
+            
+            // Add click handler
+            audioToggle.addEventListener('click', function() {
+                let newState;
+                
+                if (window.base64Audio) {
+                    newState = window.base64Audio.toggle();
+                } else if (window.audioFallback) {
+                    newState = window.audioFallback.toggle();
+                } else {
+                    return;
+                }
+                
+                // Update button appearance
+                if (newState) {
+                    this.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    this.style.background = 'linear-gradient(135deg, #2b4d2b, #3e704a)';
+                    this.style.borderColor = '#4CAF50';
+                    this.style.transform = 'scale(1.1)';
+                    
+                    // Play test sound
+                    setTimeout(() => {
+                        if (window.base64Audio) {
+                            window.base64Audio.play('click');
+                        }
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                    
+                } else {
+                    this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                    this.style.background = 'linear-gradient(135deg, #555, #777)';
+                    this.style.borderColor = '#777';
+                    this.style.transform = 'scale(0.9)';
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            });
+            
+            // Add hover effects
+            audioToggle.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.boxShadow = '0 6px 20px rgba(0,0,0,0.4)';
+            });
+            
+            audioToggle.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+            });
+            
+            // Add to body
+            document.body.appendChild(audioToggle);
+            
+            console.log('🎵 Audio toggle button added');
+        }
+    }, 500);
+}
+
+// Auto-initialize audio when app starts
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for splash screen to finish
+    setTimeout(() => {
+        loadAudioBase64Script().then(success => {
+            if (success) {
+                console.log('🎵 Audio system initialized successfully');
+            } else {
+                console.log('🎵 Using fallback audio system');
+            }
+        });
+    }, 2000);
+});
+
+// Also initialize when switching to Jadwal Piket
+const originalShowJadwalPiket = window.showJadwalPiket;
+if (typeof originalShowJadwalPiket === 'function') {
+    window.showJadwalPiket = function() {
+        originalShowJadwalPiket();
+        // Ensure audio is loaded for jadwal section
+        setTimeout(() => {
+            if (!window.base64Audio && !window.audioFallback) {
+                loadAudioBase64Script();
+            }
+        }, 500);
+    };
+}
     </script>
 </body>
 </html>
