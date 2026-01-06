@@ -365,6 +365,38 @@
         .attendance-actions { display: flex; gap: 10px; margin-top: 15px; }
         .attendance-actions button { flex: 1; margin-top: 0; padding: 10px; }
         
+        /* Popup Terima Kasih */
+        .thankyou-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .thankyou-content {
+            background: linear-gradient(135deg, #1d1f1d, #2b4d2b);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+            border: 3px solid #4CAF50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
         /* Install Button */
         #installButton {
             position: fixed;
@@ -405,6 +437,7 @@
             .nav-btn { padding: 10px; }
             .splash-buttons { flex-direction: column; }
             .splash-btn { padding: 12px; }
+            .thankyou-content { padding: 20px; width: 95%; }
         }
         
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -1011,7 +1044,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentStage >= loadingStages.length) {
             // Selesai loading, tampilkan tombol
             document.getElementById('splashDukopsBtn').style.opacity = '1';
-            document.getElementById('splashJadwalBtn').style.opacity = '1';
             return;
         }
         
@@ -1033,7 +1065,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn("⚠️ Emergency timeout triggered");
         updateProgress(100, "Aplikasi Siap digunakan");
         document.getElementById('splashDukopsBtn').style.opacity = '1';
-        document.getElementById('splashJadwalBtn').style.opacity = '1';
     }, 6000);
 });
 
@@ -1042,12 +1073,6 @@ function loadDukopsApp() {
     currentApp = 'dukops';
     showApp();
     initializeApp();
-}
-
-function loadJadwalApp() {
-    currentApp = 'jadwal';
-    showApp();
-    initJadwalPiket();
 }
 
 function showApp() {
@@ -1117,6 +1142,7 @@ async function sendToBackend(action, data = {}) {
             if (action === 'listFiles') {
                 if (data.desaFilter) url += `&desaFilter=${encodeURIComponent(data.desaFilter)}`;
                 if (data.monthFilter) url += `&monthFilter=${encodeURIComponent(data.monthFilter)}`;
+                if (data.readZips) url += `&readZips=true`;
             }
             // Tambahkan parameter untuk getJadwalData
             else if (action === 'getJadwalData') {
@@ -1203,7 +1229,7 @@ function initializeApp() {
     }
 }
 
-// ================= FUNGSI DUKOPS (tetap sama) =================
+// ================= FUNGSI DUKOPS =================
 async function loadDesaList() {
     console.log("🔄 Loading desa list...");
     
@@ -1218,7 +1244,7 @@ async function loadDesaList() {
     loading.style.display = 'block';
     
     try {
-        // Fallback data jika GitHub API gagal// JANGAN ADA Fallback data jika GitHub API gagal
+        // Fallback data
         const fallbackDesas = [
             "Desa Sambangan", "Desa Gitgit", "Desa Pegayaman", 
             "Desa Silangjana", "Desa Panji", "Kelurahan Sukasada",
@@ -1390,7 +1416,7 @@ function setupInstallPrompt() {
     });
 }
 
-// ================= FUNGSI DUKOPS LAINNYA (tetap sama) =================
+// ================= FUNGSI DUKOPS LAINNYA =================
 async function loadSelectedDesa() {
     const select = document.getElementById('selectDesa');
     const coordUrl = select.value;
@@ -1724,6 +1750,15 @@ async function processSubmission() {
         if (telegramSent && driveUploaded) {
             notificationMsg = `✔ Berhasil: Telegram & Drive (${desaData.count}/9 laporan)`;
             showNotification(notificationMsg, "success");
+            
+            // Cek jika sudah mencapai 9 laporan untuk desa ini
+            if (desaData.count >= 9) {
+                // Tampilkan popup ucapan terima kasih
+                showThankYouPopup(desaInfo.cleanName, desaData.count);
+                
+                // Kirim notifikasi Telegram ucapan terima kasih
+                await sendThankYouTelegram(desaInfo.cleanName, desaData.count);
+            }
         } else if (telegramSent) {
             notificationMsg = `✔ Telegram OK (Drive gagal) (${desaData.count}/9 laporan)`;
             showNotification(notificationMsg, "warning");
@@ -2045,11 +2080,23 @@ async function loadAttendanceData() {
     try {
         const result = await sendToBackend('listFiles', {
             desaFilter: document.getElementById('attendanceDesaFilter').value,
-            monthFilter: document.getElementById('attendanceMonthFilter').value
+            monthFilter: document.getElementById('attendanceMonthFilter').value,
+            readZips: 'true'
         });
         
         if (result.success) {
             attendanceData = result.files || [];
+            
+            // Filter berdasarkan bulan/tahun yang dipilih
+            const selectedMonth = document.getElementById('attendanceMonthFilter').value;
+            if (selectedMonth) {
+                const [year, month] = selectedMonth.split('-');
+                attendanceData = attendanceData.filter(file => {
+                    const fileMonth = file.month || extractMonthYearFromFileName(file.name);
+                    return fileMonth === `${year}-${month}`;
+                });
+            }
+            
             displayAttendanceList(attendanceData);
             displayAttendanceSummary(attendanceData);
             showNotification(`✅ Data absensi dimuat (${attendanceData.length} file)`, "success");
@@ -2064,6 +2111,17 @@ async function loadAttendanceData() {
     } finally {
         loading.style.display = 'none';
     }
+}
+
+function extractMonthYearFromFileName(filename) {
+    // Format: Desa 01 2024.zip atau Desa 1 2024.zip
+    const match = filename.match(/(\d{1,2})\s+(\d{4})\.zip$/);
+    if (match) {
+        const month = match[1].padStart(2, '0');
+        const year = match[2];
+        return `${year}-${month}`;
+    }
+    return '';
 }
 
 function loadAttendanceFromFallback() {
@@ -2092,7 +2150,9 @@ function loadAttendanceFromFallback() {
             desa: item.desa,
             size: 0,
             createdTime: new Date().toISOString(),
-            webViewLink: '#'
+            webViewLink: '#',
+            zipContents: `Narasi.txt, Dukops.png`,
+            month: extractMonthYearFromFileName(item.name)
         }));
         
         displayAttendanceList(attendanceData);
@@ -2121,68 +2181,118 @@ function displayAttendanceList(files) {
         return;
     }
     
-    const groupedByDesa = {};
+    // Kelompokkan berdasarkan bulan/tahun
+    const groupedByMonthYear = {};
     files.forEach(file => {
-        const desaName = file.desa || extractDesaFromFileName(file.name);
-        if (!groupedByDesa[desaName]) {
-            groupedByDesa[desaName] = [];
+        const monthYear = file.month || extractMonthYearFromFileName(file.name);
+        if (!groupedByMonthYear[monthYear]) {
+            groupedByMonthYear[monthYear] = {
+                month: monthYear,
+                files: [],
+                desas: new Set()
+            };
         }
-        groupedByDesa[desaName].push(file);
+        groupedByMonthYear[monthYear].files.push(file);
+        
+        const desaName = file.desa || extractDesaFromFileName(file.name);
+        groupedByMonthYear[monthYear].desas.add(desaName);
     });
     
-    const sortedDesas = Object.keys(groupedByDesa).sort((a, b) => {
-        return groupedByDesa[b].length - groupedByDesa[a].length;
-    });
+    // Urutkan bulan dari terbaru ke terlama
+    const sortedMonths = Object.keys(groupedByMonthYear)
+        .sort((a, b) => new Date(b) - new Date(a));
     
     let html = '';
     
-    sortedDesas.forEach(desaName => {
-        const desaFiles = groupedByDesa[desaName];
-        const count = desaFiles.length;
-        const isComplete = count >= TARGET_LAPORAN;
+    sortedMonths.forEach(monthYear => {
+        const group = groupedByMonthYear[monthYear];
+        const [year, month] = monthYear.split('-');
+        const monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        const monthName = monthNames[parseInt(month) - 1];
         
         html += `
-            <div class="desa-card ${isComplete ? '' : 'incomplete'}">
-                <div class="desa-header">
-                    <div class="desa-name">${desaName}</div>
-                    <div class="desa-count" style="color: ${isComplete ? '#4CAF50' : '#FF9800'}">
-                        ${count}/${TARGET_LAPORAN} laporan
+            <div class="desa-card" style="margin-bottom: 20px;">
+                <div class="desa-header" style="background: #2b4d2b;">
+                    <div class="desa-name">
+                        <i class="fas fa-folder"></i> ${monthName} ${year}
+                    </div>
+                    <div class="desa-count">
+                        ${group.files.length} laporan | ${group.desas.size} desa
                     </div>
                 </div>
                 <div class="desa-files">
         `;
         
-        desaFiles.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+        // Kelompokkan file dalam bulan tersebut per desa
+        const filesByDesa = {};
+        group.files.forEach(file => {
+            const desaName = file.desa || extractDesaFromFileName(file.name);
+            if (!filesByDesa[desaName]) {
+                filesByDesa[desaName] = [];
+            }
+            filesByDesa[desaName].push(file);
+        });
         
-        desaFiles.forEach((file, index) => {
-            const date = new Date(file.createdTime);
-            const dateStr = date.toLocaleDateString('id-ID', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            const fileSize = file.size ? formatFileSize(file.size) : 'Ukuran tidak tersedia';
+        // Tampilkan per desa
+        Object.entries(filesByDesa).forEach(([desaName, desaFiles]) => {
+            const fileCount = desaFiles.length;
+            const isComplete = fileCount >= TARGET_LAPORAN;
             
             html += `
-                <div class="file-item">
-                    <div class="file-info">
-                        <div style="flex: 1;">
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-meta">
-                                <i class="far fa-clock"></i> ${dateStr}
-                                <span style="margin-left: 10px;">
-                                    <i class="fas fa-hdd"></i> ${fileSize}
-                                </span>
-                            </div>
+                <div class="desa-card" style="margin: 10px 0; border-left: 4px solid ${isComplete ? '#4CAF50' : '#FF9800'};">
+                    <div class="desa-header" style="padding: 8px 12px;">
+                        <div class="desa-name" style="font-size: 14px;">${desaName}</div>
+                        <div class="desa-count" style="font-size: 12px; color: ${isComplete ? '#4CAF50' : '#FF9800'}">
+                            ${fileCount}/9 laporan
                         </div>
-                        ${file.webViewLink !== '#' ? `
-                            <a href="${file.webViewLink}" target="_blank" class="file-link" title="Buka di Drive">
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        ` : ''}
+                    </div>
+                    <div class="desa-files" style="padding: 5px 12px;">
+            `;
+            
+            desaFiles.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+            
+            desaFiles.forEach((file, index) => {
+                const date = new Date(file.createdTime);
+                const dateStr = date.toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const fileSize = file.size ? formatFileSize(file.size) : 'Ukuran tidak tersedia';
+                const zipContents = file.zipContents ? 
+                    `<div class="file-meta" style="color: #4dff4d; margin-top: 3px;">
+                        <i class="fas fa-file-archive"></i> Isi ZIP: ${file.zipContents}
+                    </div>` : '';
+                
+                html += `
+                    <div class="file-item" style="padding: 6px 0;">
+                        <div class="file-info">
+                            <div style="flex: 1;">
+                                <div class="file-name" style="font-size: 13px;">${file.name}</div>
+                                <div class="file-meta" style="font-size: 11px;">
+                                    <i class="far fa-clock"></i> ${dateStr}
+                                    <span style="margin-left: 10px;">
+                                        <i class="fas fa-hdd"></i> ${fileSize}
+                                    </span>
+                                </div>
+                                ${zipContents}
+                            </div>
+                            ${file.webViewLink !== '#' ? `
+                                <a href="${file.webViewLink}" target="_blank" class="file-link" title="Buka di Drive">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
                     </div>
                 </div>
             `;
@@ -2252,7 +2362,7 @@ function displayAttendanceSummary(files) {
 function extractDesaFromFileName(filename) {
     const cleanName = filename.replace(/_/g, ' ')
                              .replace(/\.zip$/, '')
-                             .replace(/\s+\d{2}\s+\d{2}\s+\d{4}.*$/, '')
+                             .replace(/\s+\d{1,2}\s+\d{4}$/, '')
                              .trim();
     
     const selectDesa = document.getElementById('selectDesa');
@@ -2367,6 +2477,9 @@ function downloadAttendanceReport() {
             txtContent += `\n${index + 1}. ${file.name}\n`;
             txtContent += `   Desa    : ${file.desa || extractDesaFromFileName(file.name)}\n`;
             txtContent += `   Tanggal : ${dateStr}\n`;
+            if (file.zipContents) {
+                txtContent += `   Isi ZIP : ${file.zipContents}\n`;
+            }
             if (file.webViewLink && file.webViewLink !== '#') {
                 txtContent += `   Link    : ${file.webViewLink}\n`;
             }
@@ -2413,6 +2526,95 @@ function updateDesaHeaderImage(desaName) {
     const desaInfo = normalizeDesaName(desaName);
     const imageName = desaInfo.normalized.toLowerCase().replace(/\s+/g, '_');
     headerImage.src = `https://github.com/Koramil05/DUKOPS/blob/main/bnr_${imageName}.png?raw=true`;
+}
+
+// ================= FUNGSI POPUP UCAPAN TERIMA KASIH =================
+function showThankYouPopup(desaName, count) {
+    // Buat modal popup
+    const modal = document.createElement('div');
+    modal.className = 'thankyou-popup';
+    
+    modal.innerHTML = `
+        <div class="thankyou-content">
+            <div style="font-size: 80px; color: #4CAF50; margin-bottom: 20px;">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 style="color: #9fd49f; margin-bottom: 15px; font-size: 28px;">
+                🎉 SELAMAT! 🎉
+            </h2>
+            <p style="color: #f5f5f5; font-size: 18px; line-height: 1.5; margin-bottom: 20px;">
+                <strong>Babinsa ${desaName}</strong><br>
+                Telah menyelesaikan <strong>${count} laporan</strong> untuk bulan ini!
+            </p>
+            <div style="
+                background: rgba(76, 175, 80, 0.2);
+                border: 2px solid #4CAF50;
+                border-radius: 10px;
+                padding: 15px;
+                margin: 20px 0;
+                font-size: 16px;
+                color: #b2d8b2;
+            ">
+                <i class="fas fa-check-circle"></i> Target 9 laporan per bulan TERCAPAI!
+            </div>
+            <p style="color: #a5a5a5; margin-bottom: 25px; font-size: 14px;">
+                Terima kasih atas dedikasi dan kerja keras Anda dalam melaksanakan tugas DUKOPS.
+            </p>
+            <button onclick="this.closest('.thankyou-popup').remove()" 
+                    style="
+                        background: linear-gradient(135deg, #4CAF50, #2b4d2b);
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        width: 100%;
+                        transition: transform 0.3s;
+                    "
+                    onmouseover="this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.transform='translateY(0)'">
+                <i class="fas fa-thumbs-up"></i> TERIMA KASIH
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Auto close setelah 10 detik
+    setTimeout(() => {
+        if (modal.parentNode) {
+            modal.remove();
+        }
+    }, 10000);
+}
+
+// Fungsi untuk mengirim ucapan terima kasih ke Telegram
+async function sendThankYouTelegram(desaName, count) {
+    try {
+        const message = `🎉 *SELAMAT!* 🎉
+
+*Babinsa ${desaName}* telah menyelesaikan *${count} laporan DUKOPS* untuk bulan ini!
+
+✅ *Target 9 laporan per bulan TERCAPAI!*
+
+Terima kasih atas dedikasi dan kerja keras dalam melaksanakan tugas DUKOPS.
+
+*KORAMIL 1609-05/SUKASADA*
+*Kodim 1609/Buleleng*`;
+        
+        const result = await sendToBackend('sendTelegramText', {
+            message: message,
+            chatId: '-1003020813628' // Group koramil
+        });
+        
+        if (result.success) {
+            console.log('Ucapan terima kasih terkirim ke Telegram');
+        }
+    } catch (error) {
+        console.error('Gagal mengirim ucapan terima kasih ke Telegram:', error);
+    }
 }
 
 // ================= FUNGSI JADWAL PIKET =================
