@@ -160,10 +160,7 @@ export class AdminDashboard {
                         <section class="admin-section">
                             <h3 class="admin-section-title">📊 Analitik</h3>
                             <div class="analytics-grid">
-                                <div class="analytics-card">
-                                    <span class="analytics-label">Total Pengiriman</span>
-                                    <span class="analytics-value" id="totalSubmissions">0</span>
-                                </div>
+                                <!-- Total removed per request -->
                                 <div class="analytics-card success">
                                     <span class="analytics-label">Berhasil</span>
                                     <span class="analytics-value" id="successSubmissions">0</span>
@@ -571,9 +568,7 @@ export class AdminDashboard {
         const failedCount = syncLog.filter(log => log.status === 'failed').length;
         const pendingCount = window.OfflineManager ? window.OfflineManager.getQueue().length : 0;
 
-        // Update analytics (hide total submissions element)
-        const totalEl = document.getElementById('totalSubmissions');
-        if (totalEl) totalEl.style.display = 'none';
+        // Update analytics
         document.getElementById('successSubmissions').textContent = successCount;
         document.getElementById('failedSubmissions').textContent = failedCount;
         document.getElementById('pendingSubmissions').textContent = pendingCount;

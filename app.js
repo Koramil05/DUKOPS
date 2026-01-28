@@ -1667,8 +1667,6 @@ function displayAttendanceList(files) {
 
 function displayAttendanceSummary(files) {
     const summary = document.getElementById('attendanceSummary');
-    const totalReports = document.getElementById('totalReports');
-    const totalDesa = document.getElementById('totalDesa');
     const targetStatus = document.getElementById('targetStatus');
     const progressBar = document.getElementById('progressBar');
 
@@ -1679,7 +1677,7 @@ function displayAttendanceSummary(files) {
 
     summary.style.display = 'block';
 
-    if (totalReports) totalReports.textContent = files.length;
+
 
     const uniqueDesas = new Set();
     files.forEach(file => {
@@ -1687,7 +1685,7 @@ function displayAttendanceSummary(files) {
         uniqueDesas.add(desaName);
     });
 
-    if (totalDesa) totalDesa.textContent = uniqueDesas.size;
+
 
     let totalAchieved = 0;
     let totalPossible = uniqueDesas.size * TARGET_LAPORAN;
