@@ -1555,13 +1555,13 @@ function updateDesaHeaderImage(desaName) {
     if (!headerImage) return;
 
     if (!desaName) {
-        headerImage.src = 'https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true';
+        headerImage.src = 'https://github.com/Koramil05/DUKOPS/raw/main/bnr_default.png';
         return;
     }
 
     const desaInfo = normalizeDesaName(desaName);
     const imageName = desaInfo.normalized.toLowerCase().replace(/\s+/g, '_');
-    headerImage.src = `https://github.com/Koramil05/DUKOPS/blob/main/bnr_${imageName}.png?raw=true`;
+    headerImage.src = `https://github.com/Koramil05/DUKOPS/raw/main/bnr_${imageName}.png`;
 }
 
 // ================= FUNGSI POPUP UCAPAN TERIMA KASIH =================
