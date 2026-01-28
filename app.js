@@ -9,6 +9,20 @@ const GITHUB_URLS = {
     PIKET: "https://raw.githubusercontent.com/Koramil05/JADWAL/main/piket.txt"
 };
 
+// ================= IMAGE OPTIMIZER IMPORT =================
+// Dynamically import ImageOptimizer class
+let ImageOptimizer = null;
+
+(async () => {
+    try {
+        const module = await import('./js/utils/ImageOptimizer.js');
+        ImageOptimizer = module.ImageOptimizer;
+        console.log('✓ ImageOptimizer loaded successfully');
+    } catch (error) {
+        console.warn('⚠ ImageOptimizer module not available, using native compression');
+    }
+})();
+
 // ================= VARIABEL GLOBAL =================
 let img = new Image();
 let selectedDesa = "";
@@ -20,6 +34,7 @@ let submittedDates = [];
 let desaCounter = {};
 let attendanceData = [];
 let deferredPrompt = null;
+let originalPhotoFile = null;  // Store original file for compression stats
 
 // Variabel untuk Jadwal Piket
 let JadwalData = {
@@ -528,12 +543,26 @@ function pickRandomKoordinat() {
     }, 300);
 }
 
-function previewImage() {
+async function previewImage() {
     const file = document.getElementById("gambar").files[0];
     const preview = document.getElementById("previewGambar");
 
     if (file) {
-        preview.textContent = file.name;
+        // Store original file for later compression
+        originalPhotoFile = file;
+
+        // Show file name and size
+        const fileSizeMB = (file.size / 1048576).toFixed(2);
+        preview.innerHTML = `<small>${file.name} (${fileSizeMB}MB)</small>`;
+
+        // Validate image format
+        if (!file.type.startsWith('image/')) {
+            showNotification("File harus berupa gambar (JPEG, PNG, WebP)", "error");
+            document.getElementById("gambar").value = "";
+            preview.textContent = "";
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = function (e) {
             img = new Image();
@@ -548,14 +577,17 @@ function previewImage() {
                 showNotification("Gagal memuat gambar", "error");
                 document.getElementById("gambar").value = "";
                 preview.textContent = "";
+                originalPhotoFile = null;
             };
         };
         reader.onerror = function () {
             showNotification("Gagal membaca file", "error");
+            originalPhotoFile = null;
         };
         reader.readAsDataURL(file);
     } else {
         img = new Image();
+        originalPhotoFile = null;
         updatePreview();
     }
     checkInputCompletion();
@@ -737,8 +769,33 @@ async function processSubmission() {
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
     try {
-        const canvas = document.getElementById("canvas");
-        const imgData = canvas.toDataURL("image/png");
+        // PHOTO COMPRESSION STEP
+        let imgData = null;
+        let compressionInfo = null;
+
+        if (ImageOptimizer && originalPhotoFile) {
+            try {
+                console.log(`📸 Mulai kompresi foto: ${(originalPhotoFile.size / 1048576).toFixed(2)}MB`);
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengompresi foto...';
+
+                const processed = await ImageOptimizer.processForSubmission(originalPhotoFile);
+                imgData = processed.base64.split('base64,')[1];
+                compressionInfo = processed.stats;
+
+                console.log(`✓ Kompresi berhasil: ${compressionInfo.reduction}% pengurangan`);
+                console.log(`  ${compressionInfo.originalMB}MB → ${compressionInfo.compressedMB}MB`);
+            } catch (error) {
+                console.warn(`⚠ Compression failed, using original: ${error.message}`);
+                // Fallback to original image from canvas
+                const canvas = document.getElementById("canvas");
+                imgData = canvas.toDataURL("image/png").split('base64,')[1];
+            }
+        } else {
+            // Fallback: use canvas image without compression
+            const canvas = document.getElementById("canvas");
+            imgData = canvas.toDataURL("image/png").split('base64,')[1];
+        }
+
         const narasi = document.getElementById("narasi").value;
         const date = new Date(tanggalWaktu);
 
@@ -765,7 +822,7 @@ async function processSubmission() {
 
         const zip = new JSZip();
         zip.file(fileNameInsideZipNarasi, narasiContent);
-        zip.file(fileNameInsideZipImage, imgData.split("base64,")[1], { base64: true });
+        zip.file(fileNameInsideZipImage, imgData, { base64: true });
 
         const content = await zip.generateAsync({ type: "blob" });
 
@@ -794,7 +851,11 @@ async function processSubmission() {
         // 6. Notifikasi hasil
         let notificationMsg = '';
         if (telegramSent && driveUploaded) {
-            notificationMsg = `✔ Berhasil: Telegram & Drive (${desaData.count}/9 laporan)`;
+            if (compressionInfo) {
+                notificationMsg = `✔ Berhasil: Telegram & Drive (${desaData.count}/9 laporan)\n📦 Foto dikompresi: ${compressionInfo.reduction}%`;
+            } else {
+                notificationMsg = `✔ Berhasil: Telegram & Drive (${desaData.count}/9 laporan)`;
+            }
             showNotification(notificationMsg, "success");
 
             // Cek jika sudah mencapai 9 laporan untuk desa ini
@@ -922,6 +983,7 @@ function resetForm() {
     selectedDesa = "";
     kordinatList = [];
     currentKoordinat = "";
+    originalPhotoFile = null;  // Clear stored photo file
     document.getElementById('selectDesa').value = "";
     document.getElementById('previewDesa').textContent = "";
     document.getElementById('previewKordinat').textContent = "";
