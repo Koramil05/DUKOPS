@@ -64,6 +64,36 @@ let NetworkMonitor = null;
     } catch (error) {
         console.warn('⚠ FormValidator module not available');
     }
+
+    // Load IndexedDB module
+    try {
+        const indexedDBModule = await import('./js/services/IndexedDBManager.js');
+        window.IndexedDBManager = indexedDBModule.IndexedDBManager;
+        console.log('✓ IndexedDBManager loaded successfully');
+    } catch (error) {
+        console.warn('⚠ IndexedDBManager module not available');
+    }
+
+    // Load Sync Dashboard module
+    try {
+        const syncModule = await import('./js/components/SyncDashboard.js');
+        window.SyncDashboard = syncModule.SyncDashboard;
+        setTimeout(() => {
+            window.SyncDashboard.init();
+            console.log('✓ SyncDashboard initialized');
+        }, 1000);
+    } catch (error) {
+        console.warn('⚠ SyncDashboard module not available');
+    }
+
+    // Load Admin Dashboard module
+    try {
+        const adminModule = await import('./js/components/AdminDashboard.js');
+        window.AdminDashboard = adminModule.AdminDashboard;
+        console.log('✓ AdminDashboard loaded (accessible via Ctrl+Shift+A)');
+    } catch (error) {
+        console.warn('⚠ AdminDashboard module not available');
+    }
 })();
 
 // ================= VARIABEL GLOBAL =================
@@ -332,6 +362,19 @@ function initializeApp() {
         // Listen for offline sync trigger
         window.addEventListener('startOfflineSync', async (event) => {
             await handleOfflineSync(event.detail.submissionQueue);
+        });
+
+        // ================= SETUP KEYBOARD SHORTCUTS =================
+        // Admin Dashboard: Ctrl+Shift+A
+        window.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+                event.preventDefault();
+                if (window.AdminDashboard) {
+                    window.AdminDashboard.init();
+                } else {
+                    alert('Admin Dashboard not available');
+                }
+            }
         });
 
         // Show welcome message
