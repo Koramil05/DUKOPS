@@ -100,24 +100,34 @@
                     </div>
                 </div>
 
-                <label><i class="fas fa-village"></i> Pilih Desa:</label>
-                <select id="selectDesa" onchange="loadSelectedDesa()">
-                    <option value="">-- Pilih Desa --</option>
-                </select>
-                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...</div>
-                <div class="previewBox" id="previewDesa"></div>
+                <!-- Row 1: Pilih Desa & Foto -->
+                <div class="form-row">
+                    <div class="form-col">
+                        <label><i class="fas fa-village"></i> Pilih Desa:</label>
+                        <select id="selectDesa" onchange="loadSelectedDesa()">
+                            <option value="">-- Pilih Desa --</option>
+                        </select>
+                        <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...
+                        </div>
+                        <div class="previewBox" id="previewDesa"></div>
 
-                <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
-                <div class="previewBox" id="previewKordinat"></div>
+                        <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
+                        <div class="previewBox" id="previewKordinat"></div>
+                    </div>
 
-                <label><i class="fas fa-camera"></i> Foto Kegiatan:</label>
-                <input type="file" id="gambar" accept="image/*" onchange="previewImage()">
-                <div class="previewBox" id="previewGambar"></div>
+                    <div class="form-col">
+                        <label><i class="fas fa-camera"></i> Foto Kegiatan:</label>
+                        <input type="file" id="gambar" accept="image/*" onchange="previewImage()">
+                        <div class="previewBox" id="previewGambar"></div>
+                    </div>
+                </div>
 
+                <!-- Row 2: Tanggal & Waktu -->
                 <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
                 <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
                 <div class="previewBox" id="previewTanggal"></div>
 
+                <!-- Row 3: Narasi Kegiatan -->
                 <label><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
                 <textarea id="narasi" rows="4" placeholder="Masukkan narasi kegiatan..."
                     oninput="checkInputCompletion()"></textarea>
