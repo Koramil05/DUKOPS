@@ -394,21 +394,23 @@ label {
 .form-col-reset {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
 .form-col-reset label {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     background: #3a5a3a;
     border-left-color: #5a9c5a;
 }
 
 .reset-btn {
     margin-top: 0 !important;
+    margin-bottom: 0 !important;
     padding: 8px 15px !important;
     background: #4a7c4a !important;
     width: 100% !important;
     font-size: 14px !important;
+    border-radius: 5px !important;
 }
 
 .reset-btn:hover {
