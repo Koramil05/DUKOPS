@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Simulasi loading dengan 3 tahap
-    // Smooth progressive loading over total duration (15 seconds)
-    const totalDuration = 15000; // ms
+    // Smooth progressive loading over total duration (8 seconds)
+    const totalDuration = 8000; // ms
     const intervalMs = 150; // update every 150ms
     const steps = Math.max(1, Math.ceil(totalDuration / intervalMs));
     const increment = 100 / steps;
@@ -120,7 +120,7 @@ function showApp() {
 
     // Hide splash screen
     splashScreen.style.opacity = '0';
-    splashScreen.style.transition = 'opacity 0.8s ease';
+    splashScreen.style.transition = 'opacity 0.3s ease';
 
     setTimeout(() => {
         splashScreen.style.display = 'none';
@@ -129,6 +129,7 @@ function showApp() {
         // Beri sedikit delay untuk animasi
         setTimeout(() => {
             appContainer.style.opacity = '1';
+            appContainer.style.filter = 'blur(0px)';
 
             // Set tombol aktif sesuai aplikasi
             if (currentApp === 'dukops') {
@@ -145,7 +146,7 @@ function showApp() {
 
             console.log(`🎉 ${currentApp.toUpperCase()} App initialized!`);
         }, 100);
-    }, 800);
+    }, 300);
 }
 
 // ================= NAVIGASI ANTAR APLIKASI =================
