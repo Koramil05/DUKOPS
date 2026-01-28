@@ -122,6 +122,21 @@ class FormValidator {
             this.showError('datetime', 'Tanggal dan waktu harus diisi');
             return false;
         }
+
+        // Allow admin to disable date validation via settings (localStorage cache)
+        try {
+            const adminSettingsRaw = localStorage.getItem('adminSettings');
+            if (adminSettingsRaw) {
+                const adminSettings = JSON.parse(adminSettingsRaw);
+                if (adminSettings.VALIDATION_ENABLED === false) {
+                    // If validation is disabled, update display and return true
+                    this.updateDateDisplay(value);
+                    return true;
+                }
+            }
+        } catch (e) {
+            // ignore parsing errors and proceed with validation
+        }
         const inputDate = new Date(value);
         const now = new Date();
 
