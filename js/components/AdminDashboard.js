@@ -566,14 +566,14 @@ export class AdminDashboard {
         // Filter last 24h
         const recent = syncLog.filter(log => new Date(log.timestamp) > last24h);
 
-        // Calculate stats
-        const totalCount = syncLog.length;
+        // Calculate stats (removed total count display per request)
         const successCount = syncLog.filter(log => log.status === 'success').length;
         const failedCount = syncLog.filter(log => log.status === 'failed').length;
         const pendingCount = window.OfflineManager ? window.OfflineManager.getQueue().length : 0;
 
-        // Update analytics
-        document.getElementById('totalSubmissions').textContent = totalCount;
+        // Update analytics (hide total submissions element)
+        const totalEl = document.getElementById('totalSubmissions');
+        if (totalEl) totalEl.style.display = 'none';
         document.getElementById('successSubmissions').textContent = successCount;
         document.getElementById('failedSubmissions').textContent = failedCount;
         document.getElementById('pendingSubmissions').textContent = pendingCount;
