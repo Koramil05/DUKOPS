@@ -2056,7 +2056,7 @@ function loadAudioBase64Script() {
 
         // Create script element
         const script = document.createElement('script');
-        script.src = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/audio-base64.js';
+        script.src = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/assets/audio/audio-base64.js';
         script.async = true;
 
         script.onload = () => {
