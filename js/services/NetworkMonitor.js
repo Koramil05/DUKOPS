@@ -162,7 +162,7 @@ export class NetworkMonitor {
         this.statusElement.className = `network-status ${statusClass}`;
         this.statusElement.innerHTML = statusHTML;
 
-        // Add tooltip with details (only show unsynced count; remove total/synced)
+        // Add tooltip with details (show only unsynced count)
         if (stats.unsynced > 0) {
             this.statusElement.title = `Antrian: ${stats.unsynced} pengiriman`;
         } else {

@@ -160,7 +160,7 @@ export class AdminDashboard {
                         <section class="admin-section">
                             <h3 class="admin-section-title">📊 Analitik</h3>
                             <div class="analytics-grid">
-                                <!-- Total removed per request -->
+                                
                                 <div class="analytics-card success">
                                     <span class="analytics-label">Berhasil</span>
                                     <span class="analytics-value" id="successSubmissions">0</span>
@@ -563,7 +563,7 @@ export class AdminDashboard {
         // Filter last 24h
         const recent = syncLog.filter(log => new Date(log.timestamp) > last24h);
 
-        // Calculate stats (removed total count display per request)
+        // Calculate stats
         const successCount = syncLog.filter(log => log.status === 'success').length;
         const failedCount = syncLog.filter(log => log.status === 'failed').length;
         const pendingCount = window.OfflineManager ? window.OfflineManager.getQueue().length : 0;
