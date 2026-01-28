@@ -708,7 +708,7 @@ export class AdminDashboard {
             <body style="font-family: Arial; margin: 20px;">
                 <h2>DUKOPS - Laporan Pengiriman</h2>
                 <p>Tanggal: ${new Date().toLocaleDateString('id-ID')}</p>
-                <p>Total: ${syncLog.length} | Berhasil: ${successCount} | Gagal: ${failedCount}</p>
+                <p>Berhasil: ${successCount} | Gagal: ${failedCount}</p>
                 <hr>
                 ${syncLog.map(log => `
                     <p>
