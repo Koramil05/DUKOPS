@@ -122,10 +122,21 @@
                     </div>
                 </div>
 
-                <!-- Row 2: Tanggal & Waktu -->
-                <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
-                <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
-                <div class="previewBox" id="previewTanggal"></div>
+                <!-- Row 2: Tanggal & Waktu & Reset Button -->
+                <div class="form-row">
+                    <div class="form-col">
+                        <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
+                        <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
+                        <div class="previewBox" id="previewTanggal"></div>
+                    </div>
+
+                    <div class="form-col form-col-reset">
+                        <label><i class="fas fa-redo"></i> Aksi:</label>
+                        <button id="resetBtn" onclick="resetAll()" class="reset-btn">
+                            <i class="fas fa-redo"></i> Reset Semua
+                        </button>
+                    </div>
+                </div>
 
                 <!-- Row 3: Narasi Kegiatan -->
                 <label><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
@@ -138,7 +149,6 @@
                     <i class="fas fa-download"></i> DOWNLOAD & <i class="fas fa-paper-plane"></i> KIRIM & <i
                         class="fab fa-google-drive"></i> DRIVE
                 </button>
-                <button id="resetBtn" onclick="resetAll()"><i class="fas fa-redo"></i> Reset Semua Data</button>
 
                 <button id="showAttendanceBtn" onclick="showAttendance()">
                     <i class="fas fa-chart-bar"></i> TAMPILKAN LAPORAN

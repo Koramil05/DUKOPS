@@ -387,6 +387,28 @@ label {
     margin-top: 0;
 }
 
+.form-col-reset {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.form-col-reset label {
+    margin-bottom: 10px;
+}
+
+.reset-btn {
+    margin-top: 0 !important;
+    padding: 8px 15px !important;
+    background: #4a7c4a !important;
+    width: 100% !important;
+    font-size: 14px !important;
+}
+
+.reset-btn:hover {
+    background: #5a9c5a !important;
+}
+
 select,
 input,
 textarea {
