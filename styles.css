@@ -367,7 +367,11 @@ label {
     display: block;
     margin-top: 15px;
     font-weight: bold;
-    color: #b2d8b2;
+    color: white;
+    background: #2b4d2b;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border-left: 4px solid #4CAF50;
 }
 
 /* Form Row Layout */
@@ -395,6 +399,8 @@ label {
 
 .form-col-reset label {
     margin-bottom: 10px;
+    background: #3a5a3a;
+    border-left-color: #5a9c5a;
 }
 
 .reset-btn {
