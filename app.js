@@ -55,6 +55,15 @@ let NetworkMonitor = null;
     } catch (error) {
         console.warn('⚠ NetworkStatusTester not available (development only)');
     }
+
+    // Load form validation module
+    try {
+        const validatorModule = await import('./js/utils/FormValidator.js');
+        window.FormValidator = validatorModule.FormValidator;
+        console.log('✓ FormValidator loaded successfully');
+    } catch (error) {
+        console.warn('⚠ FormValidator module not available');
+    }
 })();
 
 // ================= VARIABEL GLOBAL =================
@@ -496,8 +505,21 @@ async function loadSelectedDesa() {
     const loading = document.getElementById('loadingKoordinat');
 
     if (!jsonPath) {
+        // VALIDATE DESA
+        if (window.FormValidator) {
+            const validation = window.FormValidator.validateDesa('');
+            window.FormValidator.displayError('selectDesa', validation);
+        }
         resetForm();
         return;
+    }
+
+    // VALIDATE DESA
+    if (window.FormValidator) {
+        const selectedOption = select.options[select.selectedIndex];
+        const desaValue = selectedOption.getAttribute('data-raw-name') || selectedOption.text;
+        const validation = window.FormValidator.validateDesa(desaValue);
+        window.FormValidator.displayError('selectDesa', validation);
     }
 
     const selectedOption = select.options[select.selectedIndex];
@@ -591,23 +613,50 @@ async function previewImage() {
         // Store original file for later compression
         originalPhotoFile = file;
 
+        // VALIDATE PHOTO FILE
+        if (window.FormValidator) {
+            const validation = window.FormValidator.validatePhoto(file);
+            window.FormValidator.displayError('gambar', validation);
+
+            if (!validation.valid) {
+                document.getElementById("gambar").value = "";
+                preview.textContent = "";
+                originalPhotoFile = null;
+                checkInputCompletion();
+                return;
+            }
+
+            // Show file size info
+            const fileSizeElement = document.getElementById("fileSizeInfo");
+            if (fileSizeElement) {
+                fileSizeElement.textContent = `📦 Ukuran: ${(file.size / 1024).toFixed(0)}KB`;
+                fileSizeElement.style.display = 'block';
+            }
+        }
+
         // Show file name and size
         const fileSizeMB = (file.size / 1048576).toFixed(2);
         preview.innerHTML = `<small>${file.name} (${fileSizeMB}MB)</small>`;
-
-        // Validate image format
-        if (!file.type.startsWith('image/')) {
-            showNotification("File harus berupa gambar (JPEG, PNG, WebP)", "error");
-            document.getElementById("gambar").value = "";
-            preview.textContent = "";
-            return;
-        }
 
         const reader = new FileReader();
         reader.onload = function (e) {
             img = new Image();
             img.src = e.target.result;
             img.onload = function () {
+                // VALIDATE PHOTO DIMENSIONS
+                if (window.FormValidator) {
+                    const dimensionValidation = window.FormValidator.validatePhotoDimensions(img);
+                    window.FormValidator.displayError('gambar', dimensionValidation);
+
+                    if (!dimensionValidation.valid) {
+                        document.getElementById("gambar").value = "";
+                        preview.textContent = "";
+                        originalPhotoFile = null;
+                        checkInputCompletion();
+                        return;
+                    }
+                }
+
                 if (kordinatList.length > 0) {
                     pickRandomKoordinat();
                 }
@@ -639,6 +688,21 @@ function updateDatePreview() {
     const previewHeader = document.getElementById("previewTanggalHeader");
 
     if (tglInput) {
+        // VALIDATE DATETIME
+        if (window.FormValidator) {
+            const validation = window.FormValidator.validateDateTime(tglInput);
+            window.FormValidator.displayError('tanggalWaktu', validation);
+
+            if (!validation.valid) {
+                document.getElementById("tanggalWaktu").value = "";
+                preview.textContent = "";
+                previewHeader.textContent = "";
+                tanggalWaktu = "";
+                checkInputCompletion();
+                return;
+            }
+        }
+
         let date;
 
         if (tglInput.includes('T')) {
@@ -796,6 +860,31 @@ function updatePreview() {
 }
 
 async function processSubmission() {
+    // ================= COMPREHENSIVE FORM VALIDATION =================
+    if (window.FormValidator) {
+        const formData = {
+            desa: selectedDesa,
+            photoFile: document.getElementById("gambar").files[0],
+            photoElement: img,
+            datetime: document.getElementById("tanggalWaktu").value,
+            narasi: document.getElementById("narasi").value
+        };
+
+        const validation = window.FormValidator.validateAll(formData);
+
+        // Display all validation errors
+        window.FormValidator.displayError('selectDesa', validation.details.desa);
+        window.FormValidator.displayError('gambar', validation.details.photo);
+        window.FormValidator.displayError('gambar', validation.details.photoDimensions);
+        window.FormValidator.displayError('tanggalWaktu', validation.details.datetime);
+        window.FormValidator.displayError('narasi', validation.details.narasi);
+
+        if (!validation.valid) {
+            showNotification("❌ Harap perbaiki field yang error terlebih dahulu", "error");
+            return;
+        }
+    }
+
     if (!validateSubmission()) return;
 
     if (isSameDateMonthSubmission()) {
@@ -1197,12 +1286,32 @@ function loadLastSubmittedDates() {
 }
 
 function checkInputCompletion() {
+    const narasiValue = document.getElementById("narasi").value;
+    const narasiInput = document.getElementById("narasi");
+
+    // VALIDATE NARASI IN REAL-TIME
+    if (window.FormValidator) {
+        const narasiValidation = window.FormValidator.validateNarasi(narasiValue);
+        window.FormValidator.displayError('narasi', narasiValidation);
+        window.FormValidator.updateNarasiCounter(narasiValue.length);
+
+        // Update field state
+        narasiInput.className = narasiValidation.valid ? 'is-valid' : narasiValidation.length < window.FormValidator.CONFIG.narasi.minLength ? 'is-warning' : 'is-invalid';
+
+        // Show counter
+        const counter = document.getElementById('narasiCounter');
+        if (counter) {
+            counter.style.display = narasiValue.length > 0 ? 'inline-block' : 'none';
+        }
+    }
+
     const isComplete = selectedDesa &&
         currentKoordinat &&
         tanggalWaktu &&
         img.src &&
         img.complete &&
-        document.getElementById("narasi").value.trim();
+        narasiValue.trim() &&
+        narasiValue.trim().length >= (window.FormValidator ? window.FormValidator.CONFIG.narasi.minLength : 20);
 
     const submitBtn = document.getElementById("submitBtn");
     if (submitBtn) {

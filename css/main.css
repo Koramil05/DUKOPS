@@ -12,6 +12,7 @@
 @import url('./02-components/_buttons.css');
 @import url('./02-components/_tabs.css');
 @import url('./02-components/_forms.css');
+@import url('./02-components/_validation.css');
 
 /* 03-SECTIONS */
 @import url('./03-sections/_splash.css');
