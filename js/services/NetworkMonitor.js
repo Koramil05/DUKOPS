@@ -162,9 +162,9 @@ export class NetworkMonitor {
         this.statusElement.className = `network-status ${statusClass}`;
         this.statusElement.innerHTML = statusHTML;
 
-        // Add tooltip with details
+        // Add tooltip with details (only show unsynced count; remove total/synced)
         if (stats.unsynced > 0) {
-            this.statusElement.title = `Antrian: ${stats.unsynced} pengiriman\nSudah terkirim: ${stats.synced}`;
+            this.statusElement.title = `Antrian: ${stats.unsynced} pengiriman`;
         } else {
             this.statusElement.title = this.isOnline ? 'Terhubung ke internet' : 'Tidak terhubung ke internet';
         }
