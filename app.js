@@ -546,6 +546,7 @@ function previewImage() {
 function updateDatePreview() {
     const tglInput = document.getElementById("tanggalWaktu").value;
     const preview = document.getElementById("previewTanggal");
+    const previewHeader = document.getElementById("previewTanggalHeader");
 
     if (tglInput) {
         let date;
@@ -572,14 +573,25 @@ function updateDatePreview() {
             second: '2-digit'
         };
 
+        let formattedDate = '';
         if (date.toLocaleDateString) {
-            preview.textContent = date.toLocaleString('id-ID', options);
+            formattedDate = date.toLocaleString('id-ID', options);
+            preview.textContent = formattedDate;
         } else {
-            preview.textContent = formatDateForOldBrowsers(date);
+            formattedDate = formatDateForOldBrowsers(date);
+            preview.textContent = formattedDate;
+        }
+
+        // Update preview di header Narasi Kegiatan
+        if (previewHeader) {
+            previewHeader.textContent = formattedDate;
         }
     } else {
         tanggalWaktu = "";
         preview.textContent = "";
+        if (previewHeader) {
+            previewHeader.textContent = "";
+        }
     }
     updatePreview();
     checkInputCompletion();

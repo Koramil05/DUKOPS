@@ -109,10 +109,11 @@
                         </select>
                         <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...
                         </div>
-                        <div class="previewBox" id="previewDesa"></div>
+                        <div class="previewBox" id="previewDesa" style="display: none;"></div>
 
-                        <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
-                        <div class="previewBox" id="previewKordinat"></div>
+                        <div id="loadingKoordinat" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Memuat
+                            koordinat...</div>
+                        <div class="previewBox" id="previewKordinat" style="display: none;"></div>
                     </div>
 
                     <div class="form-col">
@@ -127,7 +128,7 @@
                     <div class="form-col">
                         <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
                         <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
-                        <div class="previewBox" id="previewTanggal"></div>
+                        <div class="previewBox" id="previewTanggal" style="display: none;"></div>
                     </div>
 
                     <div class="form-col form-col-reset">
@@ -138,9 +139,13 @@
                     </div>
                 </div>
 
-                <!-- Row 3: Narasi Kegiatan -->
-                <label><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
-                <textarea id="narasi" rows="4" placeholder="Masukkan narasi kegiatan..."
+                <!-- Row 3: Narasi Kegiatan dengan Preview Tanggal -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <label style="margin: 0;"><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
+                    <span id="previewTanggalHeader"
+                        style="color: #9fd49f; font-size: 12px; font-weight: normal;"></span>
+                </div>
+                <textarea id="narasi" rows="4" placeholder="Masukan narasi kegiatan..."
                     oninput="checkInputCompletion()"></textarea>
 
                 <canvas id="canvas"></canvas>
