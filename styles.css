@@ -369,10 +369,8 @@ label {
     margin-bottom: 0;
     font-weight: bold;
     color: white;
-    background: #2b4d2b;
     padding: 8px 12px;
-    border-radius: 5px 5px 0 0;
-    border-left: 4px solid #4CAF50;
+    border: none;
     font-size: 14px;
 }
 
@@ -387,46 +385,94 @@ label {
 .form-col {
     display: flex;
     flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+/* Color scheme untuk setiap field (4 warna berbeda) */
+
+/* Row 1 - Col 1: Pilih Desa (Hijau) */
+.form-row:first-of-type .form-col:nth-child(1) {
+    background: #1a3a1a;
+    border: 2px solid #4CAF50;
+}
+
+/* Row 1 - Col 2: Foto Kegiatan (Ungu) */
+.form-row:first-of-type .form-col:nth-child(2) {
+    background: #2d1b3a;
+    border: 2px solid #7c4db8;
+}
+
+/* Row 2 - Col 1: Tanggal & Waktu (Biru) */
+.form-row:nth-of-type(2) .form-col:nth-child(1) {
+    background: #1a2a3a;
+    border: 2px solid #4a9fd4;
+}
+
+/* Row 2 - Col 2: Reset/Aksi (Oranye) */
+.form-row:nth-of-type(2) .form-col-reset {
+    background: #3a2a1a;
+    border: 2px solid #d4954a;
 }
 
 .form-col label {
     margin-top: 0;
+    margin-bottom: 0;
+    background: transparent;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .form-col select,
-.form-col input:not([type="file"]),
+.form-col input,
 .form-col textarea {
     margin-top: 0;
-    border-radius: 0 0 5px 5px;
-    border-top: 1px solid #4CAF50;
-}
-
-.form-col-reset {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.form-col-reset label {
     margin-bottom: 0;
-    background: #3a5a3a;
-    border-left-color: #5a9c5a;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    color: #e0e0e0;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.form-col input[type="file"] {
+    padding: 8px 12px;
+    color: #a0a0a0;
+}
+
+.form-col-reset button {
+    background: transparent;
+    border: none;
+    color: #d4954a;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.form-col-reset button:hover {
+    background: rgba(212, 149, 74, 0.1);
 }
 
 .reset-btn {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     padding: 10px 15px !important;
-    background: #4a7c4a !important;
+    background: transparent !important;
     width: 100% !important;
     font-size: 14px !important;
-    border-radius: 0 0 5px 5px !important;
-    border-top: 1px solid #5a9c5a !important;
-    border: none;
+    border-radius: 0 !important;
+    border: none !important;
+    color: white !important;
+    cursor: pointer;
 }
 
 .reset-btn:hover {
-    background: #5a9c5a !important;
+    background: rgba(90, 156, 90, 0.3) !important;
 }
 
 select,
