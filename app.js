@@ -96,11 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("🔄 Starting splash screen...");
     loadNextStage();
 
-    // Auto ke aplikasi setelah loading selesai (3.5 detik)
+    // Auto ke aplikasi setelah loading selesai (15 detik)
     setTimeout(() => {
         console.log("✅ Auto loading aplikasi...");
         loadDukopsApp();
-    }, 3500);
+    }, 15000);
 });
 
 // ================= FUNGSI PILIH APLIKASI =================
