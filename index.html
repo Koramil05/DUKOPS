@@ -377,12 +377,21 @@
     </div>
 
     <!-- Application Scripts -->
-    <!-- Modern ES6 Modules (New Structure) -->
-    <script type="module" src="js/index.js"></script>
-
-    <!-- Form Validation & Admin Settings -->
+    <!-- Services (ensure availability for modules) -->
+    <script src="js/services/IndexedDBManager.js"></script>
+    <script src="js/services/OfflineManager.js"></script>
+    <script src="js/services/NetworkMonitor.js"></script>
     <script src="js/services/AdminSettings.js"></script>
+
+    <!-- Components (non-module) -->
+    <script src="js/components/UIComponents.js"></script>
+    <script src="js/components/TabSystem.js"></script>
+    <script src="js/components/AdminDashboard.js"></script>
+    <script src="js/components/SyncDashboard.js"></script>
     <script src="js/components/FormValidator.js"></script>
+
+    <!-- Main ES6 Module (initializes app) -->
+    <script type="module" src="js/index.js"></script>
 
     <!-- Legacy Scripts (Backward Compatibility) -->
     <script src="app.js"></script>
