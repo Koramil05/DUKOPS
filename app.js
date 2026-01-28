@@ -280,7 +280,7 @@ async function loadDesaList() {
     loading.style.display = 'block';
 
     try {
-        // Fallback data - only desas with coordinate JSON files
+        // Daftar desa dengan koordinat JSON - sesuai dengan nama file di data/coordinates/
         const fallbackDesas = [
             "Gitgit", "Panji", "Panji Anom", "Sukasada", "Pancasari", "Wanagiri",
             "Ambengan", "Kayu Putih", "Padang Bulia", "Pegadungan",
@@ -290,53 +290,17 @@ async function loadDesaList() {
         // Clear existing options
         select.innerHTML = '<option value="">-- Pilih Desa --</option>';
 
-        // Tambahkan fallback data
-        fallbackDesas.forEach(desaName => {
+        // Load dari data/coordinates/ folder (JSON files)
+        for (const desaName of fallbackDesas) {
             const option = document.createElement('option');
-            option.value = desaName;
+            const jsonPath = `data/coordinates/${desaName}.json`;
+            option.value = jsonPath;  // Simpan path ke JSON file
             option.textContent = normalizeDesaName(desaName).cleanName;
             option.setAttribute('data-raw-name', desaName);
             select.appendChild(option);
-        });
-
-        // Coba load dari GitHub API
-        try {
-            const response = await fetch("https://api.github.com/repos/Koramil05/DUKOPS/contents/");
-
-            if (response.ok) {
-                const files = await response.json();
-                const coordFiles = files.filter(file =>
-                    file.name.startsWith('CO_') &&
-                    file.name.endsWith('.txt')
-                );
-
-                // Update dengan data dari GitHub jika berhasil
-                if (coordFiles.length > 0) {
-                    // Clear dulu
-                    select.innerHTML = '<option value="">-- Pilih Desa --</option>';
-
-                    coordFiles.forEach(file => {
-                        const rawName = file.name
-                            .replace('CO_', '')
-                            .replace('.txt', '')
-                            .replace(/_/g, ' ');
-
-                        const desaInfo = normalizeDesaName(rawName);
-
-                        const option = document.createElement('option');
-                        option.value = file.download_url;
-                        option.textContent = desaInfo.cleanName;
-                        option.setAttribute('data-raw-name', rawName);
-                        select.appendChild(option);
-                    });
-
-                    console.log(`✅ Loaded ${coordFiles.length} desas from GitHub`);
-                }
-            }
-        } catch (githubError) {
-            console.warn("⚠️ GitHub API error, using fallback data:", githubError);
         }
 
+        console.log(`✅ Loaded ${fallbackDesas.length} desas from local JSON files`);
         showNotification('✅ Daftar desa berhasil dimuat', 'success');
 
     } catch (error) {
@@ -454,10 +418,10 @@ function setupInstallPrompt() {
 // ================= FUNGSI DUKOPS LAINNYA =================
 async function loadSelectedDesa() {
     const select = document.getElementById('selectDesa');
-    const coordUrl = select.value;
+    const jsonPath = select.value;
     const loading = document.getElementById('loadingKoordinat');
 
-    if (!coordUrl) {
+    if (!jsonPath) {
         resetForm();
         return;
     }
@@ -474,13 +438,20 @@ async function loadSelectedDesa() {
     document.getElementById('previewKordinat').textContent = "Memuat koordinat...";
 
     try {
-        const response = await fetch(coordUrl);
+        const response = await fetch(jsonPath);
         if (!response.ok) throw new Error("Gagal memuat koordinat");
 
-        const text = await response.text();
-        kordinatList = text.split('\n')
-            .map(line => line.trim())
-            .filter(line => line.includes(','));
+        const jsonData = await response.json();
+
+        // Parse JSON format: {"desa": "...", "coordinates": [{"lat": ..., "lon": ..., "elevation": ...}, ...]}
+        if (!jsonData.coordinates || !Array.isArray(jsonData.coordinates)) {
+            throw new Error("Format JSON koordinat tidak valid");
+        }
+
+        // Convert JSON coordinates to string format: "lat,lon,elevation"
+        kordinatList = jsonData.coordinates.map(coord =>
+            `${coord.lat},${coord.lon},${coord.elevation}`
+        );
 
         if (kordinatList.length === 0) throw new Error("File koordinat kosong");
 
@@ -490,7 +461,7 @@ async function loadSelectedDesa() {
     } catch (error) {
         console.error("Error:", error);
         document.getElementById('previewKordinat').textContent = "Gagal memuat koordinat";
-        showNotification("Gagal memuat koordinat otomatis", "error");
+        showNotification("Gagal memuat koordinat otomatis: " + error.message, "error");
     } finally {
         loading.style.display = 'none';
         updatePreview();
