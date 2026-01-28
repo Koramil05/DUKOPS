@@ -63,7 +63,7 @@ export class NetworkStatusTester {
         const queue = window.OfflineManager.getQueue();
 
         console.group('📊 Offline Queue Status');
-        console.log(`Total items: ${stats.total}`);
+        console.log(`Items in queue: ${queue.length}`);
         console.log(`Unsynced: ${stats.unsynced}`);
         console.log(`Synced: ${stats.synced}`);
         console.log(`Failed attempts: ${stats.failedAttempts}`);

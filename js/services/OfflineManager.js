@@ -104,7 +104,6 @@ export class OfflineManager {
         const unsynced = queue.filter(q => !q.synced);
 
         return {
-            total: queue.length,
             unsynced: unsynced.length,
             synced: queue.filter(q => q.synced).length,
             failedAttempts: queue.filter(q => q.syncAttempts > 0 && !q.synced).length
