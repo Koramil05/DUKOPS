@@ -293,7 +293,7 @@ async function loadDesaList() {
         // Load dari data/coordinates/ folder (JSON files)
         for (const desaName of fallbackDesas) {
             const option = document.createElement('option');
-            const jsonPath = `data/coordinates/${desaName}.json`;
+            const jsonPath = `/data/coordinates/${desaName}.json`;
             option.value = jsonPath;  // Simpan path ke JSON file
             option.textContent = normalizeDesaName(desaName).cleanName;
             option.setAttribute('data-raw-name', desaName);
@@ -438,13 +438,20 @@ async function loadSelectedDesa() {
     document.getElementById('previewKordinat').textContent = "Memuat koordinat...";
 
     try {
+        console.log(`📂 Fetching coordinates from: ${jsonPath}`);
         const response = await fetch(jsonPath);
-        if (!response.ok) throw new Error("Gagal memuat koordinat");
+
+        if (!response.ok) {
+            console.error(`❌ Fetch failed with status ${response.status}: ${response.statusText}`);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
         const jsonData = await response.json();
+        console.log(`✅ JSON parsed successfully, coordinates:`, jsonData);
 
         // Parse JSON format: {"desa": "...", "coordinates": [{"lat": ..., "lon": ..., "elevation": ...}, ...]}
         if (!jsonData.coordinates || !Array.isArray(jsonData.coordinates)) {
+            console.error("❌ Invalid JSON structure:", jsonData);
             throw new Error("Format JSON koordinat tidak valid");
         }
 
@@ -453,15 +460,17 @@ async function loadSelectedDesa() {
             `${coord.lat},${coord.lon},${coord.elevation}`
         );
 
+        console.log(`📌 Loaded ${kordinatList.length} coordinates`);
+
         if (kordinatList.length === 0) throw new Error("File koordinat kosong");
 
         pickRandomKoordinat();
         showNotification(`Koordinat ${desaInfo.cleanName} dimuat (${kordinatList.length} titik)`, "success");
 
     } catch (error) {
-        console.error("Error:", error);
+        console.error("❌ Error loading coordinates:", error);
         document.getElementById('previewKordinat').textContent = "Gagal memuat koordinat";
-        showNotification("Gagal memuat koordinat otomatis: " + error.message, "error");
+        showNotification("Gagal memuat koordinat: " + error.message, "error");
     } finally {
         loading.style.display = 'none';
         updatePreview();
