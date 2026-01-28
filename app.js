@@ -74,17 +74,7 @@ let NetworkMonitor = null;
         console.warn('⚠ IndexedDBManager module not available');
     }
 
-    // Load Sync Dashboard module
-    try {
-        const syncModule = await import('./js/components/SyncDashboard.js');
-        window.SyncDashboard = syncModule.SyncDashboard;
-        setTimeout(() => {
-            window.SyncDashboard.init();
-            console.log('✓ SyncDashboard initialized');
-        }, 1000);
-    } catch (error) {
-        console.warn('⚠ SyncDashboard module not available');
-    }
+    // SyncDashboard removed: no longer initializing sync UI
 
     // Load Admin Dashboard module
     try {
