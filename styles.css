@@ -370,7 +370,9 @@ label {
     font-weight: bold;
     color: white;
     padding: 8px 12px;
-    border: none;
+    border: 1px solid #4CAF50;
+    background: #333;
+    border-radius: 0;
     font-size: 14px;
 }
 
@@ -385,77 +387,29 @@ label {
 .form-col {
     display: flex;
     flex-direction: column;
-    border-radius: 0;
-    overflow: hidden;
 }
 
-/* Color scheme untuk setiap field (4 warna berbeda) */
-
-/* Row 1 - Col 1: Pilih Desa (Hijau) */
-.form-row:first-of-type .form-col:nth-child(1) {
-    background: #1a3a1a;
-    border: 2px solid #4CAF50;
-}
-
-/* Row 1 - Col 2: Foto Kegiatan (Ungu) */
-.form-row:first-of-type .form-col:nth-child(2) {
-    background: #2d1b3a;
-    border: 2px solid #7c4db8;
-}
-
-/* Row 2 - Col 1: Tanggal & Waktu (Biru) */
-.form-row:nth-of-type(2) .form-col:nth-child(1) {
-    background: #1a2a3a;
-    border: 2px solid #4a9fd4;
-}
-
-/* Row 2 - Col 2: Reset/Aksi (Oranye) */
-.form-row:nth-of-type(2) .form-col-reset {
-    background: #3a2a1a;
-    border: 2px solid #d4954a;
-}
-
-.form-col label {
-    margin-top: 0;
-    margin-bottom: 0;
-    background: transparent;
-    color: white;
+select,
+input,
+textarea {
+    width: 100%;
     padding: 8px 12px;
-    border: none;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.form-col select,
-.form-col input,
-.form-col textarea {
     margin-top: 0;
-    margin-bottom: 0;
-    border-radius: 0;
-    border: none;
-    background: transparent;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #4CAF50;
+    background: #333;
     color: #e0e0e0;
-    padding: 8px 12px;
     font-size: 14px;
 }
 
-.form-col input[type="file"] {
-    padding: 8px 12px;
+input[type="file"] {
     color: #a0a0a0;
-}
-
-.form-col-reset button {
-    background: transparent;
-    border: none;
-    color: #d4954a;
     padding: 8px 12px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
 }
 
-.form-col-reset button:hover {
-    background: rgba(212, 149, 74, 0.1);
+textarea {
+    resize: vertical;
 }
 
 .reset-btn {
