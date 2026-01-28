@@ -2,19 +2,19 @@
 # File ini digunakan untuk mengatur daftar desa yang muncul di dropdown
 # Format: satu desa per baris, tanpa prefix Desa/Kelurahan
 # Komentar diawali dengan #
+# PENTING: Hanya tambahkan desa yang memiliki file data/coordinates/[desa].json
 
 Gitgit
 Panji
 Sukasada
 Pancasari
 Wanagiri
-
-
-# Untuk menambah desa baru:
-# 1. Tambah nama desa di bawah ini
-# 2. Upload file CO_[nama_desa].txt ke GitHub
-# 3. Upload file bnr_[nama_desa].png (opsional)
-
-# Contoh:
-# Nama_Desa_Baru
-# Desa_Lainnya
+Ambengan
+Kayu Putih
+Padang Bulia
+Pegadungan
+Pegayaman
+Sambangan
+Selat
+Silangjana
+Tegallinggah

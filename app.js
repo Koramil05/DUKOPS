@@ -280,12 +280,11 @@ async function loadDesaList() {
     loading.style.display = 'block';
 
     try {
-        // Fallback data
+        // Fallback data - only desas with coordinate JSON files
         const fallbackDesas = [
-            "Desa Sambangan", "Desa Gitgit", "Desa Pegayaman",
-            "Desa Silangjana", "Desa Panji", "Kelurahan Sukasada",
-            "Desa Pegadungan", "Desa Pancasari", "Desa Padang bulia",
-            "Desa Bebetin", "Desa Sawan", "Desa Lemukih"
+            "Gitgit", "Panji", "Sukasada", "Pancasari", "Wanagiri",
+            "Ambengan", "Kayu Putih", "Padang Bulia", "Pegadungan",
+            "Pegayaman", "Sambangan", "Selat", "Silangjana", "Tegallinggah"
         ];
 
         // Clear existing options
