@@ -290,17 +290,18 @@ async function loadDesaList() {
         // Clear existing options
         select.innerHTML = '<option value="">-- Pilih Desa --</option>';
 
-        // Load dari data/coordinates/ folder (JSON files)
+        // Load dari data/coordinates/ folder (JSON files) - from GitHub
         for (const desaName of fallbackDesas) {
             const option = document.createElement('option');
-            const jsonPath = `/data/coordinates/${desaName}.json`;
-            option.value = jsonPath;  // Simpan path ke JSON file
+            // Fetch dari GitHub raw content
+            const jsonPath = `https://raw.githubusercontent.com/Koramil05/DUKOPS/main/data/coordinates/${desaName}.json`;
+            option.value = jsonPath;  // Simpan URL ke JSON file di GitHub
             option.textContent = normalizeDesaName(desaName).cleanName;
             option.setAttribute('data-raw-name', desaName);
             select.appendChild(option);
         }
 
-        console.log(`✅ Loaded ${fallbackDesas.length} desas from local JSON files`);
+        console.log(`✅ Loaded ${fallbackDesas.length} desas from GitHub`);
         showNotification('✅ Daftar desa berhasil dimuat', 'success');
 
     } catch (error) {
