@@ -9,6 +9,7 @@ class AdminSettings {
 
     static DEFAULT_SETTINGS = {
         MIN_DAYS_AHEAD: 7,              // Minimum days in future for datetime input
+        MAX_DAYS_PAST: 7,              // Maximum days in past allowed for datetime input
         VALIDATION_ENABLED: true,       // Enable/disable date validation
         FORM_SUBMISSION_ENABLED: true,  // Enable/disable form submission
         AUTO_SAVE_INTERVAL: 30000,      // Auto-save interval (ms)
@@ -120,6 +121,12 @@ class AdminSettings {
         if (FormValidator && settings.MIN_DAYS_AHEAD !== undefined) {
             FormValidator.updateConfig({
                 MIN_DAYS_AHEAD: settings.MIN_DAYS_AHEAD
+            });
+        }
+
+        if (FormValidator && settings.MAX_DAYS_PAST !== undefined) {
+            FormValidator.updateConfig({
+                MAX_DAYS_PAST: settings.MAX_DAYS_PAST
             });
         }
 

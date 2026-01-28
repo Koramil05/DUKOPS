@@ -237,6 +237,18 @@ export class AdminDashboard {
                                     <small class="settings-hint">Tanggal input harus minimal N hari ke depan dari hari ini</small>
                                 </div>
 
+                                <div class="settings-group">
+                                    <label for="maxDaysPast">
+                                        <i class="fas fa-history"></i> Hari Maks Mundur
+                                    </label>
+                                    <div class="settings-input-group">
+                                        <input type="number" id="maxDaysPast" min="0" max="30" value="7" 
+                                               onchange="AdminDashboard.updateSettingPreview()">
+                                        <span class="settings-unit">hari</span>
+                                    </div>
+                                    <small class="settings-hint">Tanggal input tidak boleh lebih lama dari N hari kebelakang</small>
+                                </div>
+
                                 <div class="settings-preview">
                                     <h4>📅 Contoh Validasi:</h4>
                                     <p>Hari ini: <strong id="todayDate">-</strong></p>
@@ -399,6 +411,7 @@ export class AdminDashboard {
     static async saveSettings() {
         try {
             const minDays = parseInt(document.getElementById('minDaysAhead')?.value || '7');
+            const maxDaysPast = parseInt(document.getElementById('maxDaysPast')?.value || '7');
             const validationEnabled = document.getElementById('validationEnabled')?.checked;
             const formSubmissionEnabled = document.getElementById('formSubmissionEnabled')?.checked;
 
@@ -410,6 +423,7 @@ export class AdminDashboard {
 
             const settings = {
                 MIN_DAYS_AHEAD: minDays,
+                MAX_DAYS_PAST: maxDaysPast,
                 VALIDATION_ENABLED: validationEnabled,
                 FORM_SUBMISSION_ENABLED: formSubmissionEnabled
             };
@@ -418,7 +432,7 @@ export class AdminDashboard {
             this.showSettingsMessage('✓ Pengaturan berhasil disimpan', 'success');
 
             // Apply to FormValidator immediately
-            FormValidator.updateConfig({ MIN_DAYS_AHEAD: minDays });
+            FormValidator.updateConfig({ MIN_DAYS_AHEAD: minDays, MAX_DAYS_PAST: maxDaysPast });
         } catch (error) {
             console.error('Error saving settings:', error);
             this.showSettingsMessage('❌ Gagal menyimpan pengaturan', 'error');
@@ -437,7 +451,7 @@ export class AdminDashboard {
             this.showSettingsMessage('✓ Pengaturan direset ke default', 'success');
 
             // Apply default to FormValidator
-            FormValidator.updateConfig({ MIN_DAYS_AHEAD: AdminSettings.DEFAULT_SETTINGS.MIN_DAYS_AHEAD });
+            FormValidator.updateConfig({ MIN_DAYS_AHEAD: AdminSettings.DEFAULT_SETTINGS.MIN_DAYS_AHEAD, MAX_DAYS_PAST: AdminSettings.DEFAULT_SETTINGS.MAX_DAYS_PAST });
         } catch (error) {
             console.error('Error resetting settings:', error);
             this.showSettingsMessage('❌ Gagal mereset pengaturan', 'error');

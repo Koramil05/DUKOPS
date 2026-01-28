@@ -11,11 +11,16 @@ class FormValidator {
         MIN_FILENAME_LENGTH: 3,                // characters
         NARASI_MAX_LENGTH: 1000,               // characters
         MIN_DAYS_AHEAD: 7,                     // Minimum 7 days in advance (configurable by admin)
+        MAX_DAYS_PAST: 7,                      // Maximum 7 days in the past (configurable by admin)
         ALLOWED_PHOTO_TYPES: ['image/jpeg', 'image/png', 'image/webp']
     };
 
     static CONFIG = {
         MIN_DAYS_AHEAD: 7  // Can be overridden by admin
+    };
+
+    static CONFIG_PAST = {
+        MAX_DAYS_PAST: 7
     };
 
     static init() {
@@ -117,27 +122,62 @@ class FormValidator {
             this.showError('datetime', 'Tanggal dan waktu harus diisi');
             return false;
         }
-
         const inputDate = new Date(value);
         const now = new Date();
-        const minDate = new Date();
 
-        // Add minimum days ahead (default 7 days, configurable by admin)
-        minDate.setDate(minDate.getDate() + (this.CONFIG.MIN_DAYS_AHEAD || 7));
+        // Normalize time for date-only comparisons
+        const minDate = new Date(now);
+        const maxPastDate = new Date(now);
 
-        // Remove time part for comparison
+        const minDays = this.CONFIG.MIN_DAYS_AHEAD !== undefined ? this.CONFIG.MIN_DAYS_AHEAD : 7;
+        const maxPast = (this.CONFIG_PAST.MAX_DAYS_PAST !== undefined) ? this.CONFIG_PAST.MAX_DAYS_PAST : 7;
+
+        // Earliest allowed date (not older than maxPast days)
+        maxPastDate.setDate(maxPastDate.getDate() - maxPast);
+        maxPastDate.setHours(0, 0, 0, 0);
+
+        // Minimum future date
+        minDate.setDate(minDate.getDate() + minDays);
         minDate.setHours(0, 0, 0, 0);
-        inputDate.setHours(0, 0, 0, 0);
-        now.setHours(0, 0, 0, 0);
 
-        // Check if date is in the past or less than minimum days ahead
+        inputDate.setHours(0, 0, 0, 0);
+
+        // If input is before allowed past window
+        if (inputDate < maxPastDate) {
+            this.showError('datetime', `Tanggal terlalu lama. Maks ${maxPast} hari kebelakang dari hari ini`);
+            return false;
+        }
+
+        // If input is before minimum future window
         if (inputDate < minDate) {
-            const minDays = this.CONFIG.MIN_DAYS_AHEAD || 7;
             this.showError('datetime', `Tanggal harus minimal ${minDays} hari ke depan dari hari ini`);
             return false;
         }
 
+        // Update displayed selected date if present
+        this.updateDateDisplay(value);
+
         return true;
+    }
+
+    static updateDateDisplay(value) {
+        const datetimeInput = document.getElementById('datetime');
+        if (!datetimeInput) return;
+
+        let display = document.getElementById('datetimeDisplay');
+        if (!display) {
+            display = document.createElement('div');
+            display.id = 'datetimeDisplay';
+            display.className = 'datetime-display';
+            datetimeInput.parentElement?.appendChild(display);
+        }
+
+        try {
+            const d = new Date(value);
+            display.textContent = `Dipilih: ${d.toLocaleString('id-ID')}`;
+        } catch (e) {
+            display.textContent = '';
+        }
     }
 
     static validateNarasi(value) {
@@ -199,6 +239,9 @@ class FormValidator {
     static updateConfig(newConfig) {
         if (newConfig.MIN_DAYS_AHEAD !== undefined) {
             this.CONFIG.MIN_DAYS_AHEAD = newConfig.MIN_DAYS_AHEAD;
+        }
+        if (newConfig.MAX_DAYS_PAST !== undefined) {
+            this.CONFIG_PAST.MAX_DAYS_PAST = newConfig.MAX_DAYS_PAST;
         }
     }
 
