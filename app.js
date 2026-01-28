@@ -47,6 +47,14 @@ let NetworkMonitor = null;
     } catch (error) {
         console.warn('⚠ NetworkMonitor module not available');
     }
+
+    // Load testing utilities (for development)
+    try {
+        const testerModule = await import('./js/utils/NetworkStatusTester.js');
+        console.log('✓ NetworkStatusTester loaded (dev tools available)');
+    } catch (error) {
+        console.warn('⚠ NetworkStatusTester not available (development only)');
+    }
 })();
 
 // ================= VARIABEL GLOBAL =================
