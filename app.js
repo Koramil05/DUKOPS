@@ -484,12 +484,12 @@ async function loadSelectedDesa() {
         if (kordinatList.length === 0) throw new Error("File koordinat kosong");
 
         pickRandomKoordinat();
-        showNotification(`Koordinat ${desaInfo.cleanName} dimuat (${kordinatList.length} titik)`, "success");
+        // Notification disabled: coordinates loading popup
 
     } catch (error) {
         console.error("❌ Error loading coordinates:", error);
         document.getElementById('previewKordinat').textContent = "Gagal memuat koordinat";
-        showNotification("Gagal memuat koordinat: " + error.message, "error");
+        // Notification disabled: coordinates error popup
     } finally {
         loading.style.display = 'none';
         updatePreview();
@@ -499,12 +499,12 @@ async function loadSelectedDesa() {
 
 function pickRandomKoordinat() {
     if (kordinatList.length === 0) {
-        showNotification("Tidak ada data koordinat tersedia", "warning");
+        // Warning notification disabled: no coordinates available
         return;
     }
 
     if (!selectedDesa) {
-        showNotification("Pilih desa terlebih dahulu", "warning");
+        // Warning notification disabled: select desa first
         return;
     }
 
