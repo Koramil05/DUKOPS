@@ -93,9 +93,8 @@ export class DUKOPSManager {
 
     getDesaStats() {
         return {
-            total: Object.keys(this.desaCounter).length,
-            counts: this.desaCounter,
-            totalSubmissions: this.submissionCount
+            desaCount: Object.keys(this.desaCounter).length,
+            counts: this.desaCounter
         };
     }
 

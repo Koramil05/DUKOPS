@@ -184,7 +184,6 @@ export class AttendanceReport {
         });
 
         return {
-            totalSubmissions: this.data.length,
             desaCovered: Object.keys(desaCounts).length,
             byDesa: desaCounts,
             timestamp: new Date().toISOString()
@@ -196,7 +195,6 @@ export class AttendanceReport {
         let html = `
             <div class="attendance-report">
                 <h3>Laporan Absensi</h3>
-                <p>Total Laporan: ${summary.totalSubmissions}</p>
                 <p>Desa Terlaporkan: ${summary.desaCovered}</p>
                 <table>
                     <thead>
