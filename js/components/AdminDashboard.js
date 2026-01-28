@@ -142,75 +142,375 @@ export class AdminDashboard {
                     </div>
                 </div>
 
+                <!-- Tab Navigation -->
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" onclick="AdminDashboard.switchTab('dashboard')">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </button>
+                    <button class="admin-tab-btn" onclick="AdminDashboard.switchTab('settings')">
+                        <i class="fas fa-cog"></i> Pengaturan
+                    </button>
+                </div>
+
                 <!-- Content -->
                 <div class="admin-content">
-                    <!-- Analytics Section -->
-                    <section class="admin-section">
-                        <h3 class="admin-section-title">📊 Analitik</h3>
-                        <div class="analytics-grid">
-                            <div class="analytics-card">
-                                <span class="analytics-label">Total Pengiriman</span>
-                                <span class="analytics-value" id="totalSubmissions">0</span>
+                    <!-- Dashboard Tab -->
+                    <div id="dashboard-tab" class="admin-tab-content active">
+                        <!-- Analytics Section -->
+                        <section class="admin-section">
+                            <h3 class="admin-section-title">📊 Analitik</h3>
+                            <div class="analytics-grid">
+                                <div class="analytics-card">
+                                    <span class="analytics-label">Total Pengiriman</span>
+                                    <span class="analytics-value" id="totalSubmissions">0</span>
+                                </div>
+                                <div class="analytics-card success">
+                                    <span class="analytics-label">Berhasil</span>
+                                    <span class="analytics-value" id="successSubmissions">0</span>
+                                </div>
+                                <div class="analytics-card error">
+                                    <span class="analytics-label">Gagal</span>
+                                    <span class="analytics-value" id="failedSubmissions">0</span>
+                                </div>
+                                <div class="analytics-card warning">
+                                    <span class="analytics-label">Tertunda</span>
+                                    <span class="analytics-value" id="pendingSubmissions">0</span>
+                                </div>
                             </div>
-                            <div class="analytics-card success">
-                                <span class="analytics-label">Berhasil</span>
-                                <span class="analytics-value" id="successSubmissions">0</span>
+                        </section>
+
+                        <!-- Desa Coverage -->
+                        <section class="admin-section">
+                            <h3 class="admin-section-title">🗺️ Cakupan Desa (24 Jam Terakhir)</h3>
+                            <div class="desa-coverage" id="desaCoverageList">
+                                <p class="loading">Memuat data...</p>
                             </div>
-                            <div class="analytics-card error">
-                                <span class="analytics-label">Gagal</span>
-                                <span class="analytics-value" id="failedSubmissions">0</span>
+                        </section>
+
+                        <!-- Recent Submissions -->
+                        <section class="admin-section">
+                            <h3 class="admin-section-title">📋 Pengiriman Terbaru (Last 24h)</h3>
+                            <div class="submissions-list" id="submissionsList">
+                                <p class="loading">Memuat data...</p>
                             </div>
-                            <div class="analytics-card warning">
-                                <span class="analytics-label">Tertunda</span>
-                                <span class="analytics-value" id="pendingSubmissions">0</span>
+                        </section>
+
+                        <!-- Error Logs -->
+                        <section class="admin-section">
+                            <h3 class="admin-section-title">⚠️ Log Kesalahan</h3>
+                            <div class="error-logs" id="errorLogsList">
+                                <p class="loading">Memuat data...</p>
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
-                    <!-- Desa Coverage -->
-                    <section class="admin-section">
-                        <h3 class="admin-section-title">🗺️ Cakupan Desa (24 Jam Terakhir)</h3>
-                        <div class="desa-coverage" id="desaCoverageList">
-                            <p class="loading">Memuat data...</p>
-                        </div>
-                    </section>
+                        <!-- Actions -->
+                        <section class="admin-section">
+                            <h3 class="admin-section-title">⚙️ Aksi Admin</h3>
+                            <div class="admin-actions">
+                                <button onclick="AdminDashboard.exportCSV()" class="admin-action-btn">
+                                    <i class="fas fa-download"></i> Export CSV
+                                </button>
+                                <button onclick="AdminDashboard.printReport()" class="admin-action-btn">
+                                    <i class="fas fa-print"></i> Print Report
+                                </button>
+                                <button onclick="AdminDashboard.clearErrorLogs()" class="admin-action-btn danger">
+                                    <i class="fas fa-trash"></i> Hapus Error Logs
+                                </button>
+                            </div>
+                        </section>
+                    </div>
 
-                    <!-- Recent Submissions -->
-                    <section class="admin-section">
-                        <h3 class="admin-section-title">📋 Pengiriman Terbaru (Last 24h)</h3>
-                        <div class="submissions-list" id="submissionsList">
-                            <p class="loading">Memuat data...</p>
-                        </div>
-                    </section>
+                    <!-- Settings Tab -->
+                    <div id="settings-tab" class="admin-tab-content">
+                        <section class="admin-section">
+                            <h3 class="admin-section-title">⚙️ Pengaturan Validasi Tanggal</h3>
+                            <div class="admin-settings-form">
+                                <div class="settings-group">
+                                    <label for="minDaysAhead">
+                                        <i class="fas fa-calendar"></i> Hari Minimum ke Depan
+                                    </label>
+                                    <div class="settings-input-group">
+                                        <input type="number" id="minDaysAhead" min="0" max="30" value="7" 
+                                               onchange="AdminDashboard.updateSettingPreview()">
+                                        <span class="settings-unit">hari</span>
+                                    </div>
+                                    <small class="settings-hint">Tanggal input harus minimal N hari ke depan dari hari ini</small>
+                                </div>
 
-                    <!-- Error Logs -->
-                    <section class="admin-section">
-                        <h3 class="admin-section-title">⚠️ Log Kesalahan</h3>
-                        <div class="error-logs" id="errorLogsList">
-                            <p class="loading">Memuat data...</p>
-                        </div>
-                    </section>
+                                <div class="settings-preview">
+                                    <h4>📅 Contoh Validasi:</h4>
+                                    <p>Hari ini: <strong id="todayDate">-</strong></p>
+                                    <p>Tanggal minimum yang diterima: <strong id="minDateExample">-</strong></p>
+                                    <p class="preview-example">
+                                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                                        Contoh tanggal VALID: <span id="validDateExample">-</span>
+                                    </p>
+                                    <p class="preview-example">
+                                        <i class="fas fa-times-circle" style="color: #d32f2f;"></i>
+                                        Contoh tanggal TIDAK VALID: <span id="invalidDateExample">-</span>
+                                    </p>
+                                </div>
 
-                    <!-- Actions -->
-                    <section class="admin-section">
-                        <h3 class="admin-section-title">⚙️ Aksi Admin</h3>
-                        <div class="admin-actions">
-                            <button onclick="AdminDashboard.exportCSV()" class="admin-action-btn">
-                                <i class="fas fa-download"></i> Export CSV
-                            </button>
-                            <button onclick="AdminDashboard.printReport()" class="admin-action-btn">
-                                <i class="fas fa-print"></i> Print Report
-                            </button>
-                            <button onclick="AdminDashboard.clearErrorLogs()" class="admin-action-btn danger">
-                                <i class="fas fa-trash"></i> Hapus Error Logs
-                            </button>
-                        </div>
-                    </section>
+                                <div class="settings-status">
+                                    <div id="settingsMessage" class="settings-message" style="display: none;"></div>
+                                </div>
+
+                                <div class="settings-actions">
+                                    <button onclick="AdminDashboard.saveSettings()" class="settings-save-btn">
+                                        <i class="fas fa-save"></i> Simpan Pengaturan
+                                    </button>
+                                    <button onclick="AdminDashboard.resetSettings()" class="settings-reset-btn">
+                                        <i class="fas fa-redo"></i> Reset ke Default
+                                    </button>
+                                </div>
+
+                                <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+
+                                <h4 style="margin-top: 20px;">📊 Pengaturan Lainnya</h4>
+                                
+                                <div class="settings-group">
+                                    <label for="validationEnabled">
+                                        <input type="checkbox" id="validationEnabled" checked>
+                                        Aktifkan Validasi Tanggal
+                                    </label>
+                                </div>
+
+                                <div class="settings-group">
+                                    <label for="formSubmissionEnabled">
+                                        <input type="checkbox" id="formSubmissionEnabled" checked>
+                                        Izinkan Pengiriman Form
+                                    </label>
+                                </div>
+
+                                <div class="settings-actions" style="margin-top: 20px;">
+                                    <button onclick="AdminDashboard.exportSettings()" class="settings-action-btn">
+                                        <i class="fas fa-download"></i> Export Pengaturan
+                                    </button>
+                                    <button onclick="AdminDashboard.importSettings()" class="settings-action-btn">
+                                        <i class="fas fa-upload"></i> Import Pengaturan
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
                 </div>
             </div>
         `;
 
         document.body.appendChild(dashboard);
+
+        // Start monitoring
+        this.startMonitoring();
+
+        // Initialize settings display
+        this.loadSettingsDisplay();
+    }
+
+    /**
+     * Switch between tabs
+     */
+    static switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.admin-tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Remove active class from buttons
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected tab
+        const tabElement = document.getElementById(`${tabName}-tab`);
+        if (tabElement) {
+            tabElement.classList.add('active');
+        }
+
+        // Add active class to clicked button
+        event.target.closest('.admin-tab-btn')?.classList.add('active');
+
+        // If settings tab, load current settings
+        if (tabName === 'settings') {
+            this.loadSettingsDisplay();
+        }
+    }
+
+    /**
+     * Load settings form with current values
+     */
+    static async loadSettingsDisplay() {
+        try {
+            const settings = await AdminSettings.getSettings() || AdminSettings.DEFAULT_SETTINGS;
+            
+            // Set form values
+            const minDaysInput = document.getElementById('minDaysAhead');
+            const validationEnabled = document.getElementById('validationEnabled');
+            const formSubmissionEnabled = document.getElementById('formSubmissionEnabled');
+
+            if (minDaysInput) minDaysInput.value = settings.MIN_DAYS_AHEAD || 7;
+            if (validationEnabled) validationEnabled.checked = settings.VALIDATION_ENABLED !== false;
+            if (formSubmissionEnabled) formSubmissionEnabled.checked = settings.FORM_SUBMISSION_ENABLED !== false;
+
+            // Update preview
+            this.updateSettingPreview();
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    }
+
+    /**
+     * Update settings preview
+     */
+    static updateSettingPreview() {
+        const minDays = parseInt(document.getElementById('minDaysAhead')?.value || '7');
+        const today = new Date();
+        const minDate = new Date(today);
+        minDate.setDate(minDate.getDate() + minDays);
+
+        // Format dates for display
+        const todayStr = today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const minDateStr = minDate.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Example valid date (tomorrow after minimum)
+        const validDate = new Date(minDate);
+        validDate.setDate(validDate.getDate() + 1);
+        const validDateStr = validDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+
+        // Example invalid date (today or before minimum)
+        const invalidDate = new Date(today);
+        invalidDate.setDate(invalidDate.getDate() + (minDays - 1));
+        const invalidDateStr = invalidDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+
+        // Update display
+        const todayDisplay = document.getElementById('todayDate');
+        const minDateDisplay = document.getElementById('minDateExample');
+        const validDisplay = document.getElementById('validDateExample');
+        const invalidDisplay = document.getElementById('invalidDateExample');
+
+        if (todayDisplay) todayDisplay.textContent = todayStr;
+        if (minDateDisplay) minDateDisplay.textContent = minDateStr;
+        if (validDisplay) validDisplay.textContent = validDateStr;
+        if (invalidDisplay) invalidDisplay.textContent = invalidDateStr;
+    }
+
+    /**
+     * Save settings
+     */
+    static async saveSettings() {
+        try {
+            const minDays = parseInt(document.getElementById('minDaysAhead')?.value || '7');
+            const validationEnabled = document.getElementById('validationEnabled')?.checked;
+            const formSubmissionEnabled = document.getElementById('formSubmissionEnabled')?.checked;
+
+            // Validate
+            if (minDays < 0 || minDays > 30) {
+                this.showSettingsMessage('❌ Hari harus antara 0-30', 'error');
+                return;
+            }
+
+            const settings = {
+                MIN_DAYS_AHEAD: minDays,
+                VALIDATION_ENABLED: validationEnabled,
+                FORM_SUBMISSION_ENABLED: formSubmissionEnabled
+            };
+
+            await AdminSettings.saveSettings(settings);
+            this.showSettingsMessage('✓ Pengaturan berhasil disimpan', 'success');
+
+            // Apply to FormValidator immediately
+            FormValidator.updateConfig({ MIN_DAYS_AHEAD: minDays });
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            this.showSettingsMessage('❌ Gagal menyimpan pengaturan', 'error');
+        }
+    }
+
+    /**
+     * Reset settings to default
+     */
+    static async resetSettings() {
+        if (!confirm('Reset semua pengaturan ke nilai default?')) return;
+
+        try {
+            await AdminSettings.resetSettings();
+            this.loadSettingsDisplay();
+            this.showSettingsMessage('✓ Pengaturan direset ke default', 'success');
+
+            // Apply default to FormValidator
+            FormValidator.updateConfig({ MIN_DAYS_AHEAD: AdminSettings.DEFAULT_SETTINGS.MIN_DAYS_AHEAD });
+        } catch (error) {
+            console.error('Error resetting settings:', error);
+            this.showSettingsMessage('❌ Gagal mereset pengaturan', 'error');
+        }
+    }
+
+    /**
+     * Show settings message
+     */
+    static showSettingsMessage(message, type = 'info') {
+        const messageEl = document.getElementById('settingsMessage');
+        if (!messageEl) return;
+
+        messageEl.textContent = message;
+        messageEl.style.display = 'block';
+        messageEl.style.padding = '10px 15px';
+        messageEl.style.borderRadius = '4px';
+        messageEl.style.marginBottom = '10px';
+
+        if (type === 'success') {
+            messageEl.style.backgroundColor = '#e8f5e9';
+            messageEl.style.color = '#2e7d32';
+            messageEl.style.border = '1px solid #4caf50';
+        } else if (type === 'error') {
+            messageEl.style.backgroundColor = '#ffebee';
+            messageEl.style.color = '#c62828';
+            messageEl.style.border = '1px solid #f44336';
+        }
+
+        setTimeout(() => {
+            messageEl.style.display = 'none';
+        }, 3000);
+    }
+
+    /**
+     * Export settings as JSON
+     */
+    static async exportSettings() {
+        try {
+            await AdminSettings.exportSettings();
+            this.showSettingsMessage('✓ Pengaturan berhasil diexport', 'success');
+        } catch (error) {
+            console.error('Error exporting settings:', error);
+            this.showSettingsMessage('❌ Gagal mengexport pengaturan', 'error');
+        }
+    }
+
+    /**
+     * Import settings from JSON file
+     */
+    static importSettings() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = async (e) => {
+            try {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                await AdminSettings.importSettings(file);
+                this.loadSettingsDisplay();
+                this.showSettingsMessage('✓ Pengaturan berhasil diimport', 'success');
+
+                // Apply imported settings
+                const settings = await AdminSettings.getSettings();
+                FormValidator.updateConfig({ MIN_DAYS_AHEAD: settings.MIN_DAYS_AHEAD });
+            } catch (error) {
+                console.error('Error importing settings:', error);
+                this.showSettingsMessage(`❌ ${error.message}`, 'error');
+            }
+        };
+        input.click();
+    }
 
         // Start monitoring
         this.startMonitoring();
