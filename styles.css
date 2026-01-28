@@ -1015,10 +1015,10 @@ canvas {
         padding: 12px;
     }
 
-    /* Stack form fields on tablet */
+    /* Keep 2-column layout on tablet, smaller gap */
     .form-row {
-        grid-template-columns: 1fr;
-        gap: 15px;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
     }
 }
 
@@ -1045,10 +1045,27 @@ canvas {
         font-size: 11px;
     }
 
-    /* Stack form fields on mobile */
+    /* Keep 2-column layout on mobile, even smaller gap */
     .form-row {
-        grid-template-columns: 1fr;
-        gap: 15px;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    label {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    select,
+    input,
+    textarea {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .reset-btn {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
     }
 
     button {
