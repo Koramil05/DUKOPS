@@ -119,8 +119,8 @@ export class SyncDashboard {
         const pendingCount = unsyncedQueue.length;
         const successCount = syncLog.filter(log => log.status === 'success').length;
         const failedCount = syncLog.filter(log => log.status === 'failed').length;
-        const totalCount = successCount + failedCount;
-        const successRate = totalCount > 0 ? Math.round((successCount / totalCount) * 100) : 0;
+        const denom = (successCount + failedCount);
+        const successRate = denom > 0 ? Math.round((successCount / denom) * 100) : 0;
 
         // Update stats display
         document.getElementById('pendingCount').textContent = pendingCount;
@@ -354,7 +354,6 @@ export class SyncDashboard {
         const syncLog = JSON.parse(localStorage.getItem('dukopsSyncLog') || '[]');
 
         return {
-            totalInQueue: queue.length,
             pendingSync: unsyncedQueue.length,
             successCount: syncLog.filter(log => log.status === 'success').length,
             failedCount: syncLog.filter(log => log.status === 'failed').length,
