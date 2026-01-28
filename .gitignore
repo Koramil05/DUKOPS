@@ -1,0 +1,20 @@
+# Local banner files - tidak perlu di-commit
+banners/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Build
+node_modules/
+dist/
+build/
