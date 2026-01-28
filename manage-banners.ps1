@@ -46,10 +46,12 @@ function List-BannerFiles {
                 $size = [math]::Round($file.Length / 1KB, 2)
                 Write-Host "  $($file.Name) - $size KB" -ForegroundColor Green
             }
-        } else {
+        }
+        else {
             Write-Host "  (empty)" -ForegroundColor Yellow
         }
-    } else {
+    }
+    else {
         Write-Host "  (folder tidak ada)" -ForegroundColor Yellow
     }
     
@@ -60,7 +62,8 @@ function List-BannerFiles {
             $size = [math]::Round($file.Length / 1KB, 2)
             Write-Host "  $($file.Name) - $size KB" -ForegroundColor Green
         }
-    } else {
+    }
+    else {
         Write-Host "  (tidak ada)" -ForegroundColor Yellow
     }
 }
@@ -74,7 +77,8 @@ function Check-BannerSetup {
         $appJsContent = Get-Content $appJsPath -Raw
         if ($appJsContent -match "banners/bnr_") {
             Write-Host "OK: app.js configured for local banner loading" -ForegroundColor Green
-        } else {
+        }
+        else {
             Write-Host "WARNING: app.js not configured for local banners" -ForegroundColor Yellow
         }
     }
@@ -82,7 +86,8 @@ function Check-BannerSetup {
     if (Test-Path $bannersDir) {
         $bannerCount = (Get-ChildItem "$bannersDir\*.png" -ErrorAction SilentlyContinue).Count
         Write-Host "OK: banners folder exists ($bannerCount PNG files)" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "WARNING: banners folder does not exist" -ForegroundColor Yellow
     }
 }
@@ -103,9 +108,9 @@ function Show-Help {
 }
 
 switch ($Action) {
-    'copy'  { Copy-BannersToLocal }
-    'list'  { List-BannerFiles }
+    'copy' { Copy-BannersToLocal }
+    'list' { List-BannerFiles }
     'check' { Check-BannerSetup }
-    'help'  { Show-Help }
+    'help' { Show-Help }
     default { Show-Help }
 }
