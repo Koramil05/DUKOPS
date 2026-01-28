@@ -23,6 +23,32 @@ let ImageOptimizer = null;
     }
 })();
 
+// ================= OFFLINE-FIRST IMPORTS =================
+// Dynamically import offline management modules
+let OfflineManager = null;
+let NetworkMonitor = null;
+
+(async () => {
+    try {
+        const offlineModule = await import('./js/services/OfflineManager.js');
+        OfflineManager = offlineModule.OfflineManager;
+        console.log('✓ OfflineManager loaded successfully');
+    } catch (error) {
+        console.warn('⚠ OfflineManager module not available');
+    }
+
+    try {
+        const networkModule = await import('./js/services/NetworkMonitor.js');
+        NetworkMonitor = networkModule.NetworkMonitor;
+        if (NetworkMonitor) {
+            NetworkMonitor.init();
+            console.log('✓ NetworkMonitor initialized');
+        }
+    } catch (error) {
+        console.warn('⚠ NetworkMonitor module not available');
+    }
+})();
+
 // ================= VARIABEL GLOBAL =================
 let img = new Image();
 let selectedDesa = "";
@@ -284,6 +310,12 @@ function initializeApp() {
 
         // Setup canvas
         resetCanvas();
+
+        // ================= SETUP OFFLINE-SYNC LISTENERS =================
+        // Listen for offline sync trigger
+        window.addEventListener('startOfflineSync', async (event) => {
+            await handleOfflineSync(event.detail.submissionQueue);
+        });
 
         // Show welcome message
         setTimeout(() => {
@@ -769,6 +801,64 @@ async function processSubmission() {
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
     try {
+        // ================= OFFLINE-FIRST CHECK =================
+        // If offline, queue for later sync instead of sending now
+        if (OfflineManager && NetworkMonitor && !NetworkMonitor.getStatus()) {
+            console.log('⚠ Offline detected - queuing submission for later sync');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan offline...';
+
+            // Create ZIP file for queueing
+            const canvas = document.getElementById("canvas");
+            const narasi = document.getElementById("narasi").value;
+            const date = new Date(tanggalWaktu);
+            const desaInfo = normalizeDesaName(selectedDesa);
+
+            const fileNameInsideZipNarasi = `${desaInfo.cleanName} ${String(date.getDate()).padStart(2, '0')} ${date.toLocaleDateString('id-ID', { month: 'long' })} ${date.getFullYear()} Narasi.txt`;
+            const formattedDate = date.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+            const narasiContent = `${formattedDate}\tBabinsa ${desaInfo.cleanName} ${narasi}`;
+
+            // Create temporary ZIP with canvas image (compression will happen on sync)
+            const zip = new JSZip();
+            zip.file(fileNameInsideZipNarasi, narasiContent);
+            zip.file(`${desaInfo.cleanName}_photo.png`, canvas.toDataURL("image/png").split("base64,")[1], { base64: true });
+
+            const zipBlob = await zip.generateAsync({ type: "blob" });
+            const zipFileName = `${desaInfo.cleanName} ${String(date.getDate()).padStart(2, '0')} ${String(date.getMonth() + 1).padStart(2, '0')} ${date.getFullYear()}.zip`;
+
+            // Queue for sync
+            const queueItem = OfflineManager.queueSubmission({
+                desa: selectedDesa,
+                narasi: narasi,
+                datetime: tanggalWaktu,
+                zipBlob: zipBlob,
+                zipFileName: zipFileName,
+                metadata: {
+                    coordinates: currentKoordinat,
+                    submittedOffline: true,
+                    timestamp: new Date().toISOString()
+                }
+            });
+
+            // Update UI
+            NetworkMonitor.updateUI();
+
+            showNotification(`✓ Offline: Tersimpan di antrian\nAkan terkirim saat online`, "success");
+            addSendLog(zipFileName, "queued", "Disimpan untuk sync offline");
+            saveSubmittedDate(tanggalWaktu);
+            updateCounter();
+            resetForm();
+
+            button.disabled = false;
+            button.innerHTML = originalText;
+            return; // Exit early, don't continue to online submission flow
+        }
+
+        // ================= PHOTO COMPRESSION STEP =================
         // PHOTO COMPRESSION STEP
         let imgData = null;
         let compressionInfo = null;
@@ -2326,6 +2416,94 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }, 2000);
 });
+
+// ================= OFFLINE SYNC HANDLER =================
+/**
+ * Handle auto-sync of offline submissions
+ * Called when network comes back online
+ */
+async function handleOfflineSync(submissionQueue) {
+    if (!OfflineManager) {
+        console.warn('⚠ OfflineManager not available');
+        return;
+    }
+
+    console.log(`🔄 Starting offline sync for ${submissionQueue.length} submission(s)`);
+
+    let syncedCount = 0;
+    let failedCount = 0;
+
+    for (const queueItem of submissionQueue) {
+        try {
+            console.log(`📤 Syncing: ${queueItem.id}`);
+
+            // Get stored ZIP blob
+            const zipBlob = OfflineManager.getZipBlob(queueItem.id);
+            if (!zipBlob) {
+                console.warn(`⚠ ZIP blob not found for ${queueItem.id}`);
+                OfflineManager.recordSyncFailure(queueItem.id, new Error('ZIP blob not found'));
+                failedCount++;
+                continue;
+            }
+
+            // Attempt to send with retry logic
+            let syncSuccess = false;
+            const maxAttempts = OfflineManager.CONFIG.MAX_SYNC_ATTEMPTS;
+
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                try {
+                    // Send to Telegram & Drive
+                    const telegramSent = await sendZipToTelegram(zipBlob, queueItem.zipFileName, queueItem.desa);
+                    const driveUploaded = await uploadToGoogleDrive(zipBlob, queueItem.zipFileName, queueItem.desa, new Date(queueItem.datetime));
+
+                    if (telegramSent || driveUploaded) {
+                        console.log(`✓ Synced: ${queueItem.id}`);
+                        OfflineManager.markAsSynced(queueItem.id);
+                        syncedCount++;
+                        syncSuccess = true;
+                        break;
+                    }
+                } catch (error) {
+                    const canRetry = attempt < maxAttempts - 1;
+                    console.warn(`⚠ Attempt ${attempt + 1}/${maxAttempts} failed:`, error.message);
+
+                    if (canRetry) {
+                        // Exponential backoff
+                        const delay = OfflineManager.getRetryDelay(attempt);
+                        await new Promise(r => setTimeout(r, delay));
+                    }
+                }
+            }
+
+            if (!syncSuccess) {
+                OfflineManager.recordSyncFailure(queueItem.id, new Error('Max sync attempts reached'));
+                failedCount++;
+            }
+
+        } catch (error) {
+            console.error(`❌ Error syncing ${queueItem.id}:`, error);
+            failedCount++;
+        }
+    }
+
+    // Cleanup synced items
+    OfflineManager.clearSyncedItems();
+
+    // Update UI
+    if (NetworkMonitor) {
+        NetworkMonitor.updateUI();
+    }
+
+    // Show result notification
+    if (syncedCount > 0) {
+        showNotification(`✓ Berhasil sync ${syncedCount} pengiriman offline`, 'success');
+    }
+    if (failedCount > 0) {
+        showNotification(`⚠ ${failedCount} pengiriman gagal sync, akan dicoba lagi`, 'warning');
+    }
+
+    console.log(`✅ Offline sync complete: ${syncedCount} synced, ${failedCount} failed`);
+}
 
 // Also initialize when switching to Jadwal Piket
 const originalShowJadwalPiket = window.showJadwalPiket;
