@@ -68,39 +68,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Simulasi loading dengan 3 tahap
-    const loadingStages = [
-        { percent: 33, message: "Memuat sistem..." },
-        { percent: 66, message: "Menyiapkan aplikasi..." },
-        { percent: 100, message: "Aplikasi Siap digunakan" }
-    ];
+    // Smooth progressive loading over total duration (15 seconds)
+    const totalDuration = 15000; // ms
+    const intervalMs = 150; // update every 150ms
+    const steps = Math.max(1, Math.ceil(totalDuration / intervalMs));
+    const increment = 100 / steps;
+    let preShown = false;
 
-    let currentStage = 0;
+    console.log("🔄 Starting splash screen (smooth progress)...");
 
-    function loadNextStage() {
-        if (currentStage >= loadingStages.length) {
-            // Selesai loading, tampilkan tombol
-            document.getElementById('splashDukopsBtn').style.opacity = '1';
-            return;
+    const progressInterval = setInterval(() => {
+        const next = Math.min(100, Math.round((progress + increment) * 100) / 100);
+        let message = "Menyiapkan aplikasi...";
+        if (next < 33) message = "Memuat sistem...";
+        else if (next < 66) message = "Menyiapkan aplikasi...";
+        else if (next < 98) message = "Hampir selesai...";
+        else message = "Menampilkan aplikasi...";
+
+        updateProgress(next, message);
+
+        // Pre-show app with blur when at/above 98%
+        if (next >= 98 && !preShown) {
+            preShown = true;
+            const appContainer = document.getElementById('appContainer');
+            if (appContainer) {
+                appContainer.style.display = 'block';
+                appContainer.style.opacity = '0.15';
+                appContainer.style.filter = 'blur(6px)';
+                appContainer.style.transition = 'opacity 0.4s ease, filter 0.4s ease';
+            }
         }
 
-        const stage = loadingStages[currentStage];
-        updateProgress(stage.percent, stage.message);
-
-        currentStage++;
-
-        // Delay antar stage
-        setTimeout(loadNextStage, 800);
-    }
-
-    // Mulai loading
-    console.log("🔄 Starting splash screen...");
-    loadNextStage();
-
-    // Auto ke aplikasi setelah loading selesai (15 detik)
-    setTimeout(() => {
-        console.log("✅ Auto loading aplikasi...");
-        loadDukopsApp();
-    }, 15000);
+        if (next >= 100) {
+            clearInterval(progressInterval);
+            console.log("✅ Auto loading aplikasi...");
+            loadDukopsApp();
+        }
+    }, intervalMs);
 });
 
 // ================= FUNGSI PILIH APLIKASI =================
