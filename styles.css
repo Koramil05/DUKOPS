@@ -280,9 +280,10 @@ body {
 /* Navigation Buttons */
 .nav-buttons {
     display: flex;
-    gap: 10px;
+    gap: 0;
     margin-bottom: 20px;
-    padding: 0 5px;
+    padding: 0;
+    width: 100%;
 }
 
 .nav-btn {
@@ -291,7 +292,7 @@ body {
     background: #2b4d2b;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 0;
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
@@ -303,14 +304,40 @@ body {
     transition: all 0.3s;
 }
 
-.nav-btn:hover {
-    background: #3e704a;
-    transform: translateY(-2px);
+/* DUKOPS Tab - Hijau */
+.nav-btn-dukops {
+    background: #1a3a1a;
+    color: #9fd49f;
+    border: 2px solid #4CAF50;
+    border-right: 1px solid #4CAF50;
 }
 
-.nav-btn.active {
+.nav-btn-dukops:hover {
+    background: #2b5a2b;
+}
+
+.nav-btn-dukops.active {
     background: #4CAF50;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* PIKET Tab - Oranye */
+.nav-btn-piket {
+    background: #3a2a1a;
+    color: #d4954a;
+    border: 2px solid #d4954a;
+    border-left: 1px solid #d4954a;
+}
+
+.nav-btn-piket:hover {
+    background: #4a3a2a;
+}
+
+.nav-btn-piket.active {
+    background: #d4954a;
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn i {
