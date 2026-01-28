@@ -282,7 +282,7 @@ async function loadDesaList() {
     try {
         // Fallback data - only desas with coordinate JSON files
         const fallbackDesas = [
-            "Gitgit", "Panji", "Sukasada", "Pancasari", "Wanagiri",
+            "Gitgit", "Panji", "Panji Anom", "Sukasada", "Pancasari", "Wanagiri",
             "Ambengan", "Kayu Putih", "Padang Bulia", "Pegadungan",
             "Pegayaman", "Sambangan", "Selat", "Silangjana", "Tegallinggah"
         ];
