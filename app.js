@@ -96,12 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("🔄 Starting splash screen...");
     loadNextStage();
 
-    // Emergency timeout (6 detik)
+    // Auto ke aplikasi setelah loading selesai (3.5 detik)
     setTimeout(() => {
-        console.warn("⚠️ Emergency timeout triggered");
-        updateProgress(100, "Aplikasi Siap digunakan");
-        document.getElementById('splashDukopsBtn').style.opacity = '1';
-    }, 6000);
+        console.log("✅ Auto loading aplikasi...");
+        loadDukopsApp();
+    }, 3500);
 });
 
 // ================= FUNGSI PILIH APLIKASI =================
@@ -151,6 +150,13 @@ function showDukops() {
     document.getElementById('jadwalPiketContainer').style.display = 'none';
     document.getElementById('btnDukops').classList.add('active');
     document.getElementById('btnJadwal').classList.remove('active');
+
+    // Toggle ON/OFF status
+    document.getElementById('btnDukops').classList.remove('off');
+    document.getElementById('btnDukops').classList.add('on');
+    document.getElementById('btnJadwal').classList.remove('on');
+    document.getElementById('btnJadwal').classList.add('off');
+
     currentApp = 'dukops';
 }
 
@@ -159,6 +165,13 @@ function showJadwalPiket() {
     document.getElementById('jadwalPiketContainer').style.display = 'block';
     document.getElementById('btnDukops').classList.remove('active');
     document.getElementById('btnJadwal').classList.add('active');
+
+    // Toggle ON/OFF status
+    document.getElementById('btnDukops').classList.remove('on');
+    document.getElementById('btnDukops').classList.add('off');
+    document.getElementById('btnJadwal').classList.remove('off');
+    document.getElementById('btnJadwal').classList.add('on');
+
     currentApp = 'jadwal';
 
     // Inisialisasi Jadwal Piket jika belum diinisialisasi
@@ -1548,8 +1561,8 @@ function updateDesaHeaderImage(desaName) {
 
     if (!desaName) {
         // Coba load default dari local, jika tidak ada gunakan GitHub
-        const localDefaultUrl = 'banners/bnr_default.png';
-        const githubDefaultUrl = 'https://github.com/Koramil05/DUKOPS/raw/main/bnr_default.png';
+        const localDefaultUrl = 'Profile/profile_default.png';
+        const githubDefaultUrl = 'https://github.com/Koramil05/DUKOPS/raw/main/Profile/profile_default.png';
 
         headerImage.src = localDefaultUrl;
         headerImage.onerror = () => {
@@ -1562,8 +1575,8 @@ function updateDesaHeaderImage(desaName) {
     const imageName = desaInfo.normalized.toLowerCase().replace(/\s+/g, '_');
 
     // Coba load dari local terlebih dahulu
-    const localUrl = `banners/bnr_${imageName}.png`;
-    const githubUrl = `https://github.com/Koramil05/DUKOPS/raw/main/bnr_${imageName}.png`;
+    const localUrl = `Profile/profile_${imageName}.png`;
+    const githubUrl = `https://github.com/Koramil05/DUKOPS/raw/main/Profile/profile_${imageName}.png`;
 
     headerImage.src = localUrl;
 

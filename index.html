@@ -57,15 +57,8 @@
             <div class="progress-percentage" id="progressPercentage">0%</div>
         </div>
 
-        <!-- Tombol Pilihan Aplikasi -->
-        <div class="splash-buttons">
-            <button class="splash-btn splash-btn-dukops" id="splashDukopsBtn" onclick="loadDukopsApp()">
-                <i class="fas fa-file-upload"> klik disini ➯ </i> OPEN APLIKASI DUKOPS
-            </button>
-        </div>
-
         <!-- Loading Text -->
-        <div class="loading-text" id="loadingStatusText">Pilih aplikasi yang akan digunakan</div>
+        <div class="loading-text" id="loadingStatusText">Memuat aplikasi...</div>
     </div>
 
     <!-- ================= APLIKASI UTAMA ================= -->
@@ -77,11 +70,13 @@
 
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
-            <button class="nav-btn nav-btn-dukops active" id="btnDukops" onclick="showDukops()">
+            <button class="nav-btn nav-btn-dukops active on" id="btnDukops" onclick="showDukops()">
                 <i class="fas fa-file-upload"></i> DUKOPS
+                <span class="tab-status">ON</span>
             </button>
-            <button class="nav-btn nav-btn-piket" id="btnJadwal" onclick="showJadwalPiket()">
+            <button class="nav-btn nav-btn-piket off" id="btnJadwal" onclick="showJadwalPiket()">
                 <i class="fas fa-calendar-alt"></i> PIKET
+                <span class="tab-status">OFF</span>
             </button>
         </div>
 
@@ -90,9 +85,9 @@
             <div style="width: 90%; margin: 0 auto; font-size: 12px;">
                 <div class="header-container">
                     <img id="desaHeaderImage"
-                        src="https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true" alt="Header Desa"
-                        class="header-image"
-                        onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true'">
+                        src="https://github.com/Koramil05/DUKOPS/blob/main/Profile/profile_default.png?raw=true"
+                        alt="Header Desa" class="header-image"
+                        onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/Profile/profile_default.png?raw=true'">
                     <div class="header-text">
                         <div class="header-title">DUKOPS BABINSA</div>
                         <div class="header-title">KORAMIL 1609-05/SUKASADA</div>

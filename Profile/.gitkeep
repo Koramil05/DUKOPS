@@ -1,0 +1,4 @@
+# Profile Images Directory
+# Folder ini menyimpan gambar profile untuk masing-masing desa/kelurahan
+# Format file: profile_[desa].png
+# Contoh: profile_sukasada.png, profile_gitgit.png, dll.
