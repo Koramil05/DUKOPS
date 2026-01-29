@@ -243,6 +243,15 @@ function showAdminPanel() {
     try {
         console.log("🔐 Opening Admin Panel...");
 
+        // Check if admin is already authenticated
+        const isAdminAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
+
+        if (!isAdminAuthenticated) {
+            // Show PIN dialog instead of admin panel
+            showAdminPINDialog();
+            return;
+        }
+
         // Hide other containers
         document.getElementById('dukopsContent').style.display = 'none';
         document.getElementById('jadwalPiketContainer').style.display = 'none';
@@ -274,6 +283,217 @@ function showAdminPanel() {
         console.error("❌ Error opening admin panel:", error);
         document.getElementById('adminContent').innerHTML = '<p style="color: #ff6b6b;">Error membuka Admin Panel: ' + error.message + '</p>';
     }
+}
+
+/**
+ * Show PIN dialog untuk admin authentication
+ * PIN: 1234
+ */
+function showAdminPINDialog() {
+    const modal = document.createElement('div');
+    modal.id = 'adminPINModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #202624 0%, #2b4d2b 100%);
+            border: 3px solid #4CAF50;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        ">
+            <div style="font-size: 60px; color: #4CAF50; margin-bottom: 20px;">
+                <i class="fas fa-lock"></i>
+            </div>
+            
+            <h2 style="color: #9fd49f; margin-bottom: 10px; font-size: 24px;">
+                🔐 Admin Authentication
+            </h2>
+            
+            <p style="color: #b2d8b2; margin-bottom: 30px; font-size: 14px;">
+                Masukkan PIN untuk mengakses Admin Panel
+            </p>
+            
+            <div style="margin-bottom: 25px;">
+                <input 
+                    type="password" 
+                    id="adminPINInput" 
+                    placeholder="Masukkan PIN (4 digit)" 
+                    maxlength="4"
+                    style="
+                        width: 100%;
+                        padding: 12px 15px;
+                        border: 2px solid #4CAF50;
+                        background: #1a3a1a;
+                        color: #9fd49f;
+                        border-radius: 8px;
+                        font-size: 18px;
+                        text-align: center;
+                        letter-spacing: 5px;
+                        font-weight: bold;
+                    "
+                    onkeypress="if(event.key==='Enter') verifyAdminPIN()"
+                >
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <button 
+                    onclick="verifyAdminPIN()"
+                    style="
+                        width: 100%;
+                        padding: 12px;
+                        background: linear-gradient(135deg, #4CAF50, #2b4d2b);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        transition: transform 0.2s;
+                        margin-bottom: 10px;
+                    "
+                    onmouseover="this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.transform='translateY(0)'"
+                >
+                    <i class="fas fa-sign-in-alt"></i> VERIFY
+                </button>
+                
+                <button 
+                    onclick="cancelAdminPIN()"
+                    style="
+                        width: 100%;
+                        padding: 12px;
+                        background: rgba(255, 255, 255, 0.1);
+                        color: #b2d8b2;
+                        border: 2px solid #b2d8b2;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        transition: transform 0.2s;
+                    "
+                    onmouseover="this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.transform='translateY(0)'"
+                >
+                    <i class="fas fa-times"></i> CANCEL
+                </button>
+            </div>
+            
+            <p style="color: #777; font-size: 12px; margin-top: 20px;">
+                <i class="fas fa-info-circle"></i> Hanya admin yang authorized dapat mengakses
+            </p>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Focus ke input
+    setTimeout(() => {
+        document.getElementById('adminPINInput').focus();
+    }, 100);
+}
+
+/**
+ * Verify admin PIN
+ * Correct PIN: 1234
+ */
+function verifyAdminPIN() {
+    const pinInput = document.getElementById('adminPINInput');
+    const enteredPIN = pinInput.value.trim();
+    const correctPIN = '1234';
+
+    if (enteredPIN === correctPIN) {
+        // PIN correct - set authentication
+        sessionStorage.setItem('adminAuthenticated', 'true');
+
+        // Remove modal
+        const modal = document.getElementById('adminPINModal');
+        if (modal) modal.remove();
+
+        // Show admin panel
+        showNotification('✅ Admin verified! Welcome.', 'success');
+
+        // Re-call to show actual admin panel
+        setTimeout(() => {
+            document.getElementById('dukopsContent').style.display = 'none';
+            document.getElementById('jadwalPiketContainer').style.display = 'none';
+            document.getElementById('adminPanelContainer').style.display = 'block';
+
+            document.getElementById('btnDukops').classList.remove('active');
+            document.getElementById('btnJadwal').classList.remove('active');
+            document.getElementById('btnAdmin').classList.add('active');
+
+            currentApp = 'admin';
+
+            if (typeof AdminSettings !== 'undefined' && AdminSettings.init) {
+                AdminSettings.init().catch(err => {
+                    console.warn("⚠️ AdminSettings init error:", err);
+                });
+            }
+
+            if (typeof AdminDashboard !== 'undefined' && AdminDashboard.init) {
+                console.log("✅ AdminDashboard loaded, initializing...");
+                AdminDashboard.init();
+            }
+        }, 300);
+    } else {
+        // PIN incorrect
+        pinInput.style.borderColor = '#ff6b6b';
+        pinInput.style.background = 'rgba(255, 107, 107, 0.1)';
+        pinInput.value = '';
+
+        showNotification('❌ PIN salah! Coba lagi.', 'error');
+
+        setTimeout(() => {
+            pinInput.style.borderColor = '#4CAF50';
+            pinInput.style.background = '#1a3a1a';
+            pinInput.focus();
+        }, 1000);
+    }
+}
+
+/**
+ * Cancel admin PIN dialog
+ * Return ke previous tab
+ */
+function cancelAdminPIN() {
+    const modal = document.getElementById('adminPINModal');
+    if (modal) modal.remove();
+
+    // Reset buttons and show previous content
+    document.getElementById('btnDukops').classList.add('active');
+    document.getElementById('btnAdmin').classList.remove('active');
+    document.getElementById('dukopsContent').style.display = 'block';
+    document.getElementById('adminPanelContainer').style.display = 'none';
+    currentApp = 'dukops';
+
+    showNotification('Admin panel canceled', 'info');
+}
+
+/**
+ * Logout dari admin panel
+ * Clear authentication
+ */
+function logoutAdminPanel() {
+    sessionStorage.removeItem('adminAuthenticated');
+    showNotification('✅ Admin logout. Session cleared.', 'success');
+
+    // Return ke DUKOPS tab
+    showDukops();
 }
 
 // ================= FUNGSI BACKEND AMAN =================
