@@ -91,23 +91,32 @@
 
 .splash-btn {
     flex: 1;
-    padding: 15px 20px;
+    padding: 20px 25px;
     border: none;
-    border-radius: 10px;
+    border-radius: 15px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    transition: all 0.3s;
+    gap: 12px;
+    transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
+    min-height: 120px;
 }
 
 .splash-btn i {
-    font-size: 20px;
+    font-size: 48px;
+    transition: transform 0.3s ease;
+}
+
+.splash-btn span {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .splash-btn-dukops {
@@ -125,14 +134,21 @@
 .splash-btn:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="%234CAF50" stroke-width="2"/><path d="M16 6 L20 14 L28 14 L22 19 L24 27 L16 22 L8 27 L10 19 L4 14 L12 14 Z" fill="%234CAF50"/></svg>') 16 16, auto;
+}
+
+.splash-btn i:hover {
+    transform: scale(1.1) rotate(10deg);
 }
 
 .splash-btn-dukops:hover {
     background: linear-gradient(135deg, #3e704a, #4CAF50);
+    border-color: #66bb6a;
 }
 
 .splash-btn-jadwal:hover {
     background: linear-gradient(135deg, #008800, #00aa00);
+    border-color: #66ff66;
 }
 
 .splash-progress-container {
@@ -1027,6 +1043,28 @@ canvas {
         flex-direction: column;
     }
 
+}
+
+/* Tablet Breakpoint */
+@media (min-width: 600px) and (max-width: 1024px) {
+    .splash-btn {
+        padding: 18px 20px;
+        min-height: 110px;
+        gap: 10px;
+    }
+
+    .splash-btn i {
+        font-size: 44px;
+    }
+
+    .splash-btn span {
+        font-size: 15px;
+    }
+
+    .splash-buttons {
+        max-width: 600px;
+    }
+
     .splash-circle {
         width: 150px;
         height: 150px;
@@ -1053,7 +1091,17 @@ canvas {
     }
 
     .splash-btn {
-        padding: 12px;
+        padding: 15px 15px;
+        min-height: 100px;
+        gap: 8px;
+    }
+
+    .splash-btn i {
+        font-size: 40px;
+    }
+
+    .splash-btn span {
+        font-size: 14px;
     }
 
     .thankyou-content {
