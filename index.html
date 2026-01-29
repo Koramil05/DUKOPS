@@ -80,6 +80,9 @@
             <button class="nav-btn" id="btnJadwal" onclick="showJadwalPiket()">
                 <i class="fas fa-calendar-alt"></i> JADWAL PIKET
             </button>
+            <button class="nav-btn admin-btn" id="btnAdmin" onclick="showAdminPanel()">
+                <i class="fas fa-user-shield"></i> ADMIN
+            </button>
         </div>
 
         <!-- DUKOPS Content -->
@@ -348,8 +351,23 @@
         <div class="jadwal-toast" id="j_toastNotification"></div>
     </div>
 
-    <!-- Application Script -->
+    <!-- ============ APPLICATION SCRIPTS ============ -->
+    <!-- Load FormValidator -->
+    <script src="js/components/FormValidator.js"></script>
+
+    <!-- Load AdminSettings -->
+    <script src="js/services/AdminSettings.js"></script>
+
+    <!-- Load AdminDashboard as Module -->
+    <script type="module">
+        import { AdminDashboard } from './js/components/AdminDashboard.js';
+        window.AdminDashboard = AdminDashboard;
+        console.log("✅ AdminDashboard module loaded");
+    </script>
+
+    <!-- Load Main App Logic -->
     <script src="app.js"></script>
+    <!-- ============================================= -->
 </body>
 
 </html>

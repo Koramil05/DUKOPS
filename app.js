@@ -159,11 +159,42 @@ function showJadwalPiket() {
     document.getElementById('jadwalPiketContainer').style.display = 'block';
     document.getElementById('btnDukops').classList.remove('active');
     document.getElementById('btnJadwal').classList.add('active');
+    document.getElementById('btnAdmin').classList.remove('active');
     currentApp = 'jadwal';
 
     // Inisialisasi Jadwal Piket jika belum diinisialisasi
     if (JadwalData.daftarNama.length === 0) {
         initJadwalPiket();
+    }
+}
+
+// ================= ADMIN PANEL =================
+function showAdminPanel() {
+    try {
+        console.log("🔐 Opening Admin Panel...");
+
+        // Hide other content
+        document.getElementById('dukopsContent').style.display = 'none';
+        document.getElementById('jadwalPiketContainer').style.display = 'none';
+
+        // Update button states
+        document.getElementById('btnDukops').classList.remove('active');
+        document.getElementById('btnJadwal').classList.remove('active');
+        document.getElementById('btnAdmin').classList.add('active');
+
+        currentApp = 'admin';
+
+        // Check if AdminDashboard is available
+        if (typeof AdminDashboard !== 'undefined' && AdminDashboard.init) {
+            console.log("✅ AdminDashboard loaded, initializing...");
+            AdminDashboard.init();
+        } else {
+            console.error("❌ AdminDashboard not loaded properly!");
+            alert("Admin Panel tidak tersedia. Silakan refresh halaman.");
+        }
+    } catch (error) {
+        console.error("❌ Error opening admin panel:", error);
+        alert("Error membuka Admin Panel: " + error.message);
     }
 }
 
@@ -222,6 +253,21 @@ function initializeApp() {
     console.log("🔄 Initializing DUKOPS app...");
 
     try {
+        // Initialize AdminSettings if available
+        if (typeof AdminSettings !== 'undefined' && AdminSettings.init) {
+            AdminSettings.init().then(() => {
+                console.log("✅ AdminSettings initialized");
+            }).catch(err => {
+                console.warn("⚠️ AdminSettings init error (non-critical):", err);
+            });
+        }
+
+        // Initialize FormValidator if available
+        if (typeof FormValidator !== 'undefined' && FormValidator.init) {
+            FormValidator.init();
+            console.log("✅ FormValidator initialized");
+        }
+
         // Inisialisasi counter
         const savedCount = localStorage.getItem('dukopsSubmissionCount');
         submissionCount = savedCount ? parseInt(savedCount) : 0;
