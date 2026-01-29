@@ -28,10 +28,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Main Stylesheet (Modularized) -->
-    <link rel="stylesheet" href="css/main.css">
-
-    <!-- Legacy Stylesheet (Fallback) -->
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -57,19 +54,19 @@
             <div class="progress-percentage" id="progressPercentage">0%</div>
         </div>
 
+        <!-- Tombol Pilihan Aplikasi -->
+        <div class="splash-buttons">
+            <button class="splash-btn splash-btn-dukops" id="splashDukopsBtn" onclick="loadDukopsApp()">
+                <i class="fas fa-file-upload"> klik disini ➯ </i> OPEN APLIKASI DUKOPS
+            </button>
+        </div>
+
         <!-- Loading Text -->
-        <div class="loading-text" id="loadingStatusText">Memuat aplikasi...</div>
+        <div class="loading-text" id="loadingStatusText">Pilih aplikasi yang akan digunakan</div>
     </div>
 
     <!-- ================= APLIKASI UTAMA ================= -->
     <div id="appContainer" class="container" style="display: none;">
-        <!-- Network Status Indicator -->
-        <div id="networkStatus" class="network-status network-online" title="Terhubung ke internet">
-            <i class="fas fa-wifi"></i>
-            <span>Online</span>
-            <span class="queue-badge" style="display: none;">0</span>
-        </div>
-
         <!-- Install Button -->
         <button id="installButton">
             <i class="fas fa-download"></i> Install App
@@ -77,13 +74,11 @@
 
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
-            <button class="nav-btn nav-btn-dukops active on" id="btnDukops" onclick="showDukops()">
-                <i class="fas fa-file-upload"></i> DUKOPS
-                <span class="tab-status">ON</span>
+            <button class="nav-btn active" id="btnDukops" onclick="showDukops()">
+                <i class="fas fa-file-upload"></i> DUKOPS BABINSA
             </button>
-            <button class="nav-btn nav-btn-piket off" id="btnJadwal" onclick="showJadwalPiket()">
-                <i class="fas fa-calendar-alt"></i> PIKET
-                <span class="tab-status">OFF</span>
+            <button class="nav-btn" id="btnJadwal" onclick="showJadwalPiket()">
+                <i class="fas fa-calendar-alt"></i> JADWAL PIKET
             </button>
         </div>
 
@@ -92,9 +87,9 @@
             <div style="width: 90%; margin: 0 auto; font-size: 12px;">
                 <div class="header-container">
                     <img id="desaHeaderImage"
-                        src="https://github.com/Koramil05/DUKOPS/blob/main/Profile/profile_default.png?raw=true"
-                        alt="Header Desa" class="header-image"
-                        onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/Profile/profile_default.png?raw=true'">
+                        src="https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true" alt="Header Desa"
+                        class="header-image"
+                        onerror="this.src='https://github.com/Koramil05/DUKOPS/blob/main/bnr_default.png?raw=true'">
                     <div class="header-text">
                         <div class="header-title">DUKOPS BABINSA</div>
                         <div class="header-title">KORAMIL 1609-05/SUKASADA</div>
@@ -105,59 +100,27 @@
                     </div>
                 </div>
 
-                <!-- Row 1: Pilih Desa & Foto -->
-                <div class="form-row">
-                    <div class="form-col">
-                        <label><i class="fas fa-village"></i> Pilih Desa:</label>
-                        <select id="selectDesa" onchange="loadSelectedDesa()">
-                            <option value="">-- Pilih Desa --</option>
-                        </select>
-                        <div id="selectDesaError" class="form-error"></div>
-                        <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...
-                        </div>
-                        <div class="previewBox" id="previewDesa" style="display: none;"></div>
+                <label><i class="fas fa-village"></i> Pilih Desa:</label>
+                <select id="selectDesa" onchange="loadSelectedDesa()">
+                    <option value="">-- Pilih Desa --</option>
+                </select>
+                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...</div>
+                <div class="previewBox" id="previewDesa"></div>
 
-                        <div id="loadingKoordinat" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Memuat
-                            koordinat...</div>
-                        <div class="previewBox" id="previewKordinat" style="display: none;"></div>
-                    </div>
+                <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
+                <div class="previewBox" id="previewKordinat"></div>
 
-                    <div class="form-col">
-                        <label><i class="fas fa-camera"></i> Foto Kegiatan:</label>
-                        <input type="file" id="gambar" accept="image/*" onchange="previewImage()">
-                        <div id="gambarError" class="form-error"></div>
-                        <div id="fileSizeInfo" style="display: none; margin-top: 4px;"></div>
-                        <div class="previewBox" id="previewGambar"></div>
-                    </div>
-                </div>
+                <label><i class="fas fa-camera"></i> Foto Kegiatan:</label>
+                <input type="file" id="gambar" accept="image/*" onchange="previewImage()">
+                <div class="previewBox" id="previewGambar"></div>
 
-                <!-- Row 2: Tanggal & Waktu & Reset Button -->
-                <div class="form-row">
-                    <div class="form-col">
-                        <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
-                        <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
-                        <div id="tanggalWaktuError" class="form-error"></div>
-                        <div class="previewBox" id="previewTanggal" style="display: none;"></div>
-                    </div>
+                <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu:</label>
+                <input type="datetime-local" id="tanggalWaktu" onchange="updateDatePreview()">
+                <div class="previewBox" id="previewTanggal"></div>
 
-                    <div class="form-col form-col-reset">
-                        <label><i class="fas fa-redo"></i> Aksi:</label>
-                        <button id="resetBtn" onclick="resetAll()" class="reset-btn">
-                            <i class="fas fa-redo"></i> Reset Semua
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Row 3: Narasi Kegiatan dengan Preview Tanggal -->
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; gap: 15px;">
-                    <label style="margin: 0; flex: 1;"><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
-                    <span id="narasiCounter" style="display: none;">0/500</span>
-                    <div id="previewTanggalHeader" class="preview-tanggal-box"></div>
-                </div>
-                <textarea id="narasi" rows="4" placeholder="Masukan narasi kegiatan..."
+                <label><i class="fas fa-file-alt"></i> Narasi Kegiatan:</label>
+                <textarea id="narasi" rows="4" placeholder="Masukkan narasi kegiatan..."
                     oninput="checkInputCompletion()"></textarea>
-                <div id="narasiError" class="form-error"></div>
 
                 <canvas id="canvas"></canvas>
 
@@ -165,6 +128,7 @@
                     <i class="fas fa-download"></i> DOWNLOAD & <i class="fas fa-paper-plane"></i> KIRIM & <i
                         class="fab fa-google-drive"></i> DRIVE
                 </button>
+                <button id="resetBtn" onclick="resetAll()"><i class="fas fa-redo"></i> Reset Semua Data</button>
 
                 <button id="showAttendanceBtn" onclick="showAttendance()">
                     <i class="fas fa-chart-bar"></i> TAMPILKAN LAPORAN
@@ -191,6 +155,14 @@
                     </div>
 
                     <div id="attendanceSummary" class="attendance-summary" style="display: none;">
+                        <div class="summary-row">
+                            <span>Total Laporan:</span>
+                            <span id="totalReports" style="font-weight: bold; color: #9fd49f;">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Desa:</span>
+                            <span id="totalDesa" style="font-weight: bold; color: #9fd49f;">0</span>
+                        </div>
                         <div class="summary-row">
                             <span>Pencapaian Target:</span>
                             <span id="targetStatus" style="font-weight: bold;">0%</span>
@@ -376,23 +348,7 @@
         <div class="jadwal-toast" id="j_toastNotification"></div>
     </div>
 
-    <!-- Application Scripts -->
-    <!-- Services (ensure availability for modules) -->
-    <script src="js/services/IndexedDBManager.js"></script>
-    <script src="js/services/OfflineManager.js"></script>
-    <script src="js/services/NetworkMonitor.js"></script>
-    <script src="js/services/AdminSettings.js"></script>
-
-    <!-- Components (non-module) -->
-    <script src="js/components/UIComponents.js"></script>
-    <script src="js/components/TabSystem.js"></script>
-    <script src="js/components/AdminDashboard.js"></script>
-    <script src="js/components/FormValidator.js"></script>
-
-    <!-- Main ES6 Module (initializes app) -->
-    <script type="module" src="js/index.js"></script>
-
-    <!-- Legacy Scripts (Backward Compatibility) -->
+    <!-- Application Script -->
     <script src="app.js"></script>
 </body>
 
