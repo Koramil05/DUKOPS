@@ -389,15 +389,8 @@
     <!-- Load FormValidator -->
     <script src="js/components/FormValidator.js"></script>
 
-    <!-- Load AdminSettings -->
-    <script src="js/services/AdminSettings.js"></script>
-
-    <!-- Load AdminDashboard as Module -->
-    <script type="module">
-        import { AdminDashboard } from './js/components/AdminDashboard.js';
-        window.AdminDashboard = AdminDashboard;
-        console.log("✅ AdminDashboard module loaded");
-    </script>
+    <!-- Load AdminDashboard (handles admin panel initialization) -->
+    <script src="js/components/AdminDashboard.js"></script>
 
     <!-- Load Main App Logic -->
     <script src="app.js"></script>
