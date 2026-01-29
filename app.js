@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("🚀 DOM Content Loaded");
 
     const splashScreen = document.getElementById('splashScreen');
+    const appContainer = document.getElementById('appContainer');
     const progressBar = document.getElementById('splashProgressBar');
     const progressText = document.getElementById('progressPercentage');
     const statusText = document.getElementById('loadingStatusText');
@@ -65,6 +66,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         console.log(`Progress: ${progress}% - ${message}`);
+
+        // Start fade-in at 80%
+        if (progress >= 80 && appContainer) {
+            appContainer.style.opacity = (progress - 80) / 20;
+        }
+
+        // Auto-open app at 100%
+        if (progress >= 100) {
+            setTimeout(() => {
+                loadDukopsApp();
+            }, 500);
+        }
     }
 
     // Simulasi loading dengan 3 tahap
@@ -78,8 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadNextStage() {
         if (currentStage >= loadingStages.length) {
-            // Selesai loading, tampilkan tombol
-            document.getElementById('splashDukopsBtn').style.opacity = '1';
+            // Progress selesai, auto-open akan dipanggil di updateProgress
             return;
         }
 
@@ -98,9 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Emergency timeout (6 detik)
     setTimeout(() => {
-        console.warn("⚠️ Emergency timeout triggered");
-        updateProgress(100, "Aplikasi Siap digunakan");
-        document.getElementById('splashDukopsBtn').style.opacity = '1';
+        if (progress < 100) {
+            console.warn("⚠️ Emergency timeout triggered");
+            updateProgress(100, "Aplikasi Siap digunakan");
+        }
     }, 6000);
 });
 
@@ -173,11 +186,13 @@ function showAdminPanel() {
     try {
         console.log("🔐 Opening Admin Panel...");
 
-        // Hide other content
-        document.getElementById('dukopsContent').style.display = 'none';
-        document.getElementById('jadwalPiketContainer').style.display = 'none';
+        // Initialize AdminSettings if available (only when admin is accessed)
+        if (typeof AdminSettings !== 'undefined' && AdminSettings.init) {
+            AdminSettings.init().catch(err => {
+                console.warn("⚠️ AdminSettings init error:", err);
+            });
+        }
 
-        // Update button states
         document.getElementById('btnDukops').classList.remove('active');
         document.getElementById('btnJadwal').classList.remove('active');
         document.getElementById('btnAdmin').classList.add('active');
@@ -253,15 +268,6 @@ function initializeApp() {
     console.log("🔄 Initializing DUKOPS app...");
 
     try {
-        // Initialize AdminSettings if available
-        if (typeof AdminSettings !== 'undefined' && AdminSettings.init) {
-            AdminSettings.init().then(() => {
-                console.log("✅ AdminSettings initialized");
-            }).catch(err => {
-                console.warn("⚠️ AdminSettings init error (non-critical):", err);
-            });
-        }
-
         // Initialize FormValidator if available
         if (typeof FormValidator !== 'undefined' && FormValidator.init) {
             FormValidator.init();
