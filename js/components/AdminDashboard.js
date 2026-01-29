@@ -220,44 +220,23 @@ export class AdminDashboard {
                     <!-- Settings Tab -->
                     <div id="settings-tab" class="admin-tab-content">
                         <section class="admin-section">
-                            <h3 class="admin-section-title">⚙️ Pengaturan Validasi Tanggal</h3>
+                            <h3 class="admin-section-title">⚙️ Pengaturan Umum</h3>
                             <div class="admin-settings-form">
+                                
                                 <div class="settings-group">
-                                    <label for="minDaysAhead">
-                                        <i class="fas fa-calendar"></i> Hari Minimum ke Depan
+                                    <label for="validationEnabled">
+                                        <input type="checkbox" id="validationEnabled" checked>
+                                        Aktifkan Validasi Form
                                     </label>
-                                    <div class="settings-input-group">
-                                        <input type="number" id="minDaysAhead" min="0" max="30" value="7" 
-                                               onchange="AdminDashboard.updateSettingPreview()">
-                                        <span class="settings-unit">hari</span>
-                                    </div>
-                                    <small class="settings-hint">Tanggal input harus minimal N hari ke depan dari hari ini</small>
+                                    <small class="settings-hint">Jika diaktifkan, form akan divalidasi sebelum pengiriman</small>
                                 </div>
 
                                 <div class="settings-group">
-                                    <label for="maxDaysPast">
-                                        <i class="fas fa-history"></i> Hari Maks Mundur
+                                    <label for="formSubmissionEnabled">
+                                        <input type="checkbox" id="formSubmissionEnabled" checked>
+                                        Izinkan Pengiriman Form
                                     </label>
-                                    <div class="settings-input-group">
-                                        <input type="number" id="maxDaysPast" min="0" max="30" value="7" 
-                                               onchange="AdminDashboard.updateSettingPreview()">
-                                        <span class="settings-unit">hari</span>
-                                    </div>
-                                    <small class="settings-hint">Tanggal input tidak boleh lebih lama dari N hari kebelakang</small>
-                                </div>
-
-                                <div class="settings-preview">
-                                    <h4>📅 Contoh Validasi:</h4>
-                                    <p>Hari ini: <strong id="todayDate">-</strong></p>
-                                    <p>Tanggal minimum yang diterima: <strong id="minDateExample">-</strong></p>
-                                    <p class="preview-example">
-                                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
-                                        Contoh tanggal VALID: <span id="validDateExample">-</span>
-                                    </p>
-                                    <p class="preview-example">
-                                        <i class="fas fa-times-circle" style="color: #d32f2f;"></i>
-                                        Contoh tanggal TIDAK VALID: <span id="invalidDateExample">-</span>
-                                    </p>
+                                    <small class="settings-hint">Jika dinonaktifkan, users tidak dapat mengirimkan form apapun</small>
                                 </div>
 
                                 <div class="settings-status">
@@ -275,23 +254,9 @@ export class AdminDashboard {
 
                                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
 
-                                <h4 style="margin-top: 20px;">📊 Pengaturan Lainnya</h4>
+                                <h4 style="margin-top: 20px;">📊 Data & Export</h4>
                                 
-                                <div class="settings-group">
-                                    <label for="validationEnabled">
-                                        <input type="checkbox" id="validationEnabled" checked>
-                                        Aktifkan Validasi Tanggal
-                                    </label>
-                                </div>
-
-                                <div class="settings-group">
-                                    <label for="formSubmissionEnabled">
-                                        <input type="checkbox" id="formSubmissionEnabled" checked>
-                                        Izinkan Pengiriman Form
-                                    </label>
-                                </div>
-
-                                <div class="settings-actions" style="margin-top: 20px;">
+                                <div class="settings-actions">
                                     <button onclick="AdminDashboard.exportSettings()" class="settings-action-btn">
                                         <i class="fas fa-download"></i> Export Pengaturan
                                     </button>
@@ -352,54 +317,16 @@ export class AdminDashboard {
             const settings = await AdminSettings.getSettings() || AdminSettings.DEFAULT_SETTINGS;
 
             // Set form values
-            const minDaysInput = document.getElementById('minDaysAhead');
             const validationEnabled = document.getElementById('validationEnabled');
             const formSubmissionEnabled = document.getElementById('formSubmissionEnabled');
 
-            if (minDaysInput) minDaysInput.value = settings.MIN_DAYS_AHEAD || 7;
             if (validationEnabled) validationEnabled.checked = settings.VALIDATION_ENABLED !== false;
             if (formSubmissionEnabled) formSubmissionEnabled.checked = settings.FORM_SUBMISSION_ENABLED !== false;
 
-            // Update preview
-            this.updateSettingPreview();
+            console.log('Settings loaded:', settings);
         } catch (error) {
             console.error('Error loading settings:', error);
         }
-    }
-
-    /**
-     * Update settings preview
-     */
-    static updateSettingPreview() {
-        const minDays = parseInt(document.getElementById('minDaysAhead')?.value || '7');
-        const today = new Date();
-        const minDate = new Date(today);
-        minDate.setDate(minDate.getDate() + minDays);
-
-        // Format dates for display
-        const todayStr = today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const minDateStr = minDate.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-        // Example valid date (tomorrow after minimum)
-        const validDate = new Date(minDate);
-        validDate.setDate(validDate.getDate() + 1);
-        const validDateStr = validDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
-
-        // Example invalid date (today or before minimum)
-        const invalidDate = new Date(today);
-        invalidDate.setDate(invalidDate.getDate() + (minDays - 1));
-        const invalidDateStr = invalidDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
-
-        // Update display
-        const todayDisplay = document.getElementById('todayDate');
-        const minDateDisplay = document.getElementById('minDateExample');
-        const validDisplay = document.getElementById('validDateExample');
-        const invalidDisplay = document.getElementById('invalidDateExample');
-
-        if (todayDisplay) todayDisplay.textContent = todayStr;
-        if (minDateDisplay) minDateDisplay.textContent = minDateStr;
-        if (validDisplay) validDisplay.textContent = validDateStr;
-        if (invalidDisplay) invalidDisplay.textContent = invalidDateStr;
     }
 
     /**
@@ -407,29 +334,19 @@ export class AdminDashboard {
      */
     static async saveSettings() {
         try {
-            const minDays = parseInt(document.getElementById('minDaysAhead')?.value || '7');
-            const maxDaysPast = parseInt(document.getElementById('maxDaysPast')?.value || '7');
             const validationEnabled = document.getElementById('validationEnabled')?.checked;
             const formSubmissionEnabled = document.getElementById('formSubmissionEnabled')?.checked;
 
             // Validate
-            if (minDays < 0 || minDays > 30) {
-                this.showSettingsMessage('❌ Hari harus antara 0-30', 'error');
-                return;
-            }
-
             const settings = {
-                MIN_DAYS_AHEAD: minDays,
-                MAX_DAYS_PAST: maxDaysPast,
                 VALIDATION_ENABLED: validationEnabled,
-                FORM_SUBMISSION_ENABLED: formSubmissionEnabled
+                FORM_SUBMISSION_ENABLED: formSubmissionEnabled,
+                MIN_DAYS_AHEAD: 7,  // Kept for backward compatibility but not used
+                MAX_DAYS_PAST: 7    // Kept for backward compatibility but not used
             };
 
             await AdminSettings.saveSettings(settings);
             this.showSettingsMessage('✓ Pengaturan berhasil disimpan', 'success');
-
-            // Apply to FormValidator immediately
-            FormValidator.updateConfig({ MIN_DAYS_AHEAD: minDays, MAX_DAYS_PAST: maxDaysPast });
         } catch (error) {
             console.error('Error saving settings:', error);
             this.showSettingsMessage('❌ Gagal menyimpan pengaturan', 'error');
@@ -446,9 +363,6 @@ export class AdminDashboard {
             await AdminSettings.resetSettings();
             this.loadSettingsDisplay();
             this.showSettingsMessage('✓ Pengaturan direset ke default', 'success');
-
-            // Apply default to FormValidator
-            FormValidator.updateConfig({ MIN_DAYS_AHEAD: AdminSettings.DEFAULT_SETTINGS.MIN_DAYS_AHEAD, MAX_DAYS_PAST: AdminSettings.DEFAULT_SETTINGS.MAX_DAYS_PAST });
         } catch (error) {
             console.error('Error resetting settings:', error);
             this.showSettingsMessage('❌ Gagal mereset pengaturan', 'error');
@@ -511,10 +425,6 @@ export class AdminDashboard {
                 await AdminSettings.importSettings(file);
                 this.loadSettingsDisplay();
                 this.showSettingsMessage('✓ Pengaturan berhasil diimport', 'success');
-
-                // Apply imported settings
-                const settings = await AdminSettings.getSettings();
-                FormValidator.updateConfig({ MIN_DAYS_AHEAD: settings.MIN_DAYS_AHEAD });
             } catch (error) {
                 console.error('Error importing settings:', error);
                 this.showSettingsMessage(`❌ ${error.message}`, 'error');

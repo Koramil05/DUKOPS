@@ -117,21 +117,11 @@ class AdminSettings {
     }
 
     static applySettings(settings) {
-        // Apply datetime validation settings to FormValidator
-        if (FormValidator && settings.MIN_DAYS_AHEAD !== undefined) {
-            FormValidator.updateConfig({
-                MIN_DAYS_AHEAD: settings.MIN_DAYS_AHEAD
-            });
-        }
-
-        if (FormValidator && settings.MAX_DAYS_PAST !== undefined) {
-            FormValidator.updateConfig({
-                MAX_DAYS_PAST: settings.MAX_DAYS_PAST
-            });
-        }
-
         // Store in localStorage for quick access
         localStorage.setItem('adminSettings', JSON.stringify(settings));
+
+        // Log applied settings
+        console.log('AdminSettings applied:', settings);
     }
 
     static getLocalSettings() {

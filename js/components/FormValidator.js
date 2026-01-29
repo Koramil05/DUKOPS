@@ -10,18 +10,10 @@ class FormValidator {
         MAX_IMAGE_HEIGHT: 4000,                // pixels
         MIN_FILENAME_LENGTH: 3,                // characters
         NARASI_MAX_LENGTH: 1000,               // characters
-        MIN_DAYS_AHEAD: 7,                     // Minimum 7 days in advance (configurable by admin)
-        MAX_DAYS_PAST: 7,                      // Maximum 7 days in the past (configurable by admin)
         ALLOWED_PHOTO_TYPES: ['image/jpeg', 'image/png', 'image/webp']
     };
 
-    static CONFIG = {
-        MIN_DAYS_AHEAD: 7  // Can be overridden by admin
-    };
-
-    static CONFIG_PAST = {
-        MAX_DAYS_PAST: 7
-    };
+    static CONFIG = {};
 
     static init() {
         this.attachValidationListeners();
@@ -123,49 +115,17 @@ class FormValidator {
             return false;
         }
 
-        // Allow admin to disable date validation via settings (localStorage cache)
+        // No strict date validation - user can input any date
+        // Just validate that the datetime field has a value
         try {
-            const adminSettingsRaw = localStorage.getItem('adminSettings');
-            if (adminSettingsRaw) {
-                const adminSettings = JSON.parse(adminSettingsRaw);
-                if (adminSettings.VALIDATION_ENABLED === false) {
-                    // If validation is disabled, update display and return true
-                    this.updateDateDisplay(value);
-                    return true;
-                }
+            const inputDate = new Date(value);
+            // Check if date is valid
+            if (isNaN(inputDate.getTime())) {
+                this.showError('datetime', 'Format tanggal tidak valid');
+                return false;
             }
         } catch (e) {
-            // ignore parsing errors and proceed with validation
-        }
-        const inputDate = new Date(value);
-        const now = new Date();
-
-        // Normalize time for date-only comparisons
-        const minDate = new Date(now);
-        const maxPastDate = new Date(now);
-
-        const minDays = this.CONFIG.MIN_DAYS_AHEAD !== undefined ? this.CONFIG.MIN_DAYS_AHEAD : 7;
-        const maxPast = (this.CONFIG_PAST.MAX_DAYS_PAST !== undefined) ? this.CONFIG_PAST.MAX_DAYS_PAST : 7;
-
-        // Earliest allowed date (not older than maxPast days)
-        maxPastDate.setDate(maxPastDate.getDate() - maxPast);
-        maxPastDate.setHours(0, 0, 0, 0);
-
-        // Minimum future date
-        minDate.setDate(minDate.getDate() + minDays);
-        minDate.setHours(0, 0, 0, 0);
-
-        inputDate.setHours(0, 0, 0, 0);
-
-        // If input is before allowed past window
-        if (inputDate < maxPastDate) {
-            this.showError('datetime', `Tanggal terlalu lama. Maks ${maxPast} hari kebelakang dari hari ini`);
-            return false;
-        }
-
-        // If input is before minimum future window
-        if (inputDate < minDate) {
-            this.showError('datetime', `Tanggal harus minimal ${minDays} hari ke depan dari hari ini`);
+            this.showError('datetime', 'Format tanggal tidak valid');
             return false;
         }
 
@@ -248,21 +208,6 @@ class FormValidator {
         if (narasi && counter) {
             counter.textContent = `${narasi.value.length}/${this.RULES.NARASI_MAX_LENGTH}`;
         }
-    }
-
-    // Update configuration (called by AdminSettings)
-    static updateConfig(newConfig) {
-        if (newConfig.MIN_DAYS_AHEAD !== undefined) {
-            this.CONFIG.MIN_DAYS_AHEAD = newConfig.MIN_DAYS_AHEAD;
-        }
-        if (newConfig.MAX_DAYS_PAST !== undefined) {
-            this.CONFIG_PAST.MAX_DAYS_PAST = newConfig.MAX_DAYS_PAST;
-        }
-    }
-
-    // Get current configuration
-    static getConfig() {
-        return { ...this.CONFIG };
     }
 }
 
