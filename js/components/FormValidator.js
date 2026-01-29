@@ -20,11 +20,12 @@ class FormValidator {
     }
 
     static attachValidationListeners() {
-        const desaSelect = document.getElementById('desa');
-        const photoInput = document.getElementById('photo');
-        const datetimeInput = document.getElementById('datetime');
+        // ✅ FIXED: Updated ID references to match index.html
+        const desaSelect = document.getElementById('selectDesa');
+        const photoInput = document.getElementById('gambar');
+        const datetimeInput = document.getElementById('tanggalWaktu');
         const narasi = document.getElementById('narasi');
-        const submitBtn = document.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('submitBtn');
 
         if (desaSelect) desaSelect.addEventListener('change', () => this.validate());
         if (photoInput) photoInput.addEventListener('change', () => this.validate());
@@ -36,9 +37,10 @@ class FormValidator {
     }
 
     static validate() {
-        const desa = document.getElementById('desa')?.value || '';
-        const photo = document.getElementById('photo')?.files[0];
-        const datetime = document.getElementById('datetime')?.value || '';
+        // ✅ FIXED: Updated ID references to match index.html
+        const desa = document.getElementById('selectDesa')?.value || '';
+        const photo = document.getElementById('gambar')?.files[0];
+        const datetime = document.getElementById('tanggalWaktu')?.value || '';
         const narasi = document.getElementById('narasi')?.value || '';
 
         const desaValid = this.validateDesa(desa);
@@ -49,7 +51,7 @@ class FormValidator {
         const isValid = desaValid && photoValid && datetimeValid && narasiValid;
 
         // Update submit button
-        const submitBtn = document.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.disabled = !isValid;
             submitBtn.style.opacity = isValid ? '1' : '0.5';
