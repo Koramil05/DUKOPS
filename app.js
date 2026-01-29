@@ -30,10 +30,12 @@ let JadwalData = {
 
 // Variabel status aplikasi
 let currentApp = null; // 'dukops' atau 'jadwal'
+let isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 // ================= SPLASH SCREEN FUNCTIONS =================
 document.addEventListener('DOMContentLoaded', function () {
     console.log("🚀 DOM Content Loaded");
+    console.log("📱 Device Type:", isMobileDevice ? "MOBILE" : "DESKTOP");
 
     const splashScreen = document.getElementById('splashScreen');
     const appContainer = document.getElementById('appContainer');
@@ -48,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Variabel progress
     let progress = 0;
+    let isAppOpened = false;
 
     // Fungsi untuk update progress
     function updateProgress(value, message) {
@@ -98,13 +101,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Auto-open app at 100%
-        if (progress >= 100) {
+        if (progress >= 100 && !isAppOpened) {
+            isAppOpened = true;
+            console.log("✅ Progress 100% - Opening app...");
             setTimeout(() => {
                 if (splashScreen) {
                     splashScreen.style.display = 'none';
                 }
                 loadDukopsApp();
-            }, 300);
+            }, 200);
         }
     }
 
@@ -116,10 +121,12 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     let currentStage = 0;
+    const stageDelay = isMobileDevice ? 400 : 800; // Faster on mobile
 
     function loadNextStage() {
         if (currentStage >= loadingStages.length) {
             // Progress selesai, auto-open akan dipanggil di updateProgress
+            console.log("✅ All loading stages complete");
             return;
         }
 
@@ -128,21 +135,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
         currentStage++;
 
-        // Delay antar stage
-        setTimeout(loadNextStage, 800);
+        // Delay antar stage (faster on mobile)
+        setTimeout(loadNextStage, stageDelay);
     }
 
     // Mulai loading
     console.log("🔄 Starting splash screen...");
     loadNextStage();
 
-    // Emergency timeout (6 detik)
+    // Emergency timeout - Force app opening (3 detik di mobile, 6 detik di desktop)
+    const emergencyTimeout = isMobileDevice ? 3000 : 6000;
     setTimeout(() => {
-        if (progress < 100) {
-            console.warn("⚠️ Emergency timeout triggered");
+        if (!isAppOpened) {
+            console.warn("⚠️ Emergency timeout triggered - Force opening app");
+            isAppOpened = true;
             updateProgress(100, "Aplikasi Siap digunakan");
+
+            // Force open app
+            setTimeout(() => {
+                if (splashScreen) {
+                    splashScreen.style.display = 'none';
+                    splashScreen.style.opacity = 0;
+                }
+                if (appContainer) {
+                    appContainer.style.display = 'block';
+                    appContainer.style.opacity = 1;
+                }
+                loadDukopsApp();
+            }, 100);
         }
-    }, 6000);
+    }, emergencyTimeout);
 });
 
 // ================= FUNGSI PILIH APLIKASI =================
