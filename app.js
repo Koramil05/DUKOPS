@@ -212,14 +212,17 @@ function showApp() {
 function showDukops() {
     document.getElementById('dukopsContent').style.display = 'block';
     document.getElementById('jadwalPiketContainer').style.display = 'none';
+    document.getElementById('adminPanelContainer').style.display = 'none';
     document.getElementById('btnDukops').classList.add('active');
     document.getElementById('btnJadwal').classList.remove('active');
+    document.getElementById('btnAdmin').classList.remove('active');
     currentApp = 'dukops';
 }
 
 function showJadwalPiket() {
     document.getElementById('dukopsContent').style.display = 'none';
     document.getElementById('jadwalPiketContainer').style.display = 'block';
+    document.getElementById('adminPanelContainer').style.display = 'none';
     document.getElementById('btnDukops').classList.remove('active');
     document.getElementById('btnJadwal').classList.add('active');
     document.getElementById('btnAdmin').classList.remove('active');
@@ -236,6 +239,18 @@ function showAdminPanel() {
     try {
         console.log("🔐 Opening Admin Panel...");
 
+        // Hide other containers
+        document.getElementById('dukopsContent').style.display = 'none';
+        document.getElementById('jadwalPiketContainer').style.display = 'none';
+        document.getElementById('adminPanelContainer').style.display = 'block';
+
+        // Update active button
+        document.getElementById('btnDukops').classList.remove('active');
+        document.getElementById('btnJadwal').classList.remove('active');
+        document.getElementById('btnAdmin').classList.add('active');
+
+        currentApp = 'admin';
+
         // Initialize AdminSettings if available (only when admin is accessed)
         if (typeof AdminSettings !== 'undefined' && AdminSettings.init) {
             AdminSettings.init().catch(err => {
@@ -243,23 +258,17 @@ function showAdminPanel() {
             });
         }
 
-        document.getElementById('btnDukops').classList.remove('active');
-        document.getElementById('btnJadwal').classList.remove('active');
-        document.getElementById('btnAdmin').classList.add('active');
-
-        currentApp = 'admin';
-
         // Check if AdminDashboard is available
         if (typeof AdminDashboard !== 'undefined' && AdminDashboard.init) {
             console.log("✅ AdminDashboard loaded, initializing...");
             AdminDashboard.init();
         } else {
             console.error("❌ AdminDashboard not loaded properly!");
-            alert("Admin Panel tidak tersedia. Silakan refresh halaman.");
+            document.getElementById('adminContent').innerHTML = '<p style="color: #ff6b6b;">Admin Panel tidak tersedia. Silakan refresh halaman.</p>';
         }
     } catch (error) {
         console.error("❌ Error opening admin panel:", error);
-        alert("Error membuka Admin Panel: " + error.message);
+        document.getElementById('adminContent').innerHTML = '<p style="color: #ff6b6b;">Error membuka Admin Panel: ' + error.message + '</p>';
     }
 }
 

@@ -67,13 +67,13 @@
 
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
-            <button class="nav-btn active" id="btnDukops" onclick="showDukops()">
-                <i class="fas fa-file-upload"></i> DUKOPS BABINSA
+            <button class="nav-btn nav-btn-dukops active" id="btnDukops" onclick="showDukops()">
+                <i class="fas fa-file-upload"></i> DUKOPS
             </button>
-            <button class="nav-btn" id="btnJadwal" onclick="showJadwalPiket()">
-                <i class="fas fa-calendar-alt"></i> JADWAL PIKET
+            <button class="nav-btn nav-btn-piket" id="btnJadwal" onclick="showJadwalPiket()">
+                <i class="fas fa-calendar-alt"></i> PIKET
             </button>
-            <button class="nav-btn admin-btn" id="btnAdmin" onclick="showAdminPanel()">
+            <button class="nav-btn nav-btn-admin" id="btnAdmin" onclick="showAdminPanel()">
                 <i class="fas fa-user-shield"></i> ADMIN
             </button>
         </div>
@@ -342,6 +342,17 @@
 
         <!-- Toast Notification for Jadwal Piket -->
         <div class="jadwal-toast" id="j_toastNotification"></div>
+    </div>
+
+    <!-- Admin Panel Container -->
+    <div id="adminPanelContainer" style="display: none;">
+        <div style="width: 90%; margin: 0 auto;">
+            <h2 style="color: #4a9fd4; text-align: center; margin-top: 20px; margin-bottom: 20px;"><i
+                    class="fas fa-user-shield"></i> ADMIN PANEL</h2>
+            <div id="adminContent" style="margin-top: 20px; color: #9fd49f; text-align: center; padding: 40px;">
+                <p>Loading admin panel...</p>
+            </div>
+        </div>
     </div>
 
     <!-- ============ APPLICATION SCRIPTS ============ -->
