@@ -67,16 +67,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log(`Progress: ${progress}% - ${message}`);
 
-        // Start fade-in at 80%
-        if (progress >= 80 && appContainer) {
-            appContainer.style.opacity = (progress - 80) / 20;
+        // Fade transition from 75% to 98%
+        if (progress >= 75 && progress < 98) {
+            // Progress: 75% → 98% (range 23%)
+            // Splash opacity: 1 → 0
+            // App opacity: 0 → 1
+            const transitionProgress = (progress - 75) / (98 - 75); // 0 to 1
+
+            if (splashScreen) {
+                splashScreen.style.opacity = 1 - transitionProgress; // 1 → 0
+            }
+
+            if (appContainer) {
+                appContainer.style.opacity = transitionProgress; // 0 → 1
+                appContainer.style.display = 'block';
+            }
+        }
+
+        // At 98%: Splash fully hidden, App fully visible
+        if (progress >= 98) {
+            if (splashScreen) {
+                splashScreen.style.opacity = 0;
+                splashScreen.style.pointerEvents = 'none';
+            }
+
+            if (appContainer) {
+                appContainer.style.opacity = 1;
+                appContainer.style.display = 'block';
+            }
         }
 
         // Auto-open app at 100%
         if (progress >= 100) {
             setTimeout(() => {
+                if (splashScreen) {
+                    splashScreen.style.display = 'none';
+                }
                 loadDukopsApp();
-            }, 500);
+            }, 300);
         }
     }
 
