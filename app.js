@@ -194,13 +194,17 @@ function showApp() {
             if (currentApp === 'dukops') {
                 document.getElementById('btnDukops').classList.add('active');
                 document.getElementById('btnJadwal').classList.remove('active');
+                document.getElementById('btnAdmin').classList.remove('active');
                 document.getElementById('dukopsContent').style.display = 'block';
                 document.getElementById('jadwalPiketContainer').style.display = 'none';
+                document.getElementById('adminPanelContainer').style.display = 'none';
             } else {
                 document.getElementById('btnDukops').classList.remove('active');
                 document.getElementById('btnJadwal').classList.add('active');
+                document.getElementById('btnAdmin').classList.remove('active');
                 document.getElementById('dukopsContent').style.display = 'none';
                 document.getElementById('jadwalPiketContainer').style.display = 'block';
+                document.getElementById('adminPanelContainer').style.display = 'none';
             }
 
             console.log(`🎉 ${currentApp.toUpperCase()} App initialized!`);
