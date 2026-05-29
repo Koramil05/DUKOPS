@@ -665,7 +665,7 @@
             margin: 0 auto;
             padding: 0;
             width: 95%;
-            max-width: 650px;
+            max-width: 700px;
             height: 85vh;
             max-height: 600px;
             border-radius: 20px;
@@ -720,22 +720,22 @@
             background: #0e1712;
             border-bottom: 1px solid #1e3a2a;
             flex-shrink: 0;
-            max-height: 120px;
+            max-height: 130px;
             overflow-y: auto;
         }
         .modal-tab-btn {
             background: #1a2a1f;
             border: 1px solid #2a5a3a;
             color: #9fd49f;
-            padding: 7px 14px;
+            padding: 6px 12px;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             transition: all 0.2s;
             white-space: nowrap;
             flex: 0 1 auto;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         .modal-tab-btn:hover {
             background: #2a3a2a;
@@ -858,8 +858,8 @@
                 border-radius: 16px;
             }
             .modal-tab-btn {
-                padding: 5px 10px;
-                font-size: 0.65rem;
+                padding: 4px 8px;
+                font-size: 0.6rem;
             }
             .modal-template-text {
                 font-size: 0.7rem;
@@ -1183,9 +1183,7 @@
         // ============ FUNGSI UNTUK AUTO GANTI DESA/KELURAHAN DI TEMPLATE ============
         function injectDesaKeNarasi(templateText, namaDesa) {
             if (!namaDesa || namaDesa === "") return templateText;
-            // Ganti kata "desa" (huruf kecil/besar) menjadi "Desa [nama desa]"
             let hasil = templateText.replace(/\bdesa\b/gi, `Desa ${namaDesa}`);
-            // Ganti kata "kelurahan" menjadi "Kelurahan [nama desa]"
             hasil = hasil.replace(/\bkelurahan\b/gi, `Kelurahan ${namaDesa}`);
             return hasil;
         }
@@ -1376,8 +1374,8 @@
         (function() {
             const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/template-narasi.json';
             let templateData = null;
-            let activeTab = null; // akan diisi dengan key kategori pertama
-            let categoryKeys = []; // menyimpan semua key kategori dari JSON
+            let activeTab = null;
+            let categoryKeys = [];
 
             const modal = document.getElementById('templateModal');
             const openModalBtn = document.getElementById('aiTemplateBtn');
@@ -1391,17 +1389,27 @@
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const data = await response.json();
                     templateData = data.templates;
-                    // Ambil semua key kategori dari JSON
                     categoryKeys = Object.keys(templateData);
                     if (categoryKeys.length > 0) {
                         activeTab = categoryKeys[0];
                     }
                     console.log("✅ Template AI berhasil dimuat dari GitHub");
-                    console.log("📋 Kategori yang ditemukan:", categoryKeys);
+                    console.log("📋 Kategori yang ditemukan:", categoryKeys.length, "kategori");
                     return true;
                 } catch (error) {
                     console.error("Gagal memuat template AI:", error);
-                    return false;
+                    // FALLBACK: template default jika offline
+                    templateData = {
+                        "📡 MONITORING": ["melaksanakan monitoring wilayah di desa bersama ..."],
+                        "💬 KOMSOS": ["melaksanakan komunikasi sosial dengan tokoh masyarakat di desa ..."],
+                        "🛡️ PENGAMANAN": ["melaksanakan pengamanan kegiatan di desa ..."],
+                        "🤝 PENDAMPINGAN": ["melaksanakan pendampingan program di desa ..."],
+                        "🔨 GOTONG ROYONG": ["melaksanakan gotong royong bersama warga desa ..."]
+                    };
+                    categoryKeys = Object.keys(templateData);
+                    if (categoryKeys.length > 0) activeTab = categoryKeys[0];
+                    showAIToast("⚠️ Mode offline - menggunakan template default");
+                    return true;
                 }
             }
 
@@ -1416,18 +1424,17 @@
                     const hasTemplate = templateData && templateData[key] && templateData[key].length > 0;
                     const btn = document.createElement('button');
                     btn.className = `modal-tab-btn ${activeTab === key ? 'active' : ''}`;
-                    // Tampilkan nama kategori dengan emoji jika ada di awal, atau rapikan
-                    let displayName = key;
+                    let displayName = key.length > 28 ? key.substring(0, 25) + '..' : key;
                     btn.innerHTML = displayName;
+                    btn.title = key;
                     btn.style.opacity = hasTemplate ? '1' : '0.5';
-                    btn.title = hasTemplate ? `Klik untuk melihat ${displayName}` : `Template ${displayName} belum tersedia`;
                     btn.onclick = () => {
                         if (hasTemplate) {
                             activeTab = key;
                             renderModalTabs();
                             renderModalTemplateList();
                         } else {
-                            showAIToast(`⚠️ Template ${displayName} belum tersedia`);
+                            showAIToast(`⚠️ Template ${key} belum tersedia`);
                         }
                     };
                     modalTabs.appendChild(btn);
@@ -1450,22 +1457,18 @@
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             function escapeJs(text) { return text.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n'); }
 
-            // ============ selectTemplate dengan auto inject desa/kelurahan ============
             window.selectTemplate = function(template) {
                 const narasiField = document.getElementById('narasi');
                 const namaDesa = getNamaDesaTerpilih();
                 
-                // INJECT DESA / KELURAHAN OTOMATIS KE DALAM TEMPLATE
                 let finalTemplate = template;
                 if (namaDesa) {
                     finalTemplate = injectDesaKeNarasi(template, namaDesa);
-                    console.log(`✅ Auto inject desa/kelurahan: "${namaDesa}" ke template`);
                 }
                 
                 narasiField.value = finalTemplate;
                 modal.classList.remove('show');
                 
-                // Trigger event untuk enable tombol submit
                 const event = new Event('input', { bubbles: true });
                 narasiField.dispatchEvent(event);
                 
