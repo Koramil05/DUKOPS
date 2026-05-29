@@ -950,9 +950,9 @@
 
                 <label><i class="fas fa-village"></i> Pilih Desa:</label>
                 <select id="selectDesa" onchange="loadSelectedDesa()">
-                    <option value="">-- Pilih Desa --</option>
+                    <option value="">-- Memuat data desa... --</option>
                 </select>
-                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan...</div>
+                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan dari GitHub...</div>
                 <div class="previewBox" id="previewDesa"></div>
 
                 <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
@@ -1116,25 +1116,89 @@
     </div>
 
     <script>
-        // ============ PROFILE PICTURE HANDLER ============
-        const profileImages = {
-            "Ambengan": "profile_ambengan.png",
-            "Gitgit": "profile_gitgit.png",
-            "Kayu Putih": "profile_kayu_putih.png",
-            "Padang Bulia": "profile_padang_bulia.png",
-            "Pancasari": "profile_pancasari.png",
-            "Panji": "profile_panji.png",
-            "Panji Anom": "profile_panji_anom.png",
-            "Pegadungan": "profile_pegadungan.png",
-            "Pegayaman": "profile_pegayaman.png",
-            "Sambangan": "profile_sambangan.png",
-            "Selat": "profile_selat.png",
-            "Silangjana": "profile_silangjana.png",
-            "Sukasada": "profile_sukasada.png",
-            "Tegallinggah": "profile_tegallinggah.png",
-            "Wanagiri": "profile_wanagiri.png"
-        };
+        // ============ DATA DESA DIAMBIL DARI GITHUB (TANPA FALLBACK STATIS) ============
+        const DESA_LIST_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/data/desa-list.json';
+        const PROFILE_BASE_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/Profile/';
+        
+        let daftarDesaGlobal = [];
+        let profileImagesGlobal = {};
 
+        // Fungsi untuk mengambil daftar desa dari GitHub
+        async function loadDesaListFromGitHub() {
+            const selectDesa = document.getElementById('selectDesa');
+            const loadingDesa = document.getElementById('loadingDesa');
+            
+            try {
+                const response = await fetch(DESA_LIST_URL + '?t=' + Date.now());
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                daftarDesaGlobal = data.desaList || [];
+                console.log("✅ Daftar desa berhasil dimuat dari GitHub:", daftarDesaGlobal.length, "desa");
+                
+                // Bangun profileImages berdasarkan daftar desa (filename: nama_desa.png, spasi diganti underscore)
+                daftarDesaGlobal.forEach(desa => {
+                    let fileName = desa.toLowerCase().replace(/\s+/g, '_') + '.png';
+                    profileImagesGlobal[desa] = fileName;
+                });
+                
+                // Load desa ke dropdown
+                populateDesaDropdown();
+                
+            } catch (error) {
+                console.error("Gagal memuat daftar desa dari GitHub:", error);
+                // TAMPILKAN PESAN ERROR, TIDAK ADA FALLBACK STATIS
+                if (loadingDesa) {
+                    loadingDesa.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Gagal memuat daftar desa. Cek koneksi internet!';
+                    loadingDesa.style.color = '#ff6666';
+                }
+                if (selectDesa) {
+                    selectDesa.innerHTML = '<option value="">-- Gagal memuat desa --</option>';
+                    selectDesa.disabled = true;
+                }
+                showToastDesa("❌ Gagal memuat data desa dari GitHub, periksa koneksi internet!");
+                return false;
+            } finally {
+                if (loadingDesa && daftarDesaGlobal.length > 0) {
+                    loadingDesa.style.display = 'none';
+                }
+            }
+        }
+
+        function populateDesaDropdown() {
+            const selectDesa = document.getElementById('selectDesa');
+            if (!selectDesa) return;
+            
+            selectDesa.disabled = false;
+            selectDesa.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
+            daftarDesaGlobal.forEach(desa => {
+                const option = document.createElement('option');
+                option.value = desa;
+                option.textContent = desa;
+                selectDesa.appendChild(option);
+            });
+            
+            // Set default ke desa pertama jika ada
+            if (daftarDesaGlobal.length > 0) {
+                selectDesa.value = daftarDesaGlobal[0];
+                selectDesa.dispatchEvent(new Event('change'));
+            }
+            
+            // Sembunyikan loading indicator
+            const loadingDesa = document.getElementById('loadingDesa');
+            if (loadingDesa) loadingDesa.style.display = 'none';
+        }
+
+        function showToastDesa(message) {
+            const toast = document.createElement('div');
+            toast.className = 'ai-toast';
+            toast.innerHTML = message;
+            toast.style.background = '#ff9800';
+            toast.style.color = '#000';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Update fungsi updateDesaProfile
         function updateDesaProfile(desaName) {
             const container = document.getElementById('desaProfileContainerHeader');
             const imgElement = document.getElementById('desaProfileImgHeader');
@@ -1145,8 +1209,9 @@
                 return;
             }
             
+            // Cari di profileImagesGlobal
             let matchedKey = null;
-            for (let key in profileImages) {
+            for (let key in profileImagesGlobal) {
                 if (desaName.toLowerCase() === key.toLowerCase()) {
                     matchedKey = key;
                     break;
@@ -1154,16 +1219,17 @@
             }
             
             if (matchedKey && container) {
-                const fileName = profileImages[matchedKey];
-                const imageUrl = `https://raw.githubusercontent.com/Koramil05/DUKOPS/main/Profile/${fileName}`;
+                const fileName = profileImagesGlobal[matchedKey];
+                const imageUrl = PROFILE_BASE_URL + fileName;
                 imgElement.src = imageUrl;
                 nameElement.textContent = matchedKey;
                 container.style.display = 'block';
                 
                 imgElement.onerror = function() {
-                    console.warn(`Gagal memuat profil untuk ${matchedKey}`);
-                    imgElement.src = "";
-                    nameElement.textContent = matchedKey + " (Error)";
+                    console.warn(`Gagal memuat profil untuk ${matchedKey}, file tidak ditemukan`);
+                    // Placeholder icon jika gambar tidak ada
+                    imgElement.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23333'/%3E%3Ctext x='50' y='65' text-anchor='middle' fill='%23ffcc00' font-size='40'%3E🏘️%3C/text%3E%3C/svg%3E";
+                    nameElement.textContent = matchedKey;
                 };
             } else if (container) {
                 container.style.display = 'none';
@@ -1233,6 +1299,8 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             startSplashProgress();
+            // Load daftar desa dari GitHub
+            loadDesaListFromGitHub();
         });
 
         // ============ MP3 PLAYER ============
