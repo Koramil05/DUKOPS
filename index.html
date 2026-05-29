@@ -18,11 +18,12 @@
     <meta name="theme-color" content="#0a1a3a">
 
     <!-- ========== FAVICON ========== -->
-    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <link rel="manifest" href="site.webmanifest" />
+    <!-- Menggunakan favicon dari GitHub repository itu sendiri sebagai fallback sekaligus sumber gambar profil -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.svg" />
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.ico" />
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/apple-touch-icon.png" />
+    <link rel="manifest" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/site.webmanifest" />
     <!-- ============================= -->
 
     <!-- External Libraries -->
@@ -157,7 +158,7 @@
             padding: 8px;
             border-radius: 12px;
             min-width: 90px;
-            display: none;
+            display: block;
         }
         .dukops-profile-img {
             width: 70px;
@@ -935,9 +936,9 @@
                 <!-- HEADER DUKOPS DENGAN FOTO PROFIL DI SAMPING KIRI -->
                 <div class="dukops-header">
                     <div class="dukops-header-row">
-                        <div class="dukops-profile-area" id="desaProfileContainerHeader" style="display: none;">
-                            <img id="desaProfileImgHeader" class="dukops-profile-img" src="" alt="Foto Profil Desa">
-                            <div id="desaProfileNameHeader" class="dukops-profile-name"></div>
+                        <div class="dukops-profile-area" id="desaProfileContainerHeader">
+                            <img id="desaProfileImgHeader" class="dukops-profile-img" src="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" alt="Foto Profil">
+                            <div id="desaProfileNameHeader" class="dukops-profile-name">Pilih Desa</div>
                         </div>
                         <div class="dukops-title-area">
                             <div class="dukops-header-title">DUKOPS BABINSA</div>
@@ -1119,6 +1120,7 @@
         // ============ DATA DESA DIAMBIL DARI GITHUB (TANPA FALLBACK STATIS) ============
         const DESA_LIST_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/data/desa-list.json';
         const PROFILE_BASE_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/Profile/';
+        const DEFAULT_FAVICON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png';
         
         let daftarDesaGlobal = [];
         let profileImagesGlobal = {};
@@ -1200,12 +1202,13 @@
 
         // Update fungsi updateDesaProfile
         function updateDesaProfile(desaName) {
-            const container = document.getElementById('desaProfileContainerHeader');
             const imgElement = document.getElementById('desaProfileImgHeader');
             const nameElement = document.getElementById('desaProfileNameHeader');
             
             if (!desaName || desaName === "") {
-                if (container) container.style.display = 'none';
+                // Jika belum pilih desa, tampilkan favicon default
+                imgElement.src = DEFAULT_FAVICON_URL;
+                nameElement.textContent = "Pilih Desa";
                 return;
             }
             
@@ -1218,21 +1221,22 @@
                 }
             }
             
-            if (matchedKey && container) {
+            if (matchedKey) {
                 const fileName = profileImagesGlobal[matchedKey];
                 const imageUrl = PROFILE_BASE_URL + fileName;
                 imgElement.src = imageUrl;
                 nameElement.textContent = matchedKey;
-                container.style.display = 'block';
                 
                 imgElement.onerror = function() {
                     console.warn(`Gagal memuat profil untuk ${matchedKey}, file tidak ditemukan`);
-                    // Placeholder icon jika gambar tidak ada
-                    imgElement.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23333'/%3E%3Ctext x='50' y='65' text-anchor='middle' fill='%23ffcc00' font-size='40'%3E🏘️%3C/text%3E%3C/svg%3E";
+                    // Jika gambar profil tidak ditemukan, tampilkan favicon default
+                    imgElement.src = DEFAULT_FAVICON_URL;
                     nameElement.textContent = matchedKey;
                 };
-            } else if (container) {
-                container.style.display = 'none';
+            } else {
+                // Jika tidak ada matching, tampilkan favicon default
+                imgElement.src = DEFAULT_FAVICON_URL;
+                nameElement.textContent = desaName || "Pilih Desa";
             }
         }
 
