@@ -221,6 +221,7 @@
         }
         @keyframes marquee {
             0% { transform: translateX(100%); }
+            50% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
         }
         .running-text-container:hover .running-text { animation-play-state: paused; }
@@ -719,6 +720,8 @@
             background: #0e1712;
             border-bottom: 1px solid #1e3a2a;
             flex-shrink: 0;
+            max-height: 120px;
+            overflow-y: auto;
         }
         .modal-tab-btn {
             background: #1a2a1f;
@@ -1369,33 +1372,12 @@
             }
         });
 
-        // ============ AI TEMPLATE SCRIPT ============
+        // ============ AI TEMPLATE SCRIPT - AUTO DETEKSI KATEGORI DARI JSON ============
         (function() {
             const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/template-narasi.json';
             let templateData = null;
-            let activeTab = "monitoring";
-
-            const tabConfig = [
-                { id: "monitoring", name: "📡 MONITORING" },
-                { id: "komsos", name: "💬 KOMSOS" },
-                { id: "pengamanan", name: "🛡️ PENGAMANAN" },
-                { id: "pendampingan", name: "🤝 PENDAMPINGAN" },
-                { id: "gotong", name: "🔨 GOTONG ROYONG" }
-            ];
-
-            async function loadTemplatesFromGitHub() {
-                try {
-                    const response = await fetch(TEMPLATE_JSON_URL);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const data = await response.json();
-                    templateData = data.templates;
-                    console.log("✅ Template AI berhasil dimuat dari GitHub");
-                    return true;
-                } catch (error) {
-                    console.error("Gagal memuat template AI:", error);
-                    return false;
-                }
-            }
+            let activeTab = null; // akan diisi dengan key kategori pertama
+            let categoryKeys = []; // menyimpan semua key kategori dari JSON
 
             const modal = document.getElementById('templateModal');
             const openModalBtn = document.getElementById('aiTemplateBtn');
@@ -1403,22 +1385,49 @@
             const modalTabs = document.getElementById('modalTabs');
             const modalBody = document.getElementById('modalBody');
 
+            async function loadTemplatesFromGitHub() {
+                try {
+                    const response = await fetch(TEMPLATE_JSON_URL + '?t=' + Date.now());
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    templateData = data.templates;
+                    // Ambil semua key kategori dari JSON
+                    categoryKeys = Object.keys(templateData);
+                    if (categoryKeys.length > 0) {
+                        activeTab = categoryKeys[0];
+                    }
+                    console.log("✅ Template AI berhasil dimuat dari GitHub");
+                    console.log("📋 Kategori yang ditemukan:", categoryKeys);
+                    return true;
+                } catch (error) {
+                    console.error("Gagal memuat template AI:", error);
+                    return false;
+                }
+            }
+
             function renderModalTabs() {
                 modalTabs.innerHTML = "";
-                tabConfig.forEach(tab => {
-                    const hasTemplate = templateData && templateData[tab.id] && templateData[tab.id].length > 0;
+                if (!categoryKeys.length) {
+                    modalTabs.innerHTML = '<div style="color:#999;">Tidak ada kategori</div>';
+                    return;
+                }
+                
+                categoryKeys.forEach(key => {
+                    const hasTemplate = templateData && templateData[key] && templateData[key].length > 0;
                     const btn = document.createElement('button');
-                    btn.className = `modal-tab-btn ${activeTab === tab.id ? 'active' : ''}`;
-                    btn.innerHTML = hasTemplate ? tab.name : `${tab.name}`;
+                    btn.className = `modal-tab-btn ${activeTab === key ? 'active' : ''}`;
+                    // Tampilkan nama kategori dengan emoji jika ada di awal, atau rapikan
+                    let displayName = key;
+                    btn.innerHTML = displayName;
                     btn.style.opacity = hasTemplate ? '1' : '0.5';
-                    btn.title = hasTemplate ? `Klik untuk melihat ${tab.name}` : `Template ${tab.name} belum tersedia`;
+                    btn.title = hasTemplate ? `Klik untuk melihat ${displayName}` : `Template ${displayName} belum tersedia`;
                     btn.onclick = () => {
                         if (hasTemplate) {
-                            activeTab = tab.id;
+                            activeTab = key;
                             renderModalTabs();
                             renderModalTemplateList();
                         } else {
-                            showAIToast(`⚠️ Template ${tab.name} belum tersedia`);
+                            showAIToast(`⚠️ Template ${displayName} belum tersedia`);
                         }
                     };
                     modalTabs.appendChild(btn);
@@ -1441,7 +1450,7 @@
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             function escapeJs(text) { return text.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n'); }
 
-            // ============ PERUBAHAN: selectTemplate dengan auto inject desa/kelurahan ============
+            // ============ selectTemplate dengan auto inject desa/kelurahan ============
             window.selectTemplate = function(template) {
                 const narasiField = document.getElementById('narasi');
                 const namaDesa = getNamaDesaTerpilih();
