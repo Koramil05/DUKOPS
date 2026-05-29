@@ -712,41 +712,31 @@
         .modal-close:hover { background: rgba(255,255,255,0.1); color: #ff6b6b; }
         
         .modal-ai-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px 12px;
+            padding: 12px;
             background: #0e1712;
             border-bottom: 1px solid #1e3a2a;
             flex-shrink: 0;
-            max-height: 130px;
-            overflow-y: auto;
         }
-        .modal-tab-btn {
+        
+        /* Style untuk dropdown kategori */
+        #categorySelect {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
             background: #1a2a1f;
-            border: 1px solid #2a5a3a;
-            color: #9fd49f;
-            padding: 6px 12px;
-            border-radius: 25px;
+            color: #e6ffe6;
+            border: 1px solid #2ecc71;
+            font-size: 14px;
             cursor: pointer;
-            font-size: 0.65rem;
-            font-weight: 600;
             transition: all 0.2s;
-            white-space: nowrap;
-            flex: 0 1 auto;
-            letter-spacing: 0.3px;
         }
-        .modal-tab-btn:hover {
+        #categorySelect:hover {
+            border-color: #4dff4d;
             background: #2a3a2a;
-            border-color: #4a9a6a;
-            transform: translateY(-1px);
         }
-        .modal-tab-btn.active {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: #0a1814;
-            border-color: #2ecc71;
-            box-shadow: 0 2px 8px rgba(46,204,113,0.3);
+        #categorySelect:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.3);
         }
         
         .modal-ai-body {
@@ -857,10 +847,6 @@
                 height: 90vh;
                 border-radius: 16px;
             }
-            .modal-tab-btn {
-                padding: 4px 8px;
-                font-size: 0.6rem;
-            }
             .modal-template-text {
                 font-size: 0.7rem;
                 -webkit-line-clamp: 2;
@@ -890,6 +876,10 @@
             }
             .dukops-header-title {
                 font-size: 14px;
+            }
+            #categorySelect {
+                font-size: 12px;
+                padding: 8px 10px;
             }
         }
     </style>
@@ -1370,7 +1360,7 @@
             }
         });
 
-        // ============ AI TEMPLATE SCRIPT - AUTO DETEKSI KATEGORI DARI JSON ============
+        // ============ AI TEMPLATE SCRIPT - ONLINE DARI GITHUB DENGAN DROPDOWN ============
         (function() {
             const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/template-narasi.json';
             let templateData = null;
@@ -1398,47 +1388,41 @@
                     return true;
                 } catch (error) {
                     console.error("Gagal memuat template AI:", error);
-                    // FALLBACK: template default jika offline
-                    templateData = {
-                        "📡 MONITORING": ["melaksanakan monitoring wilayah di desa bersama ..."],
-                        "💬 KOMSOS": ["melaksanakan komunikasi sosial dengan tokoh masyarakat di desa ..."],
-                        "🛡️ PENGAMANAN": ["melaksanakan pengamanan kegiatan di desa ..."],
-                        "🤝 PENDAMPINGAN": ["melaksanakan pendampingan program di desa ..."],
-                        "🔨 GOTONG ROYONG": ["melaksanakan gotong royong bersama warga desa ..."]
-                    };
-                    categoryKeys = Object.keys(templateData);
-                    if (categoryKeys.length > 0) activeTab = categoryKeys[0];
-                    showAIToast("⚠️ Mode offline - menggunakan template default");
-                    return true;
+                    showAIToast("⚠️ Gagal memuat template dari GitHub, cek koneksi internet!");
+                    return false;
                 }
             }
 
             function renderModalTabs() {
                 modalTabs.innerHTML = "";
                 if (!categoryKeys.length) {
-                    modalTabs.innerHTML = '<div style="color:#999;">Tidak ada kategori</div>';
+                    modalTabs.innerHTML = '<div style="color:#999; padding:8px; text-align:center;">Memuat kategori...</div>';
                     return;
                 }
                 
+                // Buat select dropdown untuk kategori (seperti pilih desa)
+                const selectWrapper = document.createElement('div');
+                selectWrapper.style.cssText = 'width:100%; margin-bottom:8px;';
+                
+                const selectElement = document.createElement('select');
+                selectElement.id = 'categorySelect';
+                selectElement.style.cssText = 'width:100%; padding:10px; border-radius:12px; background:#1a2a1f; color:#e6ffe6; border:1px solid #2ecc71; font-size:14px; cursor:pointer;';
+                
                 categoryKeys.forEach(key => {
-                    const hasTemplate = templateData && templateData[key] && templateData[key].length > 0;
-                    const btn = document.createElement('button');
-                    btn.className = `modal-tab-btn ${activeTab === key ? 'active' : ''}`;
-                    let displayName = key.length > 28 ? key.substring(0, 25) + '..' : key;
-                    btn.innerHTML = displayName;
-                    btn.title = key;
-                    btn.style.opacity = hasTemplate ? '1' : '0.5';
-                    btn.onclick = () => {
-                        if (hasTemplate) {
-                            activeTab = key;
-                            renderModalTabs();
-                            renderModalTemplateList();
-                        } else {
-                            showAIToast(`⚠️ Template ${key} belum tersedia`);
-                        }
-                    };
-                    modalTabs.appendChild(btn);
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = key;
+                    if (activeTab === key) option.selected = true;
+                    selectElement.appendChild(option);
                 });
+                
+                selectElement.onchange = (e) => {
+                    activeTab = e.target.value;
+                    renderModalTemplateList();
+                };
+                
+                selectWrapper.appendChild(selectElement);
+                modalTabs.appendChild(selectWrapper);
             }
 
             function renderModalTemplateList() {
@@ -1486,7 +1470,7 @@
 
             openModalBtn.onclick = async () => {
                 if (!templateData) {
-                    modalBody.innerHTML = '<div class="loading-templates"><i class="fas fa-spinner fa-pulse"></i> Memuat template...</div>';
+                    modalBody.innerHTML = '<div class="loading-templates"><i class="fas fa-spinner fa-pulse"></i> Memuat template dari GitHub...</div>';
                     modal.classList.add('show');
                     const success = await loadTemplatesFromGitHub();
                     if (success && templateData) {
@@ -1504,6 +1488,8 @@
 
             closeModalBtn.onclick = () => { modal.classList.remove('show'); };
             window.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
+            
+            // Load template dari GitHub saat halaman dimuat
             loadTemplatesFromGitHub();
         })();
     </script>
