@@ -17,12 +17,12 @@
     <title>SISTEM PELAPORAN DUKOPS BABINSA dan JADWAL PIKET KORAMIL</title>
     <meta name="theme-color" content="#0a1a3a">
 
-    <!-- ========== FAVICON ========== -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.svg" />
-    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.ico" />
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/apple-touch-icon.png" />
-    <link rel="manifest" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/site.webmanifest" />
+    <!-- ========== FAVICON DARI GITHUB Babinsa05/DUKOPS ========== -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/favicon.svg" />
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/favicon.ico" />
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/apple-touch-icon.png" />
+    <link rel="manifest" href="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/site.webmanifest" />
 
     <!-- External Libraries -->
     <script src="https://cdn.polyfill.io/v3/polyfill.min.js?features=default,es6,Promise,fetch,Array.prototype.includes"></script>
@@ -179,7 +179,7 @@
             backdrop-filter: blur(4px);
         }
 
-        /* PERBAIKAN: Ukuran foto profile tetap 70x70px TIDAK BERUBAH */
+        /* Ukuran foto profile tetap 70x70px TIDAK BERUBAH */
         .dukops-profile-img-banner {
             width: 70px !important;
             height: 70px !important;
@@ -191,7 +191,6 @@
             background-color: #1a3a1a;
         }
 
-        /* Pastikan ID image juga memiliki ukuran tetap */
         #desaProfileImgHeader {
             width: 70px !important;
             height: 70px !important;
@@ -986,11 +985,11 @@
                 <div class="dukops-header-banner">
                     <img src="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/assets/header_banner.png" 
                          alt="Header Banner DUKOPS"
-                         onerror="this.src='https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png'">
+                         onerror="this.src='https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/favicon-96x96.png'">
                     <div class="overlay">
                         <div class="profile-overlay">
                             <div class="dukops-profile-area-banner" id="desaProfileContainerHeader">
-                                <img id="desaProfileImgHeader" class="dukops-profile-img-banner" src="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" alt="Foto Profil">
+                                <img id="desaProfileImgHeader" class="dukops-profile-img-banner" src="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/favicon-96x96.png" alt="Foto Profil">
                                 <div id="desaProfileNameHeader" class="dukops-profile-name-banner">Pilih Desa</div>
                             </div>
                             <div class="dukops-title-area-banner">
@@ -1171,10 +1170,11 @@
     </div>
 
     <script>
-        // ============ DATA DESA DIAMBIL DARI GITHUB ============
-        const DESA_LIST_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/data/desa-list.json';
-        const PROFILE_BASE_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/Profile/';
-        const DEFAULT_FAVICON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png';
+        // ============ SEMUA URL MENGGUNAKAN Babinsa05/DUKOPS ============
+        const DESA_LIST_URL = 'https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/data/desa-list.json';
+        const PROFILE_BASE_URL = 'https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/Profile/';
+        const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/template-narasi.json';
+        const DEFAULT_FAVICON_URL = 'https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/favicon-96x96.png';
         
         let daftarDesaGlobal = [];
         let profileImagesGlobal = {};
@@ -1189,7 +1189,7 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 daftarDesaGlobal = data.desaList || [];
-                console.log("✅ Daftar desa berhasil dimuat dari GitHub:", daftarDesaGlobal.length, "desa");
+                console.log("✅ Daftar desa berhasil dimuat dari GitHub Babinsa05/DUKOPS:", daftarDesaGlobal.length, "desa");
                 
                 // Bangun profileImages berdasarkan daftar desa
                 daftarDesaGlobal.forEach(desa => {
@@ -1253,7 +1253,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Update fungsi updateDesaProfile - ukuran gambar diatur oleh CSS, tidak perlu diubah di sini
+        // Update fungsi updateDesaProfile
         function updateDesaProfile(desaName) {
             const imgElement = document.getElementById('desaProfileImgHeader');
             const nameElement = document.getElementById('desaProfileNameHeader');
@@ -1491,7 +1491,6 @@
 
         // ============ AI TEMPLATE SCRIPT ============
         (function() {
-            const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/template-narasi.json';
             let templateData = null;
             let activeTab = null;
             let categoryKeys = [];
@@ -1512,7 +1511,7 @@
                     if (categoryKeys.length > 0) {
                         activeTab = categoryKeys[0];
                     }
-                    console.log("✅ Template AI berhasil dimuat dari GitHub");
+                    console.log("✅ Template AI berhasil dimuat dari GitHub Babinsa05/DUKOPS");
                     return true;
                 } catch (error) {
                     console.error("Gagal memuat template AI:", error);
