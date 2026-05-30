@@ -17,7 +17,7 @@
     <title>SISTEM PELAPORAN DUKOPS BABINSA dan JADWAL PIKET KORAMIL</title>
     <meta name="theme-color" content="#0a1a3a">
 
-    <!-- ========== FAVICON DARI GITHUB (SEBAGAI DEFAULT PROFILE) ========== -->
+    <!-- ========== FAVICON DARI GITHUB ========== -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.svg" />
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.ico" />
@@ -235,6 +235,11 @@
             padding: 2px 10px;
             border-radius: 20px;
             margin-top: 5px;
+        }
+
+        /* Sembunyikan previewBox yang tidak diperlukan */
+        .previewBox {
+            display: none !important;
         }
 
         /* ============ JADWAL PIKET BARU STYLES ============ */
@@ -1229,8 +1234,9 @@
                     <option value="">-- Pilih Desa/Kelurahan --</option>
                 </select>
                 <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan dari GitHub...</div>
+                
+                <!-- PREVIEW BOX INI SEKARANG SUDAH DISEMBUNYIKAN DENGAN CSS -->
                 <div class="previewBox" id="previewDesa"></div>
-
                 <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
                 <div class="previewBox" id="previewKordinat"></div>
 
@@ -1462,13 +1468,13 @@
                 daftarDesaGlobal = data.desaList || [];
                 console.log("✅ Daftar desa berhasil dimuat dari GitHub:", daftarDesaGlobal.length, "desa");
 
-                // Bangun profileImages berdasarkan daftar desa (filename: nama_desa.png, spasi diganti underscore)
+                // Bangun profileImages berdasarkan daftar desa
                 daftarDesaGlobal.forEach(desa => {
                     let fileName = desa.toLowerCase().replace(/\s+/g, '_') + '.png';
                     profileImagesGlobal[desa] = fileName;
                 });
 
-                // Load desa ke dropdown (TANPA auto-select, tetap placeholder kosong)
+                // Load desa ke dropdown
                 populateDesaDropdown();
 
             } catch (error) {
@@ -1495,7 +1501,6 @@
             if (!selectDesa) return;
 
             selectDesa.disabled = false;
-            // HAPUS option yang ada, sisakan placeholder
             selectDesa.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
             
             daftarDesaGlobal.forEach(desa => {
@@ -1505,9 +1510,6 @@
                 selectDesa.appendChild(option);
             });
 
-            // TIDAK ADA AUTO-SELECT! Biarkan placeholder "-- Pilih Desa/Kelurahan --" yang terpilih
-            // Header profile tetap menampilkan favicon default dan tulisan "Pilih Desa"
-            
             // Sembunyikan loading indicator
             const loadingDesa = document.getElementById('loadingDesa');
             if (loadingDesa) loadingDesa.style.display = 'none';
@@ -1529,13 +1531,11 @@
             const nameElement = document.getElementById('desaProfileNameHeader');
 
             if (!desaName || desaName === "") {
-                // Jika belum pilih desa (placeholder), tampilkan favicon default
                 imgElement.src = DEFAULT_FAVICON_URL;
                 nameElement.textContent = "Pilih Desa";
                 return;
             }
 
-            // Cari di profileImagesGlobal
             let matchedKey = null;
             for (let key in profileImagesGlobal) {
                 if (desaName.toLowerCase() === key.toLowerCase()) {
@@ -1552,12 +1552,10 @@
 
                 imgElement.onerror = function() {
                     console.warn(`Gagal memuat profil untuk ${matchedKey}, file tidak ditemukan`);
-                    // Jika gambar profil tidak ditemukan, tampilkan favicon default
                     imgElement.src = DEFAULT_FAVICON_URL;
                     nameElement.textContent = matchedKey;
                 };
             } else {
-                // Jika tidak ada matching, tampilkan favicon default
                 imgElement.src = DEFAULT_FAVICON_URL;
                 nameElement.textContent = desaName || "Pilih Desa";
             }
@@ -1627,7 +1625,6 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             startSplashProgress();
-            // Load daftar desa dari GitHub
             loadDesaListFromGitHub();
         });
 
@@ -1739,13 +1736,10 @@
         window.loadSelectedDesa = function() {
             if (originalLoadSelectedDesa) originalLoadSelectedDesa();
             const selectDesa = document.getElementById('selectDesa');
-            const selectedText = selectDesa.options[selectDesa.selectedIndex]?.text || "";
-            const selectedValue = selectDesa.value || "";
-            // Update profile hanya jika ada desa yang terpilih (bukan placeholder)
+            const selectedValue = selectDesa?.value || "";
             if (selectedValue !== "") {
                 updateDesaProfile(selectedValue);
             } else {
-                // Jika placeholder terpilih, tampilkan default favicon
                 updateDesaProfile("");
             }
             if (typeof window.triggerPlayMusic === 'function') {
@@ -1768,7 +1762,7 @@
             }
         });
 
-        // ============ AI TEMPLATE SCRIPT - ONLINE DARI GITHUB DENGAN DROPDOWN ============
+        // ============ AI TEMPLATE SCRIPT ============
         (function() {
             const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/template-narasi.json';
             let templateData = null;
@@ -1866,9 +1860,7 @@
                 narasiField.value = finalTemplate;
                 modal.classList.remove('show');
 
-                const event = new Event('input', {
-                    bubbles: true
-                });
+                const event = new Event('input', { bubbles: true });
                 narasiField.dispatchEvent(event);
 
                 if (typeof checkInputCompletion === 'function') checkInputCompletion();
@@ -1901,12 +1893,8 @@
                 }
             };
 
-            closeModalBtn.onclick = () => {
-                modal.classList.remove('show');
-            };
-            window.onclick = (e) => {
-                if (e.target === modal) modal.classList.remove('show');
-            };
+            closeModalBtn.onclick = () => { modal.classList.remove('show'); };
+            window.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
 
             loadTemplatesFromGitHub();
         })();
@@ -1925,11 +1913,7 @@
                 PIKET: "https://raw.githubusercontent.com/Koramil05/JADWAL/main/piket.txt"
             };
 
-            const JadwalData = {
-                daftarNama: [],
-                daftarHanpangan: [],
-                currentHanpangan: ""
-            };
+            const JadwalData = { daftarNama: [], daftarHanpangan: [], currentHanpangan: "" };
             const JADWAL_DROPDOWN_IDS = [
                 'j_nama1a_baru', 'j_nama1b_baru', 'j_nama2a_baru', 'j_nama2b_baru',
                 'j_nama3a_baru', 'j_nama3b_baru', 'j_nama3c_baru', 'j_nama3d_baru',
@@ -2017,42 +2001,18 @@
             }
 
             function updatePreview() {
-                const now = new Date(),
-                    tomorrow = new Date();
+                const now = new Date(), tomorrow = new Date();
                 tomorrow.setDate(now.getDate() + 1);
                 let result = "=======================\nKORAMIL 1609-05/SUKASADA\n    JADWAL DINAS DALAM\n=======================\n\n";
                 const getVal = (id) => document.getElementById(id)?.value || "";
 
-                const sections = [{
-                        names: [getVal('j_nama1a_baru'), getVal('j_nama1b_baru')],
-                        title: formatTanggal(now),
-                        suffix: ""
-                    },
-                    {
-                        names: [getVal('j_nama2a_baru'), getVal('j_nama2b_baru')],
-                        title: formatTanggal(tomorrow),
-                        suffix: ""
-                    },
-                    {
-                        names: [getVal('j_nama3a_baru'), getVal('j_nama3b_baru')],
-                        title: formatTanggal(now),
-                        suffix: " (Kediaman)"
-                    },
-                    {
-                        names: [getVal('j_nama3c_baru'), getVal('j_nama3d_baru')],
-                        title: formatTanggal(tomorrow),
-                        suffix: " (Kediaman)"
-                    },
-                    {
-                        names: [getVal('j_nama4a_baru'), getVal('j_nama4b_baru')],
-                        title: formatTanggal(now),
-                        suffix: " (Makodim)"
-                    },
-                    {
-                        names: [getVal('j_nama4c_baru'), getVal('j_nama4d_baru')],
-                        title: formatTanggal(tomorrow),
-                        suffix: " (Makodim)"
-                    }
+                const sections = [
+                    { names: [getVal('j_nama1a_baru'), getVal('j_nama1b_baru')], title: formatTanggal(now), suffix: "" },
+                    { names: [getVal('j_nama2a_baru'), getVal('j_nama2b_baru')], title: formatTanggal(tomorrow), suffix: "" },
+                    { names: [getVal('j_nama3a_baru'), getVal('j_nama3b_baru')], title: formatTanggal(now), suffix: " (Kediaman)" },
+                    { names: [getVal('j_nama3c_baru'), getVal('j_nama3d_baru')], title: formatTanggal(tomorrow), suffix: " (Kediaman)" },
+                    { names: [getVal('j_nama4a_baru'), getVal('j_nama4b_baru')], title: formatTanggal(now), suffix: " (Makodim)" },
+                    { names: [getVal('j_nama4c_baru'), getVal('j_nama4d_baru')], title: formatTanggal(tomorrow), suffix: " (Makodim)" }
                 ];
 
                 let sectionCount = 0;
@@ -2077,45 +2037,25 @@
             function sendToWhatsApp() {
                 const preview = document.getElementById('j_hasilPesanBaru');
                 const pesan = preview ? preview.value.trim() : "";
-                if (!pesan) {
-                    showToast("Tidak ada pesan untuk dikirim");
-                    return false;
-                }
+                if (!pesan) { showToast("Tidak ada pesan untuk dikirim"); return false; }
                 window.open("https://wa.me/?text=" + encodeURIComponent(pesan), "_blank");
                 showToast("Membuka WhatsApp...");
                 return false;
             }
 
             let isLoading = false;
-
             function loadAllJadwalData() {
                 if (isLoading) return;
                 isLoading = true;
                 const loading = document.getElementById('j_loadingIndicatorBaru');
                 if (loading) loading.style.display = 'block';
-                Promise.all([loadPiketData(), loadHanpanganData()]).then(() => {
-                    updatePreview();
-                    showToast("Data berhasil dimuat");
-                }).catch(() => showToast("Gagal memuat data")).finally(() => {
-                    if (loading) loading.style.display = 'none';
-                    isLoading = false;
-                });
+                Promise.all([loadPiketData(), loadHanpanganData()]).then(() => { updatePreview(); showToast("Data berhasil dimuat"); }).catch(() => showToast("Gagal memuat data")).finally(() => { if (loading) loading.style.display = 'none'; isLoading = false; });
             }
 
             function initJadwalBaru() {
-                JADWAL_DROPDOWN_IDS.forEach(id => {
-                    const sel = document.getElementById(id);
-                    if (sel) sel.addEventListener('change', updatePreview);
-                });
+                JADWAL_DROPDOWN_IDS.forEach(id => { const sel = document.getElementById(id); if (sel) sel.addEventListener('change', updatePreview); });
                 const btn = document.getElementById('whatsappBtnBaru');
-                if (btn) {
-                    const newBtn = btn.cloneNode(true);
-                    btn.parentNode.replaceChild(newBtn, btn);
-                    newBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        sendToWhatsApp();
-                    });
-                }
+                if (btn) { const newBtn = btn.cloneNode(true); btn.parentNode.replaceChild(newBtn, btn); newBtn.addEventListener('click', (e) => { e.preventDefault(); sendToWhatsApp(); }); }
                 loadAllJadwalData();
                 autoResizeTextarea();
             }
@@ -2140,7 +2080,7 @@
                 document.getElementById('btnJadwal').classList.remove('active');
                 document.getElementById('btnAbsen').classList.remove('active');
             };
-
+            
             window.showAbsenTab = function() {
                 document.getElementById('dukopsContent').style.display = 'none';
                 document.getElementById('jadwalPiketContainerBaru').style.display = 'none';
@@ -2156,7 +2096,7 @@
             else initJadwalBaru();
         })();
 
-        // ============ SCRIPT UNTUK TAB ABSEN ============
+        // ============ SCRIPT UNTUK TAB ABSEN (disederhanakan) ============
         (function() {
             var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcKBFM8Mm0A8e_hWfl48uEUuDhlmxK8okgXF4M-102HLEuROZPN9YZlpmKnkRo8b_SKA/exec';
             var CACHE_KEY_ABSEN = 'absensi_dukops_data';
@@ -2174,21 +2114,11 @@
             if (tahunSelectAbsen) tahunSelectAbsen.onchange = onTahunChangeAbsen;
             if (refreshBtnAbsen) refreshBtnAbsen.onclick = forceRefreshAbsen;
 
-            window.addEventListener('online', function() {
-                isOnlineAbsen = true;
-                showToastAbsen('📡 Kembali online');
-                loadAbsenTahun();
-            });
-            window.addEventListener('offline', function() {
-                isOnlineAbsen = false;
-                showToastAbsen('⚠️ Mode offline');
-            });
+            window.addEventListener('online', function() { isOnlineAbsen = true; showToastAbsen('📡 Kembali online'); loadAbsenTahun(); });
+            window.addEventListener('offline', function() { isOnlineAbsen = false; showToastAbsen('⚠️ Mode offline'); });
 
             function forceRefreshAbsen() {
-                if (!isOnlineAbsen) {
-                    showToastAbsen('❌ Tidak ada koneksi');
-                    return;
-                }
+                if (!isOnlineAbsen) { showToastAbsen('❌ Tidak ada koneksi'); return; }
                 localStorage.removeItem(CACHE_KEY_ABSEN);
                 loadAbsenTahun();
                 if (currentDataAbsen) loadDataAbsen();
@@ -2218,11 +2148,7 @@
                     .then(function(years) {
                         if (years && years.length > 0) {
                             populateTahunSelectAbsen(years);
-                            saveToCacheAbsen({
-                                years: years,
-                                months: null,
-                                data: null
-                            });
+                            saveToCacheAbsen({ years: years, months: null, data: null });
                         } else {
                             throw new Error('Tidak ada data tahun');
                         }
@@ -2234,9 +2160,7 @@
                             showToastAbsen('Gagal: ' + error.message);
                         }
                     })
-                    .finally(function() {
-                        if (tahunSelectAbsen) tahunSelectAbsen.disabled = false;
-                    });
+                    .finally(function() { if (tahunSelectAbsen) tahunSelectAbsen.disabled = false; });
             }
 
             function populateTahunSelectAbsen(years) {
@@ -2248,10 +2172,7 @@
                     opt.textContent = years[i];
                     tahunSelectAbsen.appendChild(opt);
                 }
-                if (years.length > 0) {
-                    tahunSelectAbsen.value = years[0];
-                    onTahunChangeAbsen();
-                }
+                if (years.length > 0) { tahunSelectAbsen.value = years[0]; onTahunChangeAbsen(); }
             }
 
             function onTahunChangeAbsen() {
@@ -2313,27 +2234,16 @@
                     bulanSelectAbsen.appendChild(opt);
                 }
                 bulanSelectAbsen.onchange = function() {
-                    if (this.value) {
-                        loadDataAbsen();
-                    } else {
-                        if (resultContainerAbsen) resultContainerAbsen.innerHTML = '';
-                    }
+                    if (this.value) { loadDataAbsen(); } else { if (resultContainerAbsen) resultContainerAbsen.innerHTML = ''; }
                 };
-                if (bulanSelectAbsen.value) {
-                    loadDataAbsen();
-                }
+                if (bulanSelectAbsen.value) { loadDataAbsen(); }
             }
 
             function loadDataAbsen() {
                 if (!tahunSelectAbsen || !bulanSelectAbsen) return;
                 var tahun = tahunSelectAbsen.value;
                 var bulan = bulanSelectAbsen.value;
-
-                if (!tahun || !bulan) {
-                    if (resultContainerAbsen) resultContainerAbsen.innerHTML = '<div class="absen-card">Pilih tahun dan bulan terlebih dahulu</div>';
-                    return;
-                }
-
+                if (!tahun || !bulan) { if (resultContainerAbsen) resultContainerAbsen.innerHTML = '<div class="absen-card">Pilih tahun dan bulan terlebih dahulu</div>'; return; }
                 showLoadingAbsen();
 
                 var cached = getCacheAbsen();
@@ -2347,10 +2257,7 @@
                     }
                 }
 
-                if (!isOnlineAbsen) {
-                    showErrorAbsen('Tidak ada koneksi dan tidak ada data tersimpan');
-                    return;
-                }
+                if (!isOnlineAbsen) { showErrorAbsen('Tidak ada koneksi dan tidak ada data tersimpan'); return; }
 
                 fetch(SCRIPT_URL + '?action=getData&tahun=' + encodeURIComponent(tahun) + '&bulan=' + encodeURIComponent(bulan))
                     .then(function(response) {
@@ -2362,10 +2269,7 @@
                         displayDataAbsen(data);
                         var updatedCache = getCacheAbsen() || {};
                         updatedCache.data = updatedCache.data || {};
-                        updatedCache.data[cacheKey] = {
-                            data: data,
-                            timestamp: Date.now()
-                        };
+                        updatedCache.data[cacheKey] = { data: data, timestamp: Date.now() };
                         saveToCacheAbsen(updatedCache);
                     })
                     .catch(function(error) {
@@ -2376,42 +2280,23 @@
 
             function displayDataAbsen(data) {
                 if (!resultContainerAbsen) return;
-                if (data.error) {
-                    showErrorAbsen(data.error);
-                    return;
-                }
-
+                if (data.error) { showErrorAbsen(data.error); return; }
                 var totalDesa = data.total_desa || 0;
                 var persen = totalDesa > 0 ? Math.round((data.desa_lengkap / totalDesa) * 100) : 0;
                 var detailsHtml = '';
-
                 for (var i = 0; i < data.details.length; i++) {
                     var d = data.details[i];
-                    var cls = '',
-                        txt = '',
-                        icon = '';
-                    if (d.status === 'LENGKAP') {
-                        cls = 'absen-status-lengkap';
-                        icon = '✅';
-                        txt = 'LENGKAP';
-                    } else if (d.status === 'BELUM_LENGKAP') {
-                        cls = 'absen-status-belum-lengkap';
-                        icon = '⚠️';
-                        txt = 'BL';
-                    } else {
-                        cls = 'absen-status-belum';
-                        icon = '❌';
-                        txt = 'BELUM';
-                    }
+                    var cls = '', txt = '', icon = '';
+                    if (d.status === 'LENGKAP') { cls = 'absen-status-lengkap'; icon = '✅'; txt = 'LENGKAP'; }
+                    else if (d.status === 'BELUM_LENGKAP') { cls = 'absen-status-belum-lengkap'; icon = '⚠️'; txt = 'BL'; }
+                    else { cls = 'absen-status-belum'; icon = '❌'; txt = 'BELUM'; }
                     var warn = (d.status === 'LENGKAP') ? '#4caf50' : ((d.status === 'BELUM_LENGKAP') ? '#ff9800' : '#f44336');
-
                     detailsHtml += '<div class="absen-desa-item" onclick="window.showDetailAbsen(\'' + escapeHtmlAbsen(d.nama) + '\',' + d.jumlah_file + ',' + d.persentase + ',\'' + d.status + '\')">' +
                         '<div class="absen-desa-name">' + icon + ' ' + escapeHtmlAbsen(d.nama) + '</div>' +
                         '<div class="absen-desa-stats">' + d.jumlah_file + '/9</div>' +
                         '<div class="absen-desa-progress"><div class="absen-desa-progress-bar"><div class="absen-desa-progress-fill" style="width:' + d.persentase + '%; background:' + warn + '"></div></div></div>' +
                         '<div class="absen-status-badge ' + cls + '">' + txt + '</div></div>';
                 }
-
                 var html = '<div class="absen-card">' +
                     '<div class="absen-stats-grid">' +
                     '<div class="absen-stat-card"><div class="absen-stat-value" style="color:#1a73e8;">' + data.total_desa + '</div><div class="absen-stat-label">DESA</div></div>' +
@@ -2428,15 +2313,9 @@
                     '<div style="margin-top:15px; text-align:center;">' +
                     '<button onclick="shareAsPNGAbsen()" class="absen-btn absen-btn-primary" style="background:#e91e63;">📸 SIMPAN PNG</button>' +
                     '</div></div>';
-
                 resultContainerAbsen.innerHTML = html;
-
                 var pngBtn = document.querySelector('#absenResultContainer .absen-btn-primary');
-                if (pngBtn && pngBtn.textContent.includes('PNG')) {
-                    pngBtn.onclick = function() {
-                        shareAsPNGAbsen();
-                    };
-                }
+                if (pngBtn && pngBtn.textContent.includes('PNG')) { pngBtn.onclick = function() { shareAsPNGAbsen(); }; }
             }
 
             function createCompactPNGHTMLAbsen() {
@@ -2446,14 +2325,12 @@
                 var persen = total > 0 ? Math.round((d.desa_lengkap / total) * 100) : 0;
                 var tgl = new Date().toLocaleDateString('id-ID');
                 var listHtml = '';
-
                 for (var i = 0; i < d.details.length; i++) {
                     var des = d.details[i];
                     var warn = (des.status === 'LENGKAP') ? '#4caf50' : ((des.status === 'BELUM_LENGKAP') ? '#ff9800' : '#f44336');
                     var emoji = (des.status === 'LENGKAP') ? '✅' : ((des.status === 'BELUM_LENGKAP') ? '⚠️' : '❌');
                     var statusText = (des.status === 'LENGKAP') ? 'LENGKAP' : ((des.status === 'BELUM_LENGKAP') ? 'BL' : 'BELUM');
                     var statusBg = (des.status === 'LENGKAP') ? '#e8f5e9' : ((des.status === 'BELUM_LENGKAP') ? '#fff3e0' : '#ffebee');
-
                     listHtml += '<div class="png-desa-item">' +
                         '<div style="width:24px; font-size:10px;">' + emoji + '</div>' +
                         '<div style="flex:2; font-size:10px; font-weight:500; color:#000;">' + escapeHtmlAbsen(des.nama) + '</div>' +
@@ -2462,7 +2339,6 @@
                         '<div style="width:45px; font-size:8px; text-align:center; padding:2px 4px; border-radius:8px; background:' + statusBg + '; color:' + warn + ';">' + statusText + '</div>' +
                         '</div>';
                 }
-
                 return '<div class="png-container">' +
                     '<div class="png-header">' +
                     '<div style="font-size:16px; font-weight:bold;">📊 ABSENSI DUKOPS</div>' +
@@ -2484,81 +2360,29 @@
             }
 
             window.shareAsPNGAbsen = async function() {
-                if (!currentDataAbsen) {
-                    showToastAbsen('📊 Pilih data dulu');
-                    return;
-                }
+                if (!currentDataAbsen) { showToastAbsen('📊 Pilih data dulu'); return; }
                 showToastAbsen('🖼️ Membuat gambar...');
                 if (screenshotAreaAbsen) screenshotAreaAbsen.innerHTML = createCompactPNGHTMLAbsen();
                 var element = screenshotAreaAbsen ? screenshotAreaAbsen.firstChild : null;
-                if (!element) {
-                    showToastAbsen('❌ Gagal membuat gambar');
-                    return;
-                }
+                if (!element) { showToastAbsen('❌ Gagal membuat gambar'); return; }
                 try {
-                    var canvas = await html2canvas(element, {
-                        scale: 2,
-                        backgroundColor: '#ffffff'
-                    });
+                    var canvas = await html2canvas(element, { scale: 2, backgroundColor: '#ffffff' });
                     var link = document.createElement('a');
                     link.download = 'Absensi_' + (currentDataAbsen.nama_bulan || '') + '_' + (currentDataAbsen.tahun || '') + '.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     showToastAbsen('✅ Gambar siap!');
-                } catch (e) {
-                    showToastAbsen('❌ Gagal: ' + e.message);
-                }
-                setTimeout(function() {
-                    if (screenshotAreaAbsen) screenshotAreaAbsen.innerHTML = '';
-                }, 500);
+                } catch (e) { showToastAbsen('❌ Gagal: ' + e.message); }
+                setTimeout(function() { if (screenshotAreaAbsen) screenshotAreaAbsen.innerHTML = ''; }, 500);
             };
 
-            function getCacheAbsen() {
-                try {
-                    var cached = localStorage.getItem(CACHE_KEY_ABSEN);
-                    if (cached) return JSON.parse(cached);
-                } catch (e) {}
-                return null;
-            }
-
-            function saveToCacheAbsen(data) {
-                try {
-                    localStorage.setItem(CACHE_KEY_ABSEN, JSON.stringify(data));
-                } catch (e) {}
-            }
-
-            function showToastAbsen(msg) {
-                var t = document.createElement('div');
-                t.className = 'absen-toast';
-                t.textContent = msg;
-                document.body.appendChild(t);
-                setTimeout(function() {
-                    if (t && t.remove) t.remove();
-                }, 2000);
-            }
-
-            function showLoadingAbsen() {
-                if (resultContainerAbsen) resultContainerAbsen.innerHTML = '<div class="absen-loading"><div class="absen-spinner"></div><p>Memuat data...</p></div>';
-            }
-
-            function showErrorAbsen(msg) {
-                if (resultContainerAbsen) resultContainerAbsen.innerHTML = '<div class="absen-card" style="color:#f44336;">⚠️ ' + escapeHtmlAbsen(msg) + '</div>';
-            }
-
-            function escapeHtmlAbsen(t) {
-                if (!t) return '';
-                return t.replace(/[&<>]/g, function(m) {
-                    if (m === '&') return '&amp;';
-                    if (m === '<') return '&lt;';
-                    if (m === '>') return '&gt;';
-                    return m;
-                });
-            }
-
-            window.showDetailAbsen = function(n, j, p, s) {
-                alert((s === 'LENGKAP' ? '✅ ' : (s === 'BELUM_LENGKAP' ? '⚠️ ' : '❌ ')) + n + '\n' + j + '/9 (' + p + '%)');
-            };
-
+            function getCacheAbsen() { try { var cached = localStorage.getItem(CACHE_KEY_ABSEN); if (cached) return JSON.parse(cached); } catch(e) {} return null; }
+            function saveToCacheAbsen(data) { try { localStorage.setItem(CACHE_KEY_ABSEN, JSON.stringify(data)); } catch(e) {} }
+            function showToastAbsen(msg) { var t = document.createElement('div'); t.className = 'absen-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(function() { if(t && t.remove) t.remove(); }, 2000); }
+            function showLoadingAbsen() { if (resultContainerAbsen) resultContainerAbsen.innerHTML = '<div class="absen-loading"><div class="absen-spinner"></div><p>Memuat data...</p></div>'; }
+            function showErrorAbsen(msg) { if (resultContainerAbsen) resultContainerAbsen.innerHTML = '<div class="absen-card" style="color:#f44336;">⚠️ ' + escapeHtmlAbsen(msg) + '</div>'; }
+            function escapeHtmlAbsen(t) { if (!t) return ''; return t.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+            window.showDetailAbsen = function(n, j, p, s) { alert((s === 'LENGKAP' ? '✅ ' : (s === 'BELUM_LENGKAP' ? '⚠️ ' : '❌ ')) + n + '\n' + j + '/9 (' + p + '%)'); };
             window.loadAbsenTahun = loadAbsenTahun;
         })();
     </script>
