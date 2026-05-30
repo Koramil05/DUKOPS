@@ -179,9 +179,24 @@
             backdrop-filter: blur(4px);
         }
 
+        /* PERBAIKAN: Ukuran foto profile tetap 70x70px TIDAK BERUBAH */
         .dukops-profile-img-banner {
-            width: 70px;
-            height: 70px;
+            width: 70px !important;
+            height: 70px !important;
+            min-width: 70px !important;
+            max-width: 70px !important;
+            border-radius: 50%;
+            border: 2px solid #ffcc00;
+            object-fit: cover;
+            background-color: #1a3a1a;
+        }
+
+        /* Pastikan ID image juga memiliki ukuran tetap */
+        #desaProfileImgHeader {
+            width: 70px !important;
+            height: 70px !important;
+            min-width: 70px !important;
+            max-width: 70px !important;
             border-radius: 50%;
             border: 2px solid #ffcc00;
             object-fit: cover;
@@ -897,8 +912,16 @@
                 text-align: center;
             }
             .dukops-profile-img-banner {
-                width: 55px;
-                height: 55px;
+                width: 55px !important;
+                height: 55px !important;
+                min-width: 55px !important;
+                max-width: 55px !important;
+            }
+            #desaProfileImgHeader {
+                width: 55px !important;
+                height: 55px !important;
+                min-width: 55px !important;
+                max-width: 55px !important;
             }
             .dukops-header-title-banner {
                 font-size: 14px;
@@ -1196,13 +1219,12 @@
             }
         }
 
-        // ============ PERUBAHAN PENTING: TIDAK ADA AUTO-SELECT DESA ============
+        // Populate dropdown desa dengan placeholder "-- Pilih Desa --" dan TANPA auto-select
         function populateDesaDropdown() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return;
             
             selectDesa.disabled = false;
-            // Hanya tampilkan placeholder "-- Pilih Desa --" tanpa auto-select
             selectDesa.innerHTML = '<option value="">-- Pilih Desa --</option>';
             daftarDesaGlobal.forEach(desa => {
                 const option = document.createElement('option');
@@ -1211,18 +1233,15 @@
                 selectDesa.appendChild(option);
             });
             
-            // PASTIKAN TIDAK ADA AUTO-SELECT KE DESA MANAPUN
-            // Biarkan placeholder "-- Pilih Desa --" yang terpilih
+            // TIDAK ADA AUTO-SELECT KE DESA MANAPUN
             selectDesa.value = "";
             
             // Pastikan header profile menampilkan favicon default dan tulisan "Pilih Desa"
             updateDesaProfile("");
             
-            // Sembunyikan loading indicator
             const loadingDesa = document.getElementById('loadingDesa');
             if (loadingDesa) loadingDesa.style.display = 'none';
         }
-        // ================================================================
 
         function showToastDesa(message) {
             const toast = document.createElement('div');
@@ -1234,7 +1253,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Update fungsi updateDesaProfile
+        // Update fungsi updateDesaProfile - ukuran gambar diatur oleh CSS, tidak perlu diubah di sini
         function updateDesaProfile(desaName) {
             const imgElement = document.getElementById('desaProfileImgHeader');
             const nameElement = document.getElementById('desaProfileNameHeader');
