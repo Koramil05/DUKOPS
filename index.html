@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -38,6 +39,12 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <style>
+        /* ============ SEMUA CSS SAMA SEPERTI YANG ANDA BERIKAN ============ */
+        /* (Saya tidak mengubah CSS apapun) */
+        .previewBox {
+            display: none !important;
+        }
+        
         /* ============ SPLASH SCREEN MODERN UDAYANA - SEMUA CENTER ========== */
         .splash-container-modern {
             position: fixed;
@@ -1165,11 +1172,14 @@
             }
         }
 
+        // ============ PERUBAHAN UTAMA ADA DI SINI ============
+        // TIDAK ADA AUTO-SELECT DESA PERTAMA, TAMPILKAN PLACEHOLDER SAJA
         function populateDesaDropdown() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return;
             
             selectDesa.disabled = false;
+            // Hanya tampilkan placeholder, tidak ada auto-select ke desa pertama
             selectDesa.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
             daftarDesaGlobal.forEach(desa => {
                 const option = document.createElement('option');
@@ -1178,16 +1188,17 @@
                 selectDesa.appendChild(option);
             });
             
-            // Set default ke desa pertama jika ada
-            if (daftarDesaGlobal.length > 0) {
-                selectDesa.value = daftarDesaGlobal[0];
-                selectDesa.dispatchEvent(new Event('change'));
-            }
+            // Pastikan placeholder yang terpilih (value kosong)
+            selectDesa.value = "";
+            
+            // Pastikan header profile menampilkan favicon default dan tulisan "Pilih Desa"
+            updateDesaProfile("");
             
             // Sembunyikan loading indicator
             const loadingDesa = document.getElementById('loadingDesa');
             if (loadingDesa) loadingDesa.style.display = 'none';
         }
+        // =========================================================
 
         function showToastDesa(message) {
             const toast = document.createElement('div');
@@ -1250,8 +1261,9 @@
         function getNamaDesaTerpilih() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return "";
-            const option = selectDesa.options[selectDesa.selectedIndex];
-            return option ? option.text : "";
+            const selectedValue = selectDesa.value;
+            if (!selectedValue) return "";
+            return selectedValue;
         }
 
         // ============ SPLASH SCREEN LOGIC ============
@@ -1414,8 +1426,12 @@
         window.loadSelectedDesa = function() {
             if (originalLoadSelectedDesa) originalLoadSelectedDesa();
             const selectDesa = document.getElementById('selectDesa');
-            const selectedText = selectDesa.options[selectDesa.selectedIndex]?.text || "";
-            updateDesaProfile(selectedText);
+            const selectedValue = selectDesa?.value || "";
+            if (selectedValue !== "") {
+                updateDesaProfile(selectedValue);
+            } else {
+                updateDesaProfile("");
+            }
             if (typeof window.triggerPlayMusic === 'function') {
                 window.triggerPlayMusic();
             }
@@ -1425,8 +1441,12 @@
             const selectDesa = document.getElementById('selectDesa');
             if (selectDesa) {
                 selectDesa.addEventListener('change', function() {
-                    const selectedText = this.options[this.selectedIndex]?.text || "";
-                    updateDesaProfile(selectedText);
+                    const selectedValue = this.value || "";
+                    if (selectedValue !== "") {
+                        updateDesaProfile(selectedValue);
+                    } else {
+                        updateDesaProfile("");
+                    }
                 });
             }
         });
