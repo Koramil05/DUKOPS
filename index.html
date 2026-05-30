@@ -1386,13 +1386,13 @@
             <div class="telegram-group-selector">
                 <label for="j_telegramGroupSelectBaru"><i class="fab fa-telegram"></i> Group Telegram Tujuan:</label>
                 <select id="j_telegramGroupSelectBaru">
-                    <option value="-1003020813628" selected>Auto terkirim ke-Group Telegram (KORAMIL 05)</option>
+                    <option value="-1003020813628" selected>tidak terkirim ke-Group Telegram (KORAMIL 05)</option>
                 </select>
             </div>
 
             <button id="whatsappBtnBaru" class="whatsapp-transparent-btn">
                 <i class="fab fa-whatsapp"></i>
-                <span>KIRIM KE WHATSAPP</span>
+                <span>klik disini KIRIM WHATSAPP</span>
             </button>
 
             <div class="jadwal-section">
@@ -1460,7 +1460,7 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 daftarDesaGlobal = data.desaList || [];
-                console.log("✅ Daftar desa berhasil dimuat dari GitHub:", daftarDesaGlobal.length, "desa");
+                console.log("✅ Daftar desa berhasil dimuat :", daftarDesaGlobal.length, "desa");
 
                 // Bangun profileImages berdasarkan daftar desa (filename: nama_desa.png, spasi diganti underscore)
                 daftarDesaGlobal.forEach(desa => {
@@ -1472,7 +1472,7 @@
                 populateDesaDropdown();
 
             } catch (error) {
-                console.error("Gagal memuat daftar desa dari GitHub:", error);
+                console.error("Gagal memuat daftar desa :", error);
                 if (loadingDesa) {
                     loadingDesa.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Gagal memuat daftar desa. Cek koneksi internet!';
                     loadingDesa.style.color = '#ff6666';
@@ -1791,11 +1791,11 @@
                     if (categoryKeys.length > 0) {
                         activeTab = categoryKeys[0];
                     }
-                    console.log("✅ Template AI berhasil dimuat dari GitHub");
+                    console.log("✅ Template AI berhasil dimuat ");
                     return true;
                 } catch (error) {
                     console.error("Gagal memuat template AI:", error);
-                    showAIToast("⚠️ Gagal memuat template dari GitHub, cek koneksi internet!");
+                    showAIToast("⚠️ Gagal memuat template, cek koneksi internet!");
                     return false;
                 }
             }
@@ -1885,7 +1885,7 @@
 
             openModalBtn.onclick = async () => {
                 if (!templateData) {
-                    modalBody.innerHTML = '<div class="loading-templates"><i class="fas fa-spinner fa-pulse"></i> Memuat template dari GitHub...</div>';
+                    modalBody.innerHTML = '<div class="loading-templates"><i class="fas fa-spinner fa-pulse"></i> Memuat template...</div>';
                     modal.classList.add('show');
                     const success = await loadTemplatesFromGitHub();
                     if (success && templateData) {
@@ -2020,7 +2020,7 @@
                 const now = new Date(),
                     tomorrow = new Date();
                 tomorrow.setDate(now.getDate() + 1);
-                let result = "=======================\nKORAMIL 1609-05/SUKASADA\n    JADWAL DINAS DALAM\n=======================\n\n";
+                let result = "*=======================\nKORAMIL 1609-05/SUKASADA\n    JADWAL DINAS DALAM\n========================*\n\n";
                 const getVal = (id) => document.getElementById(id)?.value || "";
 
                 const sections = [{
@@ -2065,7 +2065,7 @@
                         sectionCount++;
                     }
                 }
-                if (JadwalData.currentHanpangan) result += "- Jadwal Hanpangan hari ini : " + JadwalData.currentHanpangan + "\n\n";
+                if (JadwalData.currentHanpangan) result += "`-Jadwal Hanpangan hari ini :`" + JadwalData.currentHanpangan + "\n\n";
                 result += "Demikian MMP.";
                 const preview = document.getElementById('j_hasilPesanBaru');
                 if (preview) {
