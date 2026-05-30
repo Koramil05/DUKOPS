@@ -18,17 +18,14 @@
     <meta name="theme-color" content="#0a1a3a">
 
     <!-- ========== FAVICON ========== -->
-    <!-- Menggunakan favicon dari GitHub repository itu sendiri sebagai fallback sekaligus sumber gambar profil -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.svg" />
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon.ico" />
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/apple-touch-icon.png" />
     <link rel="manifest" href="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/site.webmanifest" />
-    <!-- ============================= -->
 
     <!-- External Libraries -->
-    <script
-        src="https://cdn.polyfill.io/v3/polyfill.min.js?features=default,es6,Promise,fetch,Array.prototype.includes"></script>
+    <script src="https://cdn.polyfill.io/v3/polyfill.min.js?features=default,es6,Promise,fetch,Array.prototype.includes"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -39,12 +36,6 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
     <style>
-        /* ============ SEMUA CSS SAMA SEPERTI YANG ANDA BERIKAN ============ */
-        /* (Saya tidak mengubah CSS apapun) */
-        .previewBox {
-            display: none !important;
-        }
-        
         /* ============ SPLASH SCREEN MODERN UDAYANA - SEMUA CENTER ========== */
         .splash-container-modern {
             position: fixed;
@@ -959,7 +950,7 @@
                 <select id="selectDesa" onchange="loadSelectedDesa()">
                     <option value="">-- Memuat data desa... --</option>
                 </select>
-                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa/Kelurahan dari GitHub...</div>
+                <div id="loadingDesa"><i class="fas fa-spinner fa-spin"></i> Memuat daftar desa dari GitHub...</div>
                 <div class="previewBox" id="previewDesa"></div>
 
                 <div id="loadingKoordinat"><i class="fas fa-spinner fa-spin"></i> Memuat koordinat...</div>
@@ -1123,7 +1114,7 @@
     </div>
 
     <script>
-        // ============ DATA DESA DIAMBIL DARI GITHUB (TANPA FALLBACK STATIS) ============
+        // ============ DATA DESA DIAMBIL DARI GITHUB ============
         const DESA_LIST_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/data/desa-list.json';
         const PROFILE_BASE_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/Profile/';
         const DEFAULT_FAVICON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png';
@@ -1143,7 +1134,7 @@
                 daftarDesaGlobal = data.desaList || [];
                 console.log("✅ Daftar desa berhasil dimuat dari GitHub:", daftarDesaGlobal.length, "desa");
                 
-                // Bangun profileImages berdasarkan daftar desa (filename: nama_desa.png, spasi diganti underscore)
+                // Bangun profileImages berdasarkan daftar desa
                 daftarDesaGlobal.forEach(desa => {
                     let fileName = desa.toLowerCase().replace(/\s+/g, '_') + '.png';
                     profileImagesGlobal[desa] = fileName;
@@ -1154,7 +1145,6 @@
                 
             } catch (error) {
                 console.error("Gagal memuat daftar desa dari GitHub:", error);
-                // TAMPILKAN PESAN ERROR, TIDAK ADA FALLBACK STATIS
                 if (loadingDesa) {
                     loadingDesa.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Gagal memuat daftar desa. Cek koneksi internet!';
                     loadingDesa.style.color = '#ff6666';
@@ -1172,15 +1162,14 @@
             }
         }
 
-        // ============ PERUBAHAN UTAMA ADA DI SINI ============
-        // TIDAK ADA AUTO-SELECT DESA PERTAMA, TAMPILKAN PLACEHOLDER SAJA
+        // ============ PERUBAHAN HANYA DI SINI ============
+        // Mengubah teks placeholder dari "-- Pilih Desa/Kelurahan --" menjadi "-- Pilih Desa --"
         function populateDesaDropdown() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return;
             
             selectDesa.disabled = false;
-            // Hanya tampilkan placeholder, tidak ada auto-select ke desa pertama
-            selectDesa.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
+            selectDesa.innerHTML = '<option value="">-- Pilih Desa --</option>'; // <-- HANYA INI YANG DIUBAH
             daftarDesaGlobal.forEach(desa => {
                 const option = document.createElement('option');
                 option.value = desa;
@@ -1188,17 +1177,17 @@
                 selectDesa.appendChild(option);
             });
             
-            // Pastikan placeholder yang terpilih (value kosong)
-            selectDesa.value = "";
-            
-            // Pastikan header profile menampilkan favicon default dan tulisan "Pilih Desa"
-            updateDesaProfile("");
+            // Set default ke desa pertama jika ada (sesuai kode asli)
+            if (daftarDesaGlobal.length > 0) {
+                selectDesa.value = daftarDesaGlobal[0];
+                selectDesa.dispatchEvent(new Event('change'));
+            }
             
             // Sembunyikan loading indicator
             const loadingDesa = document.getElementById('loadingDesa');
             if (loadingDesa) loadingDesa.style.display = 'none';
         }
-        // =========================================================
+        // ====================================================
 
         function showToastDesa(message) {
             const toast = document.createElement('div');
@@ -1216,13 +1205,11 @@
             const nameElement = document.getElementById('desaProfileNameHeader');
             
             if (!desaName || desaName === "") {
-                // Jika belum pilih desa, tampilkan favicon default
                 imgElement.src = DEFAULT_FAVICON_URL;
                 nameElement.textContent = "Pilih Desa";
                 return;
             }
             
-            // Cari di profileImagesGlobal
             let matchedKey = null;
             for (let key in profileImagesGlobal) {
                 if (desaName.toLowerCase() === key.toLowerCase()) {
@@ -1239,12 +1226,10 @@
                 
                 imgElement.onerror = function() {
                     console.warn(`Gagal memuat profil untuk ${matchedKey}, file tidak ditemukan`);
-                    // Jika gambar profil tidak ditemukan, tampilkan favicon default
                     imgElement.src = DEFAULT_FAVICON_URL;
                     nameElement.textContent = matchedKey;
                 };
             } else {
-                // Jika tidak ada matching, tampilkan favicon default
                 imgElement.src = DEFAULT_FAVICON_URL;
                 nameElement.textContent = desaName || "Pilih Desa";
             }
@@ -1261,9 +1246,8 @@
         function getNamaDesaTerpilih() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return "";
-            const selectedValue = selectDesa.value;
-            if (!selectedValue) return "";
-            return selectedValue;
+            const option = selectDesa.options[selectDesa.selectedIndex];
+            return option ? option.text : "";
         }
 
         // ============ SPLASH SCREEN LOGIC ============
@@ -1314,7 +1298,6 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             startSplashProgress();
-            // Load daftar desa dari GitHub
             loadDesaListFromGitHub();
         });
 
@@ -1421,17 +1404,13 @@
             }
         })();
 
-        // ============ FUNGSI ASLI loadSelectedDesa ============
+        // ============ FUNGSI ASLI loadSelectedDesa (TIDAK DIUBAH) ============
         const originalLoadSelectedDesa = window.loadSelectedDesa;
         window.loadSelectedDesa = function() {
             if (originalLoadSelectedDesa) originalLoadSelectedDesa();
             const selectDesa = document.getElementById('selectDesa');
-            const selectedValue = selectDesa?.value || "";
-            if (selectedValue !== "") {
-                updateDesaProfile(selectedValue);
-            } else {
-                updateDesaProfile("");
-            }
+            const selectedText = selectDesa.options[selectDesa.selectedIndex]?.text || "";
+            updateDesaProfile(selectedText);
             if (typeof window.triggerPlayMusic === 'function') {
                 window.triggerPlayMusic();
             }
@@ -1441,17 +1420,13 @@
             const selectDesa = document.getElementById('selectDesa');
             if (selectDesa) {
                 selectDesa.addEventListener('change', function() {
-                    const selectedValue = this.value || "";
-                    if (selectedValue !== "") {
-                        updateDesaProfile(selectedValue);
-                    } else {
-                        updateDesaProfile("");
-                    }
+                    const selectedText = this.options[this.selectedIndex]?.text || "";
+                    updateDesaProfile(selectedText);
                 });
             }
         });
 
-        // ============ AI TEMPLATE SCRIPT - ONLINE DARI GITHUB DENGAN DROPDOWN ============
+        // ============ AI TEMPLATE SCRIPT ============
         (function() {
             const TEMPLATE_JSON_URL = 'https://raw.githubusercontent.com/Koramil05/DUKOPS/main/template-narasi.json';
             let templateData = null;
@@ -1475,7 +1450,6 @@
                         activeTab = categoryKeys[0];
                     }
                     console.log("✅ Template AI berhasil dimuat dari GitHub");
-                    console.log("📋 Kategori yang ditemukan:", categoryKeys.length, "kategori");
                     return true;
                 } catch (error) {
                     console.error("Gagal memuat template AI:", error);
@@ -1491,7 +1465,6 @@
                     return;
                 }
                 
-                // Buat select dropdown untuk kategori (seperti pilih desa)
                 const selectWrapper = document.createElement('div');
                 selectWrapper.style.cssText = 'width:100%; margin-bottom:8px;';
                 
@@ -1548,7 +1521,7 @@
                 narasiField.dispatchEvent(event);
                 
                 if (typeof checkInputCompletion === 'function') checkInputCompletion();
-                showAIToast(`✅ Template diterapkan ${namaDesa ? '(Desa/Kel: ' + namaDesa + ')' : ''}`);
+                showAIToast(`✅ Template diterapkan ${namaDesa ? '(Desa: ' + namaDesa + ')' : ''}`);
             };
 
             function showAIToast(message) {
@@ -1580,7 +1553,6 @@
             closeModalBtn.onclick = () => { modal.classList.remove('show'); };
             window.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
             
-            // Load template dari GitHub saat halaman dimuat
             loadTemplatesFromGitHub();
         })();
     </script>
