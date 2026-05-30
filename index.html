@@ -134,30 +134,52 @@
             text-align: center;
         }
 
-        /* ============ HEADER DUKOPS dengan foto profil di samping kiri ============ */
-        .dukops-header {
-            background: linear-gradient(135deg, #1a472a, #0d2618);
+        /* ============ HEADER BANNER DENGAN GAMBAR DARI GITHUB ============ */
+        .dukops-header-banner {
+            position: relative;
+            width: 100%;
             border-radius: 12px;
-            border: 1px solid #4dff4d;
-            padding: 10px 15px;
             margin-bottom: 20px;
+            overflow: hidden;
         }
-        .dukops-header-row {
+
+        .dukops-header-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        /* Efek buram/gelap di bagian bawah banner */
+        .dukops-header-banner .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0));
+            padding: 20px 15px 15px 15px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Area profil dan judul di atas banner */
+        .profile-overlay {
             display: flex;
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
         }
-        .dukops-profile-area {
+
+        .dukops-profile-area-banner {
             flex-shrink: 0;
             text-align: center;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             padding: 8px;
             border-radius: 12px;
             min-width: 90px;
-            display: block;
+            backdrop-filter: blur(4px);
         }
-        .dukops-profile-img {
+
+        .dukops-profile-img-banner {
             width: 70px;
             height: 70px;
             border-radius: 50%;
@@ -165,29 +187,35 @@
             object-fit: cover;
             background-color: #1a3a1a;
         }
-        .dukops-profile-name {
+
+        .dukops-profile-name-banner {
             font-size: 10px;
             font-weight: bold;
             color: #ffcc00;
             margin-top: 4px;
             text-align: center;
         }
-        .dukops-title-area {
+
+        .dukops-title-area-banner {
             flex: 1;
             text-align: left;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-        .dukops-header-title {
+
+        .dukops-header-title-banner {
             font-size: 16px;
             font-weight: bold;
             color: #ffcc00;
             margin: 2px 0;
         }
-        .dukops-header-address {
+
+        .dukops-header-address-banner {
             font-size: 9px;
             color: #aaffaa;
             margin-top: 3px;
         }
-        .counter-value {
+
+        .counter-value-banner {
             font-size: 18px;
             font-weight: bold;
             color: #ffcc00;
@@ -861,18 +889,18 @@
             .splash-logo-center img {
                 width: 60px;
             }
-            .dukops-header-row {
+            .profile-overlay {
                 flex-direction: column;
                 text-align: center;
             }
-            .dukops-title-area {
+            .dukops-title-area-banner {
                 text-align: center;
             }
-            .dukops-profile-img {
+            .dukops-profile-img-banner {
                 width: 55px;
                 height: 55px;
             }
-            .dukops-header-title {
+            .dukops-header-title-banner {
                 font-size: 14px;
             }
             #categorySelect {
@@ -930,18 +958,24 @@
         <!-- ==================== DUKOPS CONTENT ==================== -->
         <div id="dukopsContent">
             <div style="width: 90%; margin: 0 auto; font-size: 12px;">
-                <!-- HEADER DUKOPS DENGAN FOTO PROFIL DI SAMPING KIRI -->
-                <div class="dukops-header">
-                    <div class="dukops-header-row">
-                        <div class="dukops-profile-area" id="desaProfileContainerHeader">
-                            <img id="desaProfileImgHeader" class="dukops-profile-img" src="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" alt="Foto Profil">
-                            <div id="desaProfileNameHeader" class="dukops-profile-name">Pilih Desa</div>
-                        </div>
-                        <div class="dukops-title-area">
-                            <div class="dukops-header-title">DUKOPS BABINSA</div>
-                            <div class="dukops-header-title">KORAMIL 1609-05/SUKASADA</div>
-                            <div class="dukops-header-address">Jl. Jelantik Gingsir No. 32 Sukasada Singaraja-Bali 81161</div>
-                            <div><span class="counter-value" id="submissionCounter">0</span></div>
+                
+                <!-- ================= HEADER BANNER DENGAN GAMBAR DARI GITHUB ================= -->
+                <div class="dukops-header-banner">
+                    <img src="https://raw.githubusercontent.com/Babinsa05/DUKOPS/main/assets/header_banner.png" 
+                         alt="Header Banner DUKOPS"
+                         onerror="this.src='https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png'">
+                    <div class="overlay">
+                        <div class="profile-overlay">
+                            <div class="dukops-profile-area-banner" id="desaProfileContainerHeader">
+                                <img id="desaProfileImgHeader" class="dukops-profile-img-banner" src="https://raw.githubusercontent.com/Koramil05/DUKOPS/main/favicon-96x96.png" alt="Foto Profil">
+                                <div id="desaProfileNameHeader" class="dukops-profile-name-banner">Pilih Desa</div>
+                            </div>
+                            <div class="dukops-title-area-banner">
+                                <div class="dukops-header-title-banner">DUKOPS BABINSA</div>
+                                <div class="dukops-header-title-banner">KORAMIL 1609-05/SUKASADA</div>
+                                <div class="dukops-header-address-banner">Jl. Jelantik Gingsir No. 32 Sukasada Singaraja-Bali 81161</div>
+                                <div><span class="counter-value-banner" id="submissionCounter">0</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1162,14 +1196,14 @@
             }
         }
 
-        // ============ PERUBAHAN HANYA DI SINI ============
-        // Mengubah teks placeholder dari "-- Pilih Desa/Kelurahan --" menjadi "-- Pilih Desa --"
+        // ============ PERUBAHAN PENTING: TIDAK ADA AUTO-SELECT DESA ============
         function populateDesaDropdown() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return;
             
             selectDesa.disabled = false;
-            selectDesa.innerHTML = '<option value="">-- Pilih Desa --</option>'; // <-- HANYA INI YANG DIUBAH
+            // Hanya tampilkan placeholder "-- Pilih Desa --" tanpa auto-select
+            selectDesa.innerHTML = '<option value="">-- Pilih Desa --</option>';
             daftarDesaGlobal.forEach(desa => {
                 const option = document.createElement('option');
                 option.value = desa;
@@ -1177,17 +1211,18 @@
                 selectDesa.appendChild(option);
             });
             
-            // Set default ke desa pertama jika ada (sesuai kode asli)
-            if (daftarDesaGlobal.length > 0) {
-                selectDesa.value = daftarDesaGlobal[0];
-                selectDesa.dispatchEvent(new Event('change'));
-            }
+            // PASTIKAN TIDAK ADA AUTO-SELECT KE DESA MANAPUN
+            // Biarkan placeholder "-- Pilih Desa --" yang terpilih
+            selectDesa.value = "";
+            
+            // Pastikan header profile menampilkan favicon default dan tulisan "Pilih Desa"
+            updateDesaProfile("");
             
             // Sembunyikan loading indicator
             const loadingDesa = document.getElementById('loadingDesa');
             if (loadingDesa) loadingDesa.style.display = 'none';
         }
-        // ====================================================
+        // ================================================================
 
         function showToastDesa(message) {
             const toast = document.createElement('div');
@@ -1235,7 +1270,7 @@
             }
         }
 
-        // ============ FUNGSI UNTUK AUTO GANTI DESA/KELURAHAN DI TEMPLATE ============
+        // ============ FUNGSI UNTUK AUTO GANTI DESA DI TEMPLATE ============
         function injectDesaKeNarasi(templateText, namaDesa) {
             if (!namaDesa || namaDesa === "") return templateText;
             let hasil = templateText.replace(/\bdesa\b/gi, `Desa ${namaDesa}`);
@@ -1246,8 +1281,9 @@
         function getNamaDesaTerpilih() {
             const selectDesa = document.getElementById('selectDesa');
             if (!selectDesa) return "";
-            const option = selectDesa.options[selectDesa.selectedIndex];
-            return option ? option.text : "";
+            const selectedValue = selectDesa.value;
+            if (!selectedValue) return "";
+            return selectedValue;
         }
 
         // ============ SPLASH SCREEN LOGIC ============
@@ -1404,13 +1440,17 @@
             }
         })();
 
-        // ============ FUNGSI ASLI loadSelectedDesa (TIDAK DIUBAH) ============
+        // ============ FUNGSI ASLI loadSelectedDesa ============
         const originalLoadSelectedDesa = window.loadSelectedDesa;
         window.loadSelectedDesa = function() {
             if (originalLoadSelectedDesa) originalLoadSelectedDesa();
             const selectDesa = document.getElementById('selectDesa');
-            const selectedText = selectDesa.options[selectDesa.selectedIndex]?.text || "";
-            updateDesaProfile(selectedText);
+            const selectedValue = selectDesa?.value || "";
+            if (selectedValue !== "") {
+                updateDesaProfile(selectedValue);
+            } else {
+                updateDesaProfile("");
+            }
             if (typeof window.triggerPlayMusic === 'function') {
                 window.triggerPlayMusic();
             }
@@ -1420,8 +1460,12 @@
             const selectDesa = document.getElementById('selectDesa');
             if (selectDesa) {
                 selectDesa.addEventListener('change', function() {
-                    const selectedText = this.options[this.selectedIndex]?.text || "";
-                    updateDesaProfile(selectedText);
+                    const selectedValue = this.value || "";
+                    if (selectedValue !== "") {
+                        updateDesaProfile(selectedValue);
+                    } else {
+                        updateDesaProfile("");
+                    }
                 });
             }
         });
