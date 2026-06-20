@@ -34,7 +34,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Stylesheet -->
-<link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main.css">
     
     <!-- html2canvas untuk fitur screenshot -->
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -257,7 +257,145 @@
             margin-top: 5px;
         }
 
-        /* ============ JADWAL PIKET BARU STYLES ============ */
+        /* ============================================================ */
+        /* TOMBOL TAB SILINDER - GAYA BARU DENGAN EFEK TEKS */
+        /* ============================================================ */
+        .tab-btn-cylinder {
+            background: linear-gradient(180deg, #dc2626, #991b1b, #7f1d1d);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 14px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3),
+                        inset 0 -4px 0 rgba(0,0,0,0.2),
+                        inset 0 4px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .tab-btn-cylinder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent);
+            border-radius: 50px 50px 0 0;
+            pointer-events: none;
+        }
+
+        .tab-btn-cylinder:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.5),
+                        inset 0 -4px 0 rgba(0,0,0,0.2),
+                        inset 0 4px 0 rgba(255,255,255,0.15);
+        }
+
+        .tab-btn-cylinder:active {
+            transform: scale(0.97);
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .tab-btn-cylinder.active {
+            background: linear-gradient(180deg, #10b981, #059669, #047857);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4),
+                        inset 0 -4px 0 rgba(0,0,0,0.2),
+                        inset 0 4px 0 rgba(255,255,255,0.15);
+        }
+
+        .tab-btn-cylinder.active::before {
+            background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+        }
+
+        /* --- EFEK 1: BLINK (KELAP-KELIP) --- */
+        .tab-btn-cylinder-blink .blink-text {
+            display: inline-block;
+            animation: blinkText 0.8s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes blinkText {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.95); }
+        }
+
+        /* --- EFEK 2: MARQUEE (BERJALAN) --- */
+        .tab-btn-cylinder-marquee .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marqueeRun 3s linear infinite;
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes marqueeRun {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* --- EFEK 3: PULSE (BERDENYUT) --- */
+        .tab-btn-cylinder-pulse .pulse-text {
+            display: inline-block;
+            animation: pulseText 1.2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes pulseText {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* --- EFEK 4: KOMBO (BLINK + MARQUEE) --- */
+        .tab-btn-cylinder-combo .combo-text {
+            display: inline-block;
+            animation: comboEffect 1.5s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes comboEffect {
+            0% { opacity: 1; transform: scale(1) translateX(0); }
+            25% { opacity: 0.5; transform: scale(0.9) translateX(-8px); }
+            50% { opacity: 1; transform: scale(1.1) translateX(8px); }
+            75% { opacity: 0.5; transform: scale(0.9) translateX(-8px); }
+            100% { opacity: 1; transform: scale(1) translateX(0); }
+        }
+
+        /* --- EFEK 5: GLOW (CAHAYA) --- */
+        .tab-btn-cylinder-glow .glow-text {
+            display: inline-block;
+            animation: glowPulse 1.5s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+            50% { text-shadow: 0 0 30px rgba(255,255,255,0.6), 0 0 60px rgba(220,38,38,0.3); }
+        }
+
+        /* ============================================================ */
+        /* NAVIGASI TAB SILINDER - MENGGANTIKAN .nav-buttons */
+        /* ============================================================ */
+        .tab-nav-cylinder {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* ============================================================ */
+        /* JADWAL PIKET BARU STYLES */
+        /* ============================================================ */
         .running-text-container {
             background: rgba(0, 30, 0, 0.7);
             border-radius: 8px;
@@ -355,36 +493,6 @@
             transition: height 0.1s ease;
         }
         
-        /* Navigation Buttons */
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: nowrap;
-            flex-direction: row !important;
-        }
-        .nav-btn {
-            flex: 1 1 0;
-            min-width: 0;
-            padding: 10px 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #2a4a2a;
-            color: #e6ffe6;
-            white-space: normal;
-        }
-        .nav-btn.active {
-            background: #4dff4d;
-            color: #003300;
-        }
-        .nav-btn-dukops.active { background: #4dff4d; color: #003300; }
-        .nav-btn-piket.active { background: #ffcc00; color: #003300; }
-        .nav-btn-absen.active { background: #ff6600; color: #003300; }
-        
         .row {
             display: flex;
             flex-wrap: wrap;
@@ -404,13 +512,6 @@
             cursor: pointer;
         }
         select option { background-color: #003300; color: #e6ffe6; }
-        
-        .telegram-group-selector {
-            background: rgba(0, 60, 0, 0.7);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-        }
         
         .section-content {
             display: block;
@@ -530,49 +631,6 @@
         }
         .absen-btn:hover { background: #3a6a3a; }
         .absen-btn-primary { background: #1a73e8; border-color: #4dff4d; }
-        .button-row-absen {
-            display: flex;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        .button-row-absen button {
-            flex: 1;
-        }
-        .absen-toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 1000;
-            animation: fadeOut 2s ease;
-        }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
-        }
-        .absen-loading {
-            text-align: center;
-            padding: 20px;
-            color: #4dff4d;
-        }
-        .absen-spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid #4dff4d;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
         .absen-info-text {
             text-align: center;
             font-size: 0.6rem;
@@ -765,7 +823,6 @@
             flex-shrink: 0;
         }
         
-        /* Style untuk dropdown kategori */
         #categorySelect {
             width: 100%;
             padding: 10px 12px;
@@ -888,18 +945,40 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        @media screen and (max-width: 480px) {
-            .modal-ai-content {
-                width: 98%;
-                height: 90vh;
-                border-radius: 16px;
+        /* ================= DUKOPS ANNOUNCEMENT BAR ================= */
+        .dukops-announcement-bar {
+            width: 100%;
+            background: transparent;
+            color: #ffffff;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+        }
+        .dukops-announcement-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: dukops-running-text 30s linear infinite;
+        }
+        @keyframes dukops-running-text {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 600px) {
+            .tab-nav-cylinder {
+                flex-direction: column;
             }
-            .modal-template-text {
-                font-size: 0.7rem;
-                -webkit-line-clamp: 2;
+            .tab-btn-cylinder {
+                min-width: 100%;
             }
-            .modal-ai-header h3 {
-                font-size: 1rem;
+            .container {
+                padding: 16px;
             }
             .splash-title-center {
                 font-size: 22px;
@@ -924,34 +1003,22 @@
             .dukops-header-title {
                 font-size: 14px;
             }
+            .modal-ai-content {
+                width: 98%;
+                height: 90vh;
+                border-radius: 16px;
+            }
+            .modal-template-text {
+                font-size: 0.7rem;
+                -webkit-line-clamp: 2;
+            }
+            .modal-ai-header h3 {
+                font-size: 1rem;
+            }
             #categorySelect {
                 font-size: 12px;
                 padding: 8px 10px;
             }
-        }
-
-        /* ================= DUKOPS ANNOUNCEMENT BAR ================= */
-        .dukops-announcement-bar {
-            width: 100%;
-            background: #transparant;
-            color: #ffffff;
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 10px 0;
-            border-bottom: 3px solid #transparant;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            font-size: 14px;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-        }
-        .dukops-announcement-text {
-            display: inline-block;
-            padding-left: 100%;
-            animation: dukops-running-text 30s linear infinite;
-        }
-        @keyframes dukops-running-text {
-            from { transform: translateX(0); }
-            to { transform: translateX(-100%); }
         }
     </style>
 </head>
@@ -977,7 +1044,7 @@
 
     <!-- ================= BACKGROUND MP3 PLAYER ================= -->
     <audio id="backgroundMusic" loop preload="auto">
-        <!-- Tambahkan file lokal di assets/audio/background.mp3 jika ingin musik latar lokal -->
+        <source src="assets/audio/background.mp3" type="audio/mpeg">
     </audio>
 
     <!-- ================= DUKOPS ANNOUNCEMENT BAR ================= -->
@@ -1013,16 +1080,36 @@
             </div>
         </div>
 
-        <div class="nav-buttons">
-            <button class="nav-btn nav-btn-dukops active" id="btnDukops" onclick="showDukops()">
-                <i class="fas fa-file-upload"></i> DUKOPS
+        <!-- ============================================================ -->
+        <!-- TAB NAVIGASI SILINDER DENGAN EFEK TEKS - 5 EFEK BERBEDA -->
+        <!-- ============================================================ -->
+        <div class="tab-nav-cylinder">
+
+            <!-- 1. BLINK - DUKOPS -->
+            <button class="tab-btn-cylinder tab-btn-cylinder-blink active" onclick="switchTabCylinder('dukopsContent', this)">
+                <span class="blink-text"><i class="fas fa-file-upload"></i> DUKOPS</span>
             </button>
-            <button class="nav-btn nav-btn-piket" id="btnJadwal" onclick="showJadwalPiketBaru()">
-                <i class="fas fa-calendar-alt"></i> PIKET
+
+            <!-- 2. MARQUEE - PIKET -->
+            <button class="tab-btn-cylinder tab-btn-cylinder-marquee" onclick="switchTabCylinder('jadwalPiketContainerBaru', this)">
+                <span class="marquee-text"><i class="fas fa-calendar-alt"></i> PIKET ✦</span>
             </button>
-            <button class="nav-btn nav-btn-absen" id="btnAbsen" onclick="showAbsenTab()">
-                <i class="fas fa-chart-line"></i> ABSEN
+
+            <!-- 3. PULSE - ABSEN -->
+            <button class="tab-btn-cylinder tab-btn-cylinder-pulse" onclick="switchTabCylinder('absenContent', this)">
+                <span class="pulse-text"><i class="fas fa-chart-line"></i> ABSEN</span>
             </button>
+
+            <!-- 4. KOMBO - INFO (TAB BONUS) -->
+            <button class="tab-btn-cylinder tab-btn-cylinder-combo" onclick="switchTabCylinder('infoContent', this)">
+                <span class="combo-text"><i class="fas fa-info-circle"></i> INFO</span>
+            </button>
+
+            <!-- 5. GLOW - KONTAK (TAB BONUS) -->
+            <button class="tab-btn-cylinder tab-btn-cylinder-glow" onclick="switchTabCylinder('kontakContent', this)">
+                <span class="glow-text"><i class="fas fa-phone"></i> KONTAK</span>
+            </button>
+
         </div>
 
         <!-- ==================== DUKOPS CONTENT ==================== -->
@@ -1062,19 +1149,19 @@
                     </button>
                     <button id="resetBtn" onclick="resetAll()"><i class="fas fa-redo"></i> RESET</button>
                 </div>
-                <button id="showAttendanceBtn" onclick="showAttendance()"><i class="fas fa-chart-bar"></i> KLIK INI..CEK LAPORAN ANDA DISINI YANG TIAP BULAN</button>
+                <button id="showAttendanceBtn" onclick="showAttendance()"><i class="fas fa-chart-bar"></i>Cek Disini</button>
 
                 <div id="attendancePanel" style="display: none;">
                     <div class="attendance-header">
-                        <button onclick="hideAttendance()" style="background: #9fd49f; border: none; color: #f5f5f5; cursor: pointer;">EXIT LAPORAN TERKIRIM</button>
+                        <button onclick="hideAttendance()" style="background: black; border: blue; color: red; cursor: pointer;">EXIT</button>
                     </div>
                     <div class="attendance-filters">
                         <select id="attendanceDesaFilter" onchange="loadAttendanceData()"><option value="">Semua Desa</option></select>
                         <input type="month" id="attendanceMonthFilter" onchange="loadAttendanceData()">
                     </div>
-                    <div id="attendanceLoading" style="display: none; text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> 🪖 Tunggu..laporan akan di tampilkan</div>
+                    <div id="attendanceLoading" style="display: show; text-align: center; padding: 80px;"><i class="fas fa-spinner fa-spin"> 🪖</i></div>
                     <div id="attendanceSummary" class="attendance-summary" style="display: none;">
-                        <div class="summary-row"><span>Total Laporan:</span><span id="totalReports" style="font-weight: bold; color: #9fd49f;">0</span></div>
+                        <div class="summary-row"><span>Total Laporan:</span><span id="totalReports" style="font-weight: bold; color: #9fd49f;"></span></div>
                         <div class="summary-row"><span>Total Desa:</span><span id="totalDesa" style="font-weight: bold; color: #9fd49f;">0</span></div>
                         <div class="summary-row"><span>Pencapaian Target:</span><span id="targetStatus" style="font-weight: bold;">0%</span></div>
                         <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
@@ -1166,6 +1253,34 @@
             <div class="absen-info-text">✨ Tap desa untuk detail | Data tersimpan offline</div>
         </div>
 
+        <!-- ==================== TAB INFO (BONUS) ==================== -->
+        <div id="infoContent" style="display: none;">
+            <div style="background:rgba(0,40,0,0.7);border-radius:12px;padding:20px;border:1px solid #4dff4d;">
+                <h3 style="color:#4dff4d;"><i class="fas fa-info-circle"></i> Informasi Aplikasi</h3>
+                <p style="color:#e6ffe6;margin-top:10px;font-size:14px;line-height:1.8;">
+                    <strong>DUKOPS</strong> adalah sistem pelaporan digitalisasi Babinsa Koramil 1609-05/Sukasada.<br><br>
+                    <i class="fas fa-check-circle" style="color:#4dff4d;"></i> Fitur: DUKOPS, PIKET, ABSEN<br>
+                    <i class="fas fa-check-circle" style="color:#4dff4d;"></i> Efek tab: <strong style="color:#ffcc00;">Blink | Marquee | Pulse | Kombo | Glow</strong><br>
+                    <i class="fas fa-check-circle" style="color:#4dff4d;"></i> Versi: 6.0
+                </p>
+                <p style="margin-top:8px;font-size:12px;color:#64748b;">Efek: <strong style="color:#10b981;">Kombo (Blink + Marquee)</strong></p>
+            </div>
+        </div>
+
+        <!-- ==================== TAB KONTAK (BONUS) ==================== -->
+        <div id="kontakContent" style="display: none;">
+            <div style="background:rgba(0,40,0,0.7);border-radius:12px;padding:20px;border:1px solid #4dff4d;">
+                <h3 style="color:#4dff4d;"><i class="fas fa-phone"></i> Kontak</h3>
+                <p style="color:#e6ffe6;margin-top:10px;font-size:14px;line-height:1.8;">
+                    <i class="fas fa-map-marker-alt" style="color:#ffcc00;"></i> Jl. Jelantik Gingsir No. 32 Sukasada<br>
+                    <i class="fas fa-phone" style="color:#ffcc00;"></i> +62 812-3456-7890<br>
+                    <i class="fas fa-envelope" style="color:#ffcc00;"></i> babinsa@dukops.id<br>
+                    <i class="fas fa-globe" style="color:#ffcc00;"></i> www.dukops.id
+                </p>
+                <p style="margin-top:8px;font-size:12px;color:#64748b;">Efek: <strong style="color:#10b981;">Glow (Cahaya)</strong></p>
+            </div>
+        </div>
+
         <div class="jadwal-toast" id="j_toastNotificationBaru"></div>
     </div>
 
@@ -1181,6 +1296,12 @@
             <div class="modal-ai-tabs" id="modalTabs"></div>
             <div class="modal-ai-body" id="modalBody"></div>
         </div>
+    </div>
+
+    <!-- ============ TOAST NOTIFIKASI ============ -->
+    <div id="toast" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:12px 24px;border-radius:40px;font-size:14px;z-index:9999;display:none;box-shadow:0 4px 20px rgba(0,0,0,0.5);border:1px solid rgba(16,185,129,0.3);">
+        <i class="fas fa-check-circle" style="color:#10b981;margin-right:8px;"></i>
+        <span id="toastMessage">Toast berhasil ditampilkan!</span>
     </div>
 
     <!-- ============ SCRIPT ============ -->
@@ -1489,6 +1610,63 @@
             }
         })();
 
+        // ============ FUNGSI SWITCH TAB SILINDER ============
+        function switchTabCylinder(contentId, button) {
+            // Sembunyikan semua konten
+            const contents = ['dukopsContent', 'jadwalPiketContainerBaru', 'absenContent', 'infoContent', 'kontakContent'];
+            contents.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+
+            // Tampilkan konten yang dipilih
+            const target = document.getElementById(contentId);
+            if (target) target.style.display = 'block';
+
+            // Hapus class active dari semua tombol
+            document.querySelectorAll('.tab-btn-cylinder').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Tambah class active ke tombol yang diklik
+            if (button) button.classList.add('active');
+
+            // Trigger musik
+            if (typeof window.triggerPlayMusic === 'function') {
+                window.triggerPlayMusic();
+            }
+
+            // Toast notifikasi
+            const tabNames = {
+                'dukopsContent': 'DUKOPS',
+                'jadwalPiketContainerBaru': 'PIKET',
+                'absenContent': 'ABSEN',
+                'infoContent': 'INFO',
+                'kontakContent': 'KONTAK'
+            };
+            showToast('📂 Buka tab: ' + (tabNames[contentId] || contentId));
+        }
+
+        // ============ FUNGSI TOAST ============
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+
+            if (!toast || !msg) return;
+
+            msg.textContent = message;
+            toast.style.display = 'block';
+            toast.style.opacity = '1';
+
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 400);
+            }, 2500);
+        }
+
         // ============ FUNGSI ASLI loadSelectedDesa ============
         window.loadSelectedDesa = function() {
             const selectDesa = document.getElementById('selectDesa');
@@ -1511,13 +1689,19 @@
                     updateDesaProfile(selectedText);
                 });
             }
+
+            // Default tab active
+            switchTabCylinder('dukopsContent', document.querySelector('.tab-btn-cylinder-blink'));
         });
+
+        console.log('✅ Tab Silinder dengan Efek Teks siap digunakan!');
+        console.log('📋 5 Efek: Blink | Marquee | Pulse | Kombo | Glow');
     </script>
 
     <!-- ============ AI TEMPLATE SCRIPT ============ -->
     <script>
         (function() {
-            const TEMPLATE_JSON_URL = 'template-narasi.json';
+            const TEMPLATE_JSON_URL = 'data/template-narasi.json';
             let templateData = null;
             let activeTab = null;
             let categoryKeys = [];
@@ -1637,7 +1821,7 @@
     </script>
 
     <!-- ============ APPLICATION SCRIPTS ============ -->
-    <script src="app.js"></script>
+    <script src="js/app.js"></script>
 
     <!-- ============ JADWAL PIKET BARU SCRIPT ============ -->
     <script>
@@ -1666,9 +1850,16 @@
 
         function initJadwalBaru() { JADWAL_DROPDOWN_IDS.forEach(id => { const sel = document.getElementById(id); if (sel) sel.addEventListener('change', updatePreview); }); const btn = document.getElementById('whatsappBtnBaru'); if (btn) { const newBtn = btn.cloneNode(true); btn.parentNode.replaceChild(newBtn, btn); newBtn.addEventListener('click', (e) => { e.preventDefault(); sendToWhatsApp(); }); } loadAllJadwalData(); autoResizeTextarea(); }
 
-        window.showJadwalPiketBaru = function() { document.getElementById('dukopsContent').style.display = 'none'; document.getElementById('jadwalPiketContainerBaru').style.display = 'block'; document.getElementById('absenContent').style.display = 'none'; document.getElementById('btnDukops').classList.remove('active'); document.getElementById('btnJadwal').classList.add('active'); document.getElementById('btnAbsen').classList.remove('active'); initJadwalBaru(); };
-        window.showDukops = function() { document.getElementById('dukopsContent').style.display = 'block'; document.getElementById('jadwalPiketContainerBaru').style.display = 'none'; document.getElementById('absenContent').style.display = 'none'; document.getElementById('btnDukops').classList.add('active'); document.getElementById('btnJadwal').classList.remove('active'); document.getElementById('btnAbsen').classList.remove('active'); };
-        window.showAbsenTab = function() { document.getElementById('dukopsContent').style.display = 'none'; document.getElementById('jadwalPiketContainerBaru').style.display = 'none'; document.getElementById('absenContent').style.display = 'block'; document.getElementById('btnDukops').classList.remove('active'); document.getElementById('btnJadwal').classList.remove('active'); document.getElementById('btnAbsen').classList.add('active'); if (typeof loadAbsenTahun === 'function') loadAbsenTahun(); };
+        window.showJadwalPiketBaru = function() { 
+            switchTabCylinder('jadwalPiketContainerBaru', document.querySelector('.tab-btn-cylinder-marquee'));
+        };
+        window.showDukops = function() { 
+            switchTabCylinder('dukopsContent', document.querySelector('.tab-btn-cylinder-blink'));
+        };
+        window.showAbsenTab = function() { 
+            switchTabCylinder('absenContent', document.querySelector('.tab-btn-cylinder-pulse'));
+            if (typeof loadAbsenTahun === 'function') loadAbsenTahun();
+        };
 
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initJadwalBaru);
         else initJadwalBaru();
@@ -1795,7 +1986,7 @@
     <script>
     // PLAY MP3 SETIAP KLIK TAB - UNIVERSAL
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
+        document.querySelectorAll('.tab-btn-cylinder').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (typeof window.triggerPlayMusic === 'function') {
                     window.triggerPlayMusic();
